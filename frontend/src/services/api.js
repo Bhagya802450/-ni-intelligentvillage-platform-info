@@ -80,5 +80,15 @@ export const api = {
 
   // Mandi
   getMandiRates: (district = '', commodity = '') => fetchJson(`/marketplace/mandi-rates?district=${district}&commodity=${commodity}`),
-  getMandiStats: () => fetchJson('/marketplace/stats')
+  getMandiStats: () => fetchJson('/marketplace/stats'),
+
+  // S3 Object Storage
+  getStorageBuckets: () => fetchJson('/storage/buckets'),
+  getStorageFiles: (bucket = '') => fetchJson(`/storage/files?bucket=${bucket}`),
+
+  // Python AI/ML Satellite & Diagnostic Service
+  predictNdvi: (payload) => fetchJson('/ml/predict-ndvi', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
 };
