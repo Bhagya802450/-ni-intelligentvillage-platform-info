@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node test/api.test.js"
+    "test": "node test/api.test.js",
+    "hierarchy": "node scripts/show_hierarchy.js"
   },
   "keywords": ["agriculture", "hp-asn", "suadr", "agristack", "dbt", "frappe-spec"],
   "author": "HP Agri Platform Team",
