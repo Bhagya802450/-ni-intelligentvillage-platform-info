@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Key, Lock, CheckCircle2, XCircle, UserCheck, ShieldAlert, Cpu, Award } from 'lucide-react';
+import { 
+  Shield, Key, Lock, CheckCircle2, XCircle, UserCheck, 
+  ShieldAlert, Cpu, Award, Users, ArrowDown, Play, Terminal, 
+  ArrowRight, Check, AlertTriangle, Layers, Server
+} from 'lucide-react';
 import { api } from '../services/api';
 
 export default function IamView({ lang = 'en', onSwitchUser }) {
@@ -15,6 +19,14 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
   const [otpInput, setOtpInput] = useState('123456');
   const [kycResult, setKycResult] = useState(null);
   const [kycLoading, setKycLoading] = useState(false);
+
+  // Security Pipeline state: Login -> Authentication -> Role Check -> Permission -> Access API
+  const [pipelineCaller, setPipelineCaller] = useState('OFFICER');
+  const [pipelineRoleReq, setPipelineRoleReq] = useState('OFFICER');
+  const [pipelinePermReq, setPipelinePermReq] = useState('schemes:approve');
+  const [pipelineRunning, setPipelineRunning] = useState(false);
+  const [pipelineSteps, setPipelineSteps] = useState(null);
+  const [guardedApiResponse, setGuardedApiResponse] = useState(null);
 
   useEffect(() => {
     async function loadIamData() {
@@ -50,6 +62,183 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
       console.error(err);
     } finally {
       setKycLoading(false);
+    }
+  };
+
+  const handleRunSecurityPipeline = async () => {
+    setPipelineRunning(true);
+    setPipelineSteps(null);
+    setGuardedApiResponse(null);
+
+    try {
+      let token = null;
+      let userObj = null;
+
+      // STEP 1: Login
+      let step1 = {
+        step: 1,
+        name: isKn ? "1. ಲಾಗಿನ್ (Login)" : "1. Login",
+        status: "COMPLETED",
+        passed: true,
+        details: "Credentials submitted to /api/auth/login"
+      };
+
+      if (pipelineCaller === 'ANONYMOUS') {
+        step1 = {
+          step: 1,
+          name: isKn ? "1. ಲಾಗಿನ್ (Login)" : "1. Login",
+          status: "SKIPPED_UNAUTHENTICATED",
+          passed: false,
+          details: "Anonymous request without login session."
+        };
+      } else {
+        const identifiers = {
+          'FARMER': '98160 12345',
+          'PATWARI': 'PAT-HP-301',
+          'OFFICER': 'OFF-HP-801',
+          'ADMIN': 'ADM-HP-001'
+        };
+        const loginRes = await api.login(null, identifiers[pipelineCaller]);
+        if (loginRes.success) {
+          token = loginRes.token;
+          userObj = loginRes.user;
+          step1.details = `Authenticated as ${userObj.name} (${userObj.role}). Issued Bearer token.`;
+          step1.token = token;
+        } else {
+          step1.status = "LOGIN_FAILED";
+          step1.passed = false;
+          step1.details = loginRes.message || "Invalid credentials";
+        }
+      }
+
+      // If login failed or anonymous:
+      if (!token) {
+        const step2 = {
+          step: 2,
+          name: isKn ? "2. ದೃಢೀಕರಣ (Authentication)" : "2. Authentication",
+          status: "HTTP_401_UNAUTHORIZED",
+          passed: false,
+          error: "AUTH_TOKEN_MISSING",
+          details: "No Bearer token present. authGuard.authenticate rejects with HTTP 401."
+        };
+        const step3 = {
+          step: 3,
+          name: isKn ? "3. ಪಾತ್ರ ಪರಿಶೀಲನೆ (Role Check)" : "3. Role Check",
+          status: "BLOCKED",
+          passed: false,
+          details: "Blocked due to unauthenticated request."
+        };
+        const step4 = {
+          step: 4,
+          name: isKn ? "4. ಅನುಮತಿ (Permission)" : "4. Permission",
+          status: "BLOCKED",
+          passed: false,
+          details: "Blocked due to unauthenticated request."
+        };
+        const step5 = {
+          step: 5,
+          name: isKn ? "5. API ಪ್ರವೇಶ ಅನುಷ್ಠಾನ (Access API implementation)" : "5. Access API implementation",
+          status: "HTTP_401_DENIED",
+          passed: false,
+          details: "API execution terminated at Authentication boundary."
+        };
+
+        const apiRes = await api.getGuardedSample(null);
+        setGuardedApiResponse(apiRes);
+        setPipelineSteps([step1, step2, step3, step4, step5]);
+        return;
+      }
+
+      // STEP 2: Authentication
+      const step2 = {
+        step: 2,
+        name: isKn ? "2. ದೃಢೀಕರಣ (Authentication)" : "2. Authentication",
+        status: "AUTHENTICATED",
+        passed: true,
+        principalId: userObj.id,
+        details: `Bearer token verified in IAM directory. Principal: ${userObj.name} (${userObj.id})`
+      };
+
+      // STEP 3: Role Check
+      const roleMatches = (userRole, reqRole) => {
+        if (!userRole || !reqRole) return false;
+        const u = userRole.toUpperCase();
+        const r = reqRole.toUpperCase();
+        if (r === '*' || r === 'USER') return true;
+        if (u === r) return true;
+        if (r === 'ADMIN' && (u === 'ADMIN' || u === 'STATE_ADMIN')) return true;
+        if (r === 'OFFICER' && (u === 'OFFICER' || u.includes('OFFICER') || u === 'VILLAGE_REVENUE_OFFICER' || u === 'AGRICULTURE_OFFICER' || u === 'BANK_NODAL_OFFICER')) return true;
+        if (r === 'FARMER' && u === 'FARMER') return true;
+        return false;
+      };
+
+      const isAdmin = roleMatches(userObj.role, 'ADMIN');
+      const isRoleAllowed = isAdmin || roleMatches(userObj.role, pipelineRoleReq);
+
+      const step3 = {
+        step: 3,
+        name: isKn ? "3. ಪಾತ್ರ ಪರಿಶೀಲನೆ (Role Check)" : "3. Role Check",
+        status: isRoleAllowed ? "ROLE_VERIFIED" : "HTTP_403_FORBIDDEN_ROLE",
+        passed: isRoleAllowed,
+        details: isRoleAllowed
+          ? `User role '${userObj.role}' satisfies required role '${pipelineRoleReq}' in hierarchy.`
+          : `Access denied. Role '${userObj.role}' does not match required role '${pipelineRoleReq}'.`
+      };
+
+      if (!isRoleAllowed) {
+        const step4 = {
+          step: 4,
+          name: isKn ? "4. ಅನುಮತಿ (Permission)" : "4. Permission",
+          status: "SKIPPED_ROLE_MISMATCH",
+          passed: false,
+          details: "Execution halted due to Role Check failure."
+        };
+        const step5 = {
+          step: 5,
+          name: isKn ? "5. API ಪ್ರವೇಶ ಅನುಷ್ಠಾನ (Access API implementation)" : "5. Access API implementation",
+          status: "HTTP_403_FORBIDDEN",
+          passed: false,
+          details: "Access denied by requireRole guard."
+        };
+        const apiRes = await api.getGuardedSample(token);
+        setGuardedApiResponse(apiRes);
+        setPipelineSteps([step1, step2, step3, step4, step5]);
+        return;
+      }
+
+      // STEP 4: Permission Check
+      const userPerms = userObj.permissions || [];
+      const hasPerm = isAdmin || userPerms.includes('*') || userPerms.includes(pipelinePermReq);
+
+      const step4 = {
+        step: 4,
+        name: isKn ? "4. ಅನುಮತಿ (Permission)" : "4. Permission",
+        status: hasPerm ? "PERMISSION_GRANTED" : "HTTP_403_PERMISSION_DENIED",
+        passed: hasPerm,
+        details: hasPerm
+          ? `User holds required permission '${pipelinePermReq}' (Decision: PERMIT).`
+          : `User lacks required permission '${pipelinePermReq}'. (Decision: DENY).`
+      };
+
+      // STEP 5: Access API Implementation
+      const apiRes = await api.getGuardedSample(token);
+      setGuardedApiResponse(apiRes);
+
+      const step5 = {
+        step: 5,
+        name: isKn ? "5. API ಪ್ರವೇಶ ಅನುಷ್ಠಾನ (Access API implementation)" : "5. Access API implementation",
+        status: hasPerm ? "HTTP_200_ACCESS_GRANTED" : "HTTP_403_ACCESS_BLOCKED",
+        passed: hasPerm,
+        details: hasPerm
+          ? "Target controller executed successfully! Returning protected resource payload."
+          : "Blocked by requirePermission middleware before controller execution."
+      };
+
+      setPipelineSteps([step1, step2, step3, step4, step5]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setPipelineRunning(false);
     }
   };
 
@@ -219,6 +408,248 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 5-Step Security Pipeline: Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API */}
+      <div className="glass-card" style={{ padding: '24px', border: '1px solid rgba(16, 185, 129, 0.4)', background: 'linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, rgba(15, 23, 42, 0.6) 100%)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Layers size={24} color="#10b981" />
+            <div>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>
+                {isKn
+                  ? 'ಶೂನ್ಯ-ವಿಶ್ವಾಸ ಭದ್ರತಾ ಪೈಪ್‌ಲೈನ್ (Zero-Trust Security Pipeline)'
+                  : 'Zero-Trust Security Pipeline Simulation & API Access'}
+              </h2>
+              <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 700, marginTop: '2px', letterSpacing: '0.5px' }}>
+                Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API implementation
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={handleRunSecurityPipeline}
+            disabled={pipelineRunning}
+            className="btn btn-primary"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', fontWeight: 700 }}
+          >
+            <Play size={16} fill="currentColor" />
+            {pipelineRunning
+              ? (isKn ? 'ಪೈಪ್‌ಲೈನ್ ಚಾಲನೆಯಲ್ಲಿದೆ...' : 'Executing Pipeline...')
+              : (isKn ? 'ಪೈಪ್‌ಲೈನ್ ಚಾಲನೆ ಮಾಡಿ (Live API)' : 'Execute Pipeline (Live API)')}
+          </button>
+        </div>
+
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '18px' }}>
+          {isKn
+            ? 'ಪ್ರತಿಯೊಂದು API ವಿನಂತಿಯು ಲಾಗಿನ್, ಬೇರರ್ ಟೋಕನ್ ದೃಢೀಕರಣ, ಪಾತ್ರ ಶ್ರೇಣಿ ಪರಿಶೀಲನೆ, ಮತ್ತು ಸೂಕ್ಷ್ಮ ಅನುಮತಿ ತಪಾಸಣೆಯನ್ನು ಕಡ್ಡಾಯವಾಗಿ ಪೂರೈಸಬೇಕು.'
+            : 'Every incoming request to guarded platform endpoints strictly traverses: Login, Bearer Token Authentication, Hierarchical Role Check, Granular Permission Evaluation, and finally Controller Execution.'}
+        </p>
+
+        {/* Pipeline Control Inputs */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px', marginBottom: '20px', background: 'rgba(0,0,0,0.25)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+          <div>
+            <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              {isKn ? '1. ಕಾಲರ್ ಗುರುತು (Caller Principal):' : '1. Test Caller Principal:'}
+            </label>
+            <select
+              value={pipelineCaller}
+              onChange={(e) => setPipelineCaller(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '9px 12px',
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '6px',
+                color: '#fff',
+                fontSize: '0.83rem'
+              }}
+            >
+              <option value="OFFICER">👨‍💼 Officer (Dr. Vikram Chauhan - DAO)</option>
+              <option value="PATWARI">👮‍♂️ Officer (Ramesh Chand Sharma - Patwari)</option>
+              <option value="FARMER">👨‍🌾 Farmer (Surender Thakur)</option>
+              <option value="ADMIN">🛡️ Admin (Rajiv Kumar Verma)</option>
+              <option value="ANONYMOUS">🚫 Anonymous / Missing Token (Tests 401)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              {isKn ? '2. ಗುರಿ ಅಗತ್ಯವಿರುವ ಪಾತ್ರ (Required Role):' : '2. Target Required Role:'}
+            </label>
+            <select
+              value={pipelineRoleReq}
+              onChange={(e) => setPipelineRoleReq(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '9px 12px',
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '6px',
+                color: '#fff',
+                fontSize: '0.83rem'
+              }}
+            >
+              <option value="OFFICER">OFFICER (Tehsil / District Operational ERP)</option>
+              <option value="FARMER">FARMER (Individual Beneficiary)</option>
+              <option value="ADMIN">ADMIN (Statewide Infrastructure Core)</option>
+              <option value="USER">USER (Any Authenticated Platform User)</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              {isKn ? '3. ಗುರಿ ಕಡ್ಡಾಯ ಅನುಮತಿ (Required Permission):' : '3. Target Required Permission:'}
+            </label>
+            <select
+              value={pipelinePermReq}
+              onChange={(e) => setPipelinePermReq(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '9px 12px',
+                background: 'rgba(0,0,0,0.4)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '6px',
+                color: '#fff',
+                fontSize: '0.83rem'
+              }}
+            >
+              <option value="schemes:approve">schemes:approve (Approve Subsidy)</option>
+              <option value="cadastral:verify_khasra">cadastral:verify_khasra (Verify Khasra)</option>
+              <option value="iam:manage_roles">iam:manage_roles (Admin IAM Governance)</option>
+              <option value="farmer:read_own">farmer:read_own (Farmer Self Data)</option>
+            </select>
+          </div>
+        </div>
+
+        {/* 5-Step Pipeline Flow Diagram */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+          {[
+            { step: 1, label: isKn ? "ಲಾಗಿನ್" : "Login", icon: Key, sub: "Credentials ➔ Token" },
+            { step: 2, label: isKn ? "ದೃಢೀಕರಣ" : "Authentication", icon: Lock, sub: "Bearer Token Validation" },
+            { step: 3, label: isKn ? "ಪಾತ್ರ ಪರಿಶೀಲನೆ" : "Role Check", icon: Users, sub: "User ├── Farmer ├── Officer └── Admin" },
+            { step: 4, label: isKn ? "ಅನುಮತಿ" : "Permission", icon: Shield, sub: "RBAC Capability Permitted" },
+            { step: 5, label: isKn ? "API ಪ್ರವೇಶ" : "Access API implementation", icon: Server, sub: "Target Controller (200 OK)" }
+          ].map((item, idx) => {
+            const stepResult = pipelineSteps?.find(s => s.step === item.step);
+            const isDone = stepResult && stepResult.passed;
+            const isFailed = stepResult && !stepResult.passed;
+            const IconComp = item.icon;
+
+            return (
+              <div
+                key={item.step}
+                style={{
+                  background: isDone 
+                    ? 'rgba(16, 185, 129, 0.12)' 
+                    : isFailed 
+                    ? 'rgba(239, 68, 68, 0.12)' 
+                    : 'rgba(255, 255, 255, 0.03)',
+                  border: `1px solid ${
+                    isDone 
+                      ? 'rgba(16, 185, 129, 0.5)' 
+                      : isFailed 
+                      ? 'rgba(239, 68, 68, 0.5)' 
+                      : 'rgba(255, 255, 255, 0.08)'
+                  }`,
+                  borderRadius: '10px',
+                  padding: '14px',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-dim)' }}>
+                    STEP 0{item.step}
+                  </span>
+                  {isDone && <CheckCircle2 size={16} color="#10b981" />}
+                  {isFailed && <XCircle size={16} color="#ef4444" />}
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <IconComp size={18} color={isDone ? "#10b981" : isFailed ? "#ef4444" : "#38bdf8"} />
+                  <span style={{ fontWeight: 800, fontSize: '0.92rem', color: isDone ? '#10b981' : isFailed ? '#ef4444' : '#fff' }}>
+                    {item.label}
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                  {item.sub}
+                </div>
+
+                {stepResult && (
+                  <div style={{
+                    marginTop: 'auto',
+                    padding: '6px 8px',
+                    borderRadius: '4px',
+                    fontSize: '0.68rem',
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    background: isDone ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                    color: isDone ? '#34d399' : '#f87171'
+                  }}>
+                    {stepResult.status}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Pipeline Execution Details & Live JSON */}
+        {pipelineSteps && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '16px', marginTop: '16px' }}>
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <Terminal size={18} color="#38bdf8" />
+                <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700 }}>
+                  {isKn ? 'ಪೈಪ್‌ಲೈನ್ ಹಂತ ವಿವರಗಳು (Step-by-Step Trace)' : 'Pipeline Step-by-Step Trace'}
+                </h4>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {pipelineSteps.map(s => (
+                  <div key={s.step} style={{ display: 'flex', gap: '10px', fontSize: '0.78rem' }}>
+                    <div style={{ color: s.passed ? '#10b981' : '#ef4444', fontWeight: 800, minWidth: '22px' }}>
+                      {s.passed ? '✔' : '✖'}
+                    </div>
+                    <div>
+                      <strong style={{ color: '#fff' }}>{s.name}:</strong>{' '}
+                      <span style={{ color: 'var(--text-muted)' }}>{s.details}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Server size={18} color="#10b981" />
+                  <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 700 }}>
+                    {isKn ? 'ಲೈವ್ API ಪ್ರತಿಕ್ರಿಯೆ (Guarded Endpoint Response)' : 'Live API Response: /api/auth/guarded-sample'}
+                  </h4>
+                </div>
+                <span className={`badge ${guardedApiResponse?.success ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.7rem' }}>
+                  {guardedApiResponse?.success ? 'HTTP 200 OK' : 'HTTP 401/403'}
+                </span>
+              </div>
+              <pre style={{
+                background: '#090d16',
+                padding: '12px',
+                borderRadius: '6px',
+                fontSize: '0.74rem',
+                color: '#34d399',
+                margin: 0,
+                maxHeight: '160px',
+                overflow: 'auto',
+                border: '1px solid rgba(255,255,255,0.06)'
+              }}>
+                {JSON.stringify(guardedApiResponse, null, 2)}
+              </pre>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Top Grid: RBAC Evaluation Sandbox & Aadhaar e-KYC Simulator */}

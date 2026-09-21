@@ -123,6 +123,45 @@ async function runTests() {
       console.log("✔ POST /api/auth/verify-aadhaar:", ekyc.body.success ? "PASS" : "FAIL", `(Minted AgriStack ID: ${ekyc.body.agriStackId})`);
 
       // ----------------------------------------------------------------------
+      // SECURITY PIPELINE: Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API
+      // ----------------------------------------------------------------------
+      console.log("\n--- [SECURITY PIPELINE: Login ➔ Auth ➔ Role ➔ Perm ➔ Access API] ---");
+
+      // Step 1: Login
+      const adminLogin = await post('/api/auth/login', { identifier: 'ADM-HP-001' });
+      console.log("✔ [Step 1: Login] POST /api/auth/login (State Admin):", adminLogin.body.success ? "PASS" : "FAIL", `(Token: ${adminLogin.body.token?.substring(0, 16)}...)`);
+
+      // Step 2: Authentication Check (Missing & Invalid token rejects)
+      const noTokenReq = await get('/api/auth/guarded-sample');
+      console.log("✔ [Step 2: Authentication] HTTP 401 on Missing Bearer Token:", noTokenReq.status === 401 && noTokenReq.body.error === 'AUTH_TOKEN_MISSING' ? "PASS" : "FAIL");
+
+      const badTokenReq = await get('/api/auth/guarded-sample', { Authorization: 'Bearer bogus-token-xyz' });
+      console.log("✔ [Step 2: Authentication] HTTP 401 on Invalid Token:", badTokenReq.status === 401 && badTokenReq.body.error === 'INVALID_TOKEN' ? "PASS" : "FAIL");
+
+      // Step 3: Role Check (Farmer blocked from Officer/Admin guarded endpoint)
+      const farmerRoleReq = await get('/api/auth/guarded-sample', { Authorization: `Bearer ${farmerLogin.body.token}` });
+      console.log("✔ [Step 3: Role Check] HTTP 403 on Unauthorized Role (Farmer):", farmerRoleReq.status === 403 && farmerRoleReq.body.error === 'FORBIDDEN_ROLE' ? "PASS" : "FAIL", `(${farmerRoleReq.body.pipelineStep})`);
+
+      // Step 4: Permission Check (Patwari has Officer role but lacks 'schemes:approve' permission)
+      const patwariPermReq = await get('/api/auth/guarded-sample', { Authorization: `Bearer ${patwariLogin.body.token}` });
+      console.log("✔ [Step 4: Permission Check] HTTP 403 on Insufficient Permission (Patwari):", patwariPermReq.status === 403 && patwariPermReq.body.error === 'PERMISSION_DENIED' ? "PASS" : "FAIL", `(${patwariPermReq.body.pipelineStep})`);
+
+      // Step 5: Access API implementation (Agriculture Officer with 'schemes:approve' succeeds)
+      const officerAccessReq = await get('/api/auth/guarded-sample', { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ [Step 5: Access API] HTTP 200 on Valid Officer Access:", officerAccessReq.status === 200 && officerAccessReq.body.success ? "PASS" : "FAIL", `(Caller: ${officerAccessReq.body.caller?.name})`);
+
+      // Step 5 (Admin Superuser Access):
+      const adminAccessReq = await get('/api/auth/guarded-sample', { Authorization: `Bearer ${adminLogin.body.token}` });
+      console.log("✔ [Step 5: Access API] HTTP 200 on State Admin Superuser Access:", adminAccessReq.status === 200 && adminAccessReq.body.success ? "PASS" : "FAIL", `(Caller: ${adminAccessReq.body.caller?.name})`);
+
+      // Pipeline Simulation Endpoint: POST /api/auth/pipeline-verify
+      const pipelineSim = await post('/api/auth/pipeline-verify', {
+        requiredRole: ["OFFICER", "ADMIN"],
+        requiredPermission: "schemes:approve"
+      }, { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ [5-Step Pipeline Simulation] POST /api/auth/pipeline-verify:", pipelineSim.status === 200 && pipelineSim.body.pipeline?.length === 5 ? "PASS" : "FAIL", `(5 Pipeline Steps Evaluated)`);
+
+      // ----------------------------------------------------------------------
       // MODULE 3: Unified Farmer Database
       // ----------------------------------------------------------------------
       console.log("\n--- [MODULE 3: Unified Farmer Database] ---");

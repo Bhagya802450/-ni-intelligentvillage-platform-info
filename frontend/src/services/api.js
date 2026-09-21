@@ -42,6 +42,14 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({ aadhaarNumber, otp })
   }),
+  simulatePipeline: (token, requiredRole, requiredPermission) => fetchJson('/auth/pipeline-verify', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ requiredRole, requiredPermission })
+  }),
+  getGuardedSample: (token) => fetchJson('/auth/guarded-sample', {
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+  }),
 
   // =========================================================================
   // MODULE 3: Unified Farmer Database

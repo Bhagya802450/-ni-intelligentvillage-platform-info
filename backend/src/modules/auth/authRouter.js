@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
+const { authenticate, requireRole, requirePermission, matchesRole } = require('../../middleware/authGuard');
 
 // GET /api/auth/hierarchy - 3-tier User role hierarchy (User -> Farmer, Officer, Admin)
 router.get('/hierarchy', (req, res) => {
@@ -225,6 +226,93 @@ router.post('/verify-aadhaar', (req, res) => {
       status: "ACTIVE",
       timestamp: new Date().toISOString()
     }
+  });
+});
+
+// POST /api/auth/pipeline-verify
+// Simulates: Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API
+router.post('/pipeline-verify', authenticate, (req, res) => {
+  const { requiredRole, requiredPermission } = req.body;
+  const user = req.user;
+
+  // Step 3: Role Check
+  let rolePass = false;
+  if (!requiredRole || matchesRole(user.role, 'ADMIN')) {
+    rolePass = true;
+  } else {
+    const rolesList = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    rolePass = rolesList.some(r => matchesRole(user.role, r));
+  }
+
+  // Step 4: Permission Check
+  let permPass = false;
+  if (!requiredPermission || matchesRole(user.role, 'ADMIN')) {
+    permPass = true;
+  } else {
+    const perms = user.permissions || [];
+    permPass = perms.includes('*') || perms.includes(requiredPermission);
+  }
+
+  const accessGranted = rolePass && permPass;
+
+  res.status(accessGranted ? 200 : 403).json({
+    success: accessGranted,
+    pipeline: [
+      {
+        step: 1,
+        name: "Login",
+        status: "COMPLETED",
+        description: "Credentials verified, session token generated."
+      },
+      {
+        step: 2,
+        name: "Authentication",
+        status: "AUTHENTICATED",
+        identity: user.name,
+        principalId: user.id,
+        tokenValid: true
+      },
+      {
+        step: 3,
+        name: "Role Check",
+        status: rolePass ? "ROLE_VERIFIED" : "ROLE_MISMATCH",
+        userRole: user.role,
+        requiredRole: requiredRole || "ANY",
+        passed: rolePass
+      },
+      {
+        step: 4,
+        name: "Permission",
+        status: permPass ? "PERMISSION_GRANTED" : "PERMISSION_DENIED",
+        requiredPermission: requiredPermission || "NONE",
+        userPermissions: user.permissions || [],
+        decision: permPass ? "PERMIT" : "DENY",
+        passed: permPass
+      },
+      {
+        step: 5,
+        name: "Access API implementation",
+        status: accessGranted ? "ACCESS_GRANTED_HTTP_200" : "ACCESS_BLOCKED_HTTP_403",
+        endpoint: req.originalUrl,
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+});
+
+// GET /api/auth/guarded-sample - Example strictly guarded API endpoint
+// Requires: Authentication -> Role Check: OFFICER/ADMIN -> Permission: schemes:approve
+router.get('/guarded-sample', authenticate, requireRole(['OFFICER', 'ADMIN']), requirePermission('schemes:approve'), (req, res) => {
+  res.json({
+    success: true,
+    message: "Access granted! Successfully passed through: Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API.",
+    caller: {
+      id: req.user.id,
+      name: req.user.name,
+      role: req.user.role,
+      permissions: req.user.permissions
+    },
+    accessedAt: new Date().toISOString()
   });
 });
 
