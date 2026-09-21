@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
 const crypto = require('crypto');
+const HPASNExchange = require('../../models/HPASN');
+const redisService = require('../../services/redisService');
 
 // GET /api/hpasn/departments - List all connected departments on HP-ASN
 router.get('/departments', (req, res) => {
@@ -12,6 +14,7 @@ router.get('/departments', (req, res) => {
         deptCode: "REV-HP",
         name: "Department of Revenue (HimBhoomi / Jamabandi Land Records)",
         apiProtocol: "REST / HTTPS HMAC-SHA256",
+        systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.98%",
         latency: "142ms",
@@ -21,6 +24,7 @@ router.get('/departments', (req, res) => {
         deptCode: "HORT-HP",
         name: "Department of Horticulture & HPMC",
         apiProtocol: "REST / OAuth 2.0 Mutual-TLS",
+        systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.95%",
         latency: "180ms",
@@ -30,6 +34,7 @@ router.get('/departments', (req, res) => {
         deptCode: "BANK-HPSC",
         name: "HP State Cooperative Bank & NPCI DBT Gateway",
         apiProtocol: "ISO-20022 / NACH APBS (Aadhaar Payment Bridge)",
+        systemType: "PARTNER",
         status: "ONLINE / HEALTHY",
         uptime: "99.99%",
         latency: "110ms",
@@ -39,6 +44,7 @@ router.get('/departments', (req, res) => {
         deptCode: "IMD-HP",
         name: "India Meteorological Department (HP Agro-Met)",
         apiProtocol: "MQTT / WSS GeoJSON Stream",
+        systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.92%",
         latency: "65ms",
@@ -48,10 +54,21 @@ router.get('/departments', (req, res) => {
         deptCode: "FCS-HP",
         name: "Department of Food, Civil Supplies & Consumer Affairs",
         apiProtocol: "REST / JWT Authenticated",
+        systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.90%",
         latency: "210ms",
         dataShared: ["Ration Card Aadhaar Linkage", "e-PDS Grain Procurement Record", "APMC Procurement Verification"]
+      },
+      {
+        deptCode: "AGRI-FINTECH",
+        name: "Rural Credit & Crop Insurance Partner System (PMFBY / Agri-Fintech)",
+        apiProtocol: "REST / OAuth 2.0 + HMAC Signature",
+        systemType: "PARTNER",
+        status: "ONLINE / HEALTHY",
+        uptime: "99.94%",
+        latency: "125ms",
+        dataShared: ["KCC Loan Underwriting", "Crop Loss Verification", "Satellite Crop Coverage"]
       }
     ]
   });
@@ -67,45 +84,206 @@ router.get('/policies', (req, res) => {
   });
 });
 
-// GET /api/hpasn/logs - Cryptographically linked audit logs
+// GET /api/hpasn/logs - Cryptographically linked audit logs maintaining the 6 mandatory exchange questions
 router.get('/logs', (req, res) => {
   const store = db.get();
+  const rawLogs = store.hpasnLogs || [];
+
+  // Normalize logs to ensure all 6 mandatory questions are explicitly present
+  const normalizedLogs = rawLogs.map(log => {
+    const exchange = new HPASNExchange(log);
+    return exchange.toJSON();
+  });
+
   res.json({
     success: true,
-    count: (store.hpasnLogs || []).length,
-    data: store.hpasnLogs || []
+    standard: "HP-ASN Secure Interoperability Specification",
+    mandatoryQuestions: [
+      "who_requested",
+      "what_data",
+      "when",
+      "why",
+      "was_consent_required",
+      "was_access_allowed"
+    ],
+    count: normalizedLogs.length,
+    data: normalizedLogs
+  });
+});
+
+// POST /api/hpasn/exchange - Core HP-ASN integration endpoint for Government & Partner systems
+router.post('/exchange', async (req, res) => {
+  const {
+    who_requested,
+    what_data,
+    why,
+    was_consent_required,
+    was_access_allowed,
+    system_type,
+    target_system,
+    farmer_id,
+    query_key,
+    // Supporting backward-compatible payload keys
+    sourceDept,
+    targetDept,
+    queryType,
+    queryKey,
+    purpose,
+    dataScope
+  } = req.body;
+
+  const requester = who_requested || sourceDept;
+  const dataRequested = what_data || dataScope || queryType;
+  const reason = why || purpose;
+
+  if (!requester || !dataRequested) {
+    return res.status(400).json({
+      success: false,
+      message: "HP-ASN exchange requires 'who_requested' and 'what_data'.",
+      requiredFields: ["who_requested", "what_data", "why"]
+    });
+  }
+
+  const lookupKey = query_key || queryKey || farmer_id;
+  const store = db.get();
+  let resultPayload = null;
+
+  // Determine whether consent was required and allowed
+  const isPersonalData = dataRequested.toLowerCase().includes('farmer') || 
+                         dataRequested.toLowerCase().includes('land') || 
+                         dataRequested.toLowerCase().includes('khasra') || 
+                         dataRequested.toLowerCase().includes('bank');
+
+  const consentRequired = was_consent_required !== undefined ? Boolean(was_consent_required) : isPersonalData;
+  const accessAllowed = was_access_allowed !== undefined ? Boolean(was_access_allowed) : true;
+
+  if (accessAllowed) {
+    // 1. Check Land Parcel in store
+    if (dataRequested.toLowerCase().includes('land') || dataRequested.toLowerCase().includes('khasra')) {
+      for (const f of store.farmers) {
+        const p = (f.landParcels || []).find(parcel => 
+          parcel.khasraNo === lookupKey || parcel.parcelId === lookupKey || f.id === lookupKey || f.farmer_id === lookupKey
+        );
+        if (p) {
+          resultPayload = {
+            farmerName: f.name,
+            farmerId: f.farmer_id || f.id,
+            agriStackId: f.national_farmer_id || f.agriStackId,
+            surveyNumber: p.survey_number || p.khasraNo,
+            areaBigha: p.areaBigha || p.area,
+            soilType: p.soil_type || p.soilType,
+            irrigationType: p.irrigation_type || p.irrigationType,
+            jamabandiStatus: "VERIFIED_ACTIVE_ROR",
+            source: "HimBhoomi Land Records Backbone"
+          };
+          break;
+        }
+      }
+    } else if (dataRequested.toLowerCase().includes('bank') || dataRequested.toLowerCase().includes('dbt')) {
+      // 2. Check Bank DBT mandate
+      const f = store.farmers.find(farmer => 
+        farmer.id === lookupKey || farmer.farmer_id === lookupKey || farmer.phone?.includes(lookupKey) || farmer.mobile?.includes(lookupKey)
+      );
+      if (f) {
+        resultPayload = {
+          farmerName: f.name,
+          farmerId: f.farmer_id || f.id,
+          bankName: f.bankDetails?.bankName || "HP State Cooperative Bank",
+          accountMasked: f.bankDetails?.accountNo || "XXXX-XXXX-8921",
+          ifsc: f.bankDetails?.ifsc || "HPSC0000104",
+          dbtStatus: "MANDATE_ACTIVE_APBS",
+          npciAadhaarLinked: true
+        };
+      }
+    } else if (dataRequested.toLowerCase().includes('soil')) {
+      // 3. Check Soil profile
+      const soil = (store.suadr?.soil_data || []).find(s => 
+        (s.location || '').toLowerCase().includes((lookupKey || '').toLowerCase()) || s.id === lookupKey
+      );
+      if (soil) {
+        resultPayload = soil;
+      }
+    }
+
+    if (!resultPayload) {
+      resultPayload = {
+        query_key: lookupKey,
+        status: "RECORD_FOUND_AUTHORIZED",
+        exchangeMetadata: "Verified across HP-ASN Government & Partner Data Exchange Backbone",
+        timestamp: new Date().toISOString()
+      };
+    }
+  } else {
+    resultPayload = {
+      status: "ACCESS_DENIED",
+      reason: "Farmer consent token not present or revoked by data principal."
+    };
+  }
+
+  // Create immutable HP-ASN exchange instance maintaining the 6 questions
+  const exchangeInstance = new HPASNExchange({
+    who_requested: requester,
+    what_data: dataRequested,
+    when: new Date().toISOString(),
+    why: reason || "Inter-system verification for scheme entitlement",
+    was_consent_required: consentRequired,
+    was_access_allowed: accessAllowed,
+    system_type: system_type || (requester.toLowerCase().includes('partner') || requester.toLowerCase().includes('bank') ? 'PARTNER' : 'GOVERNMENT'),
+    target_system: target_system || targetDept || "Frappe Backend (PostgreSQL & Redis)",
+    farmer_id: lookupKey
+  });
+
+  const exchangeRecord = exchangeInstance.toJSON();
+
+  // Save to persistent database store
+  db.update(s => {
+    s.hpasnLogs = s.hpasnLogs || [];
+    s.hpasnLogs.unshift(exchangeRecord);
+    return s;
+  });
+
+  // Enqueue background audit logging in Redis
+  try {
+    await redisService.enqueueJob('hpasn-audit', {
+      transaction_id: exchangeRecord.transaction_id,
+      who_requested: exchangeRecord.who_requested,
+      what_data: exchangeRecord.what_data,
+      hash_signature: exchangeRecord.hash_signature
+    });
+  } catch (err) {
+    // Non-blocking
+  }
+
+  res.status(accessAllowed ? 200 : 403).json({
+    success: accessAllowed,
+    flow: `${exchangeRecord.system_type} SYSTEM ➔ HP-ASN API ➔ Frappe Backend ➔ PostgreSQL & Redis`,
+    exchange: exchangeRecord,
+    data: resultPayload
   });
 });
 
 // POST /api/hpasn/request-consent - Consent generation with cryptographic signature
 router.post('/request-consent', (req, res) => {
-  const { sourceDept, targetDept, purpose, farmerId, dataScope } = req.body;
+  const { sourceDept, targetDept, purpose, farmerId, dataScope, who_requested, what_data, why } = req.body;
 
-  if (!targetDept || !purpose || !farmerId) {
-    return res.status(400).json({ success: false, message: "targetDept, purpose, and farmerId are required for HP-ASN consent." });
-  }
+  const requester = who_requested || sourceDept || "Department of Agriculture";
+  const dataScopeRequested = what_data || dataScope || "Land Ownership & Cadastral Verification";
+  const purposeStated = why || purpose || "AgriStack Scheme Enrollment";
+  const targetFarmer = farmerId || "FARMER-HP-1001";
 
-  const txnId = `TXN-ASN-${Math.floor(10000 + Math.random() * 90000)}`;
-  const timestamp = new Date().toISOString();
-  const secretSalt = "HPASN_SECURE_KERNEL_KEY_2026";
-  const signature = "0x" + crypto.createHmac('sha256', secretSalt)
-    .update(`${txnId}:${sourceDept || 'HP-Agri-Gateway'}:${targetDept}:${farmerId}:${timestamp}`)
-    .digest('hex');
+  const exchangeInstance = new HPASNExchange({
+    who_requested: requester,
+    what_data: dataScopeRequested,
+    when: new Date().toISOString(),
+    why: purposeStated,
+    was_consent_required: true,
+    was_access_allowed: true,
+    system_type: "GOVERNMENT",
+    target_system: targetDept || "Frappe Backend",
+    farmer_id: targetFarmer
+  });
 
-  const newLog = {
-    transactionId: txnId,
-    sourceDept: sourceDept || "Agriculture Dept (HP-ASN Gateway)",
-    targetDept,
-    purpose,
-    farmerId,
-    dataScope: dataScope || "Land Ownership & Cadastral Verification",
-    consentGranted: true,
-    consentMethod: "Aadhaar e-Sign / Digital Farmer Locker Consent",
-    status: "SUCCESS_VERIFIED",
-    responseLatencyMs: Math.floor(110 + Math.random() * 180),
-    hashSignature: signature,
-    timestamp
-  };
+  const newLog = exchangeInstance.toJSON();
 
   db.update(store => {
     store.hpasnLogs = store.hpasnLogs || [];
@@ -120,103 +298,58 @@ router.post('/request-consent', (req, res) => {
   });
 });
 
-// POST /api/hpasn/exchange - Live inter-department data query simulation
-router.post('/exchange', (req, res) => {
-  const { sourceDept, targetDept, queryType, queryKey } = req.body;
-
-  if (!targetDept || !queryType || !queryKey) {
-    return res.status(400).json({ success: false, message: "targetDept, queryType, and queryKey are required." });
-  }
-
-  const store = db.get();
-  let resultPayload = null;
-
-  if (targetDept.includes('Revenue') || targetDept.includes('REV-HP')) {
-    // Look up Khasra parcel
-    for (const f of store.farmers) {
-      const p = (f.landParcels || []).find(parcel => parcel.khasraNo === queryKey || parcel.parcelId === queryKey);
-      if (p) {
-        resultPayload = {
-          farmerName: f.name,
-          agriStackId: f.agriStackId,
-          khasraNo: p.khasraNo,
-          khatauniNo: p.khatauniNo,
-          areaBigha: p.areaBigha,
-          areaHectares: p.areaHectares,
-          jamabandiStatus: "VERIFIED_ACTIVE",
-          encumbrance: "NONE (Clear Title)",
-          sourceRecord: "HimBhoomi Revenue Land Register 2025-26"
-        };
-        break;
-      }
-    }
-  } else if (targetDept.includes('Bank') || targetDept.includes('BANK-HPSC')) {
-    // Look up Bank DBT mandate
-    const f = store.farmers.find(farmer => farmer.id === queryKey || farmer.phone.includes(queryKey));
-    if (f) {
-      resultPayload = {
-        farmerName: f.name,
-        bankName: f.bankDetails.bankName,
-        accountMasked: f.bankDetails.accountNo,
-        ifsc: f.bankDetails.ifsc,
-        dbtStatus: "MANDATE_ACTIVE_APBS",
-        npciAadhaarLinked: true,
-        clearingCycle: "T+0 Realtime"
-      };
-    }
-  }
-
-  if (!resultPayload) {
-    resultPayload = {
-      queryKey,
-      status: "RECORD_FOUND_AUTHORIZED",
-      exchangeMetadata: "Verified across Himachal Pradesh Data Exchange Backbone",
-      timestamp: new Date().toISOString()
-    };
-  }
-
-  const txnId = `TXN-ASN-${Math.floor(10000 + Math.random() * 90000)}`;
-  const signature = "0x" + crypto.createHmac('sha256', "HPASN_SECURE_KERNEL_KEY_2026")
-    .update(`${txnId}:${targetDept}:${queryKey}:${Date.now()}`)
-    .digest('hex');
-
-  res.json({
-    success: true,
-    transactionId: txnId,
-    sourceDept: sourceDept || "Department of Agriculture",
-    targetDept,
-    queryType,
-    queryKey,
-    signature,
-    latencyMs: Math.floor(95 + Math.random() * 120),
-    data: resultPayload
-  });
-});
-
 // POST /api/hpasn/verify-signature - Prove cryptographic non-repudiation
 router.post('/verify-signature', (req, res) => {
-  const { transactionId, signature } = req.body;
+  const { transactionId, transaction_id, signature, hash_signature } = req.body;
+  const txn = transaction_id || transactionId;
+  const sig = hash_signature || signature;
 
-  if (!transactionId || !signature) {
-    return res.status(400).json({ success: false, message: "transactionId and signature are required." });
+  if (!txn || !sig) {
+    return res.status(400).json({ success: false, message: "transaction_id and signature are required." });
   }
 
   const store = db.get();
-  const log = (store.hpasnLogs || []).find(l => l.transactionId === transactionId);
+  const log = (store.hpasnLogs || []).find(l => (l.transaction_id === txn || l.transactionId === txn));
 
   if (!log) {
     return res.status(404).json({ success: false, message: "Transaction ID not found in HP-ASN ledger." });
   }
 
-  const matches = log.hashSignature === signature;
+  const expectedSignature = log.hash_signature || log.hashSignature;
+  const matches = expectedSignature === sig;
 
   res.json({
     success: true,
-    transactionId,
+    transaction_id: txn,
     verified: matches,
     status: matches ? "CRYPTO_VERIFIED_VALID" : "SIGNATURE_MISMATCH_TAMPERED",
-    algorithm: "HMAC-SHA256 (256-bit)",
+    algorithm: "HMAC-SHA256 (256-bit Non-Repudiation)",
     logDetails: log
+  });
+});
+
+// GET /api/hpasn/stats - High-level exchange statistics
+router.get('/stats', (req, res) => {
+  const logs = db.get().hpasnLogs || [];
+  const govCount = logs.filter(l => (l.system_type || '').toUpperCase() === 'GOVERNMENT').length;
+  const partnerCount = logs.filter(l => (l.system_type || '').toUpperCase() === 'PARTNER').length;
+  const consentRequiredCount = logs.filter(l => l.was_consent_required).length;
+  const allowedCount = logs.filter(l => l.was_access_allowed).length;
+
+  res.json({
+    success: true,
+    totalExchanges: logs.length,
+    breakdown: {
+      government_system_exchanges: govCount,
+      partner_system_exchanges: partnerCount,
+      consent_required_exchanges: consentRequiredCount,
+      access_allowed_exchanges: allowedCount,
+      access_denied_exchanges: logs.length - allowedCount
+    },
+    interoperabilityLayers: [
+      "Government System ➔ HP-ASN API ➔ Frappe Backend ➔ PostgreSQL",
+      "Partner System ➔ HP-ASN API ➔ Frappe Backend ➔ PostgreSQL & Redis"
+    ]
   });
 });
 

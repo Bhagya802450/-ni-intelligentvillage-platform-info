@@ -121,7 +121,7 @@ router.post('/', (req, res) => {
   });
 });
 
-// Update farmer profile
+// Update farmer profile (PATCH - partial update)
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   let updatedRecord = null;
@@ -159,6 +159,46 @@ router.patch('/:id', (req, res) => {
     data: updatedRecord
   });
 });
+
+// Update farmer profile (PUT /api/farmers/:id - full profile update)
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  let updatedRecord = null;
+
+  db.update(store => {
+    const farmer = (store.farmers || []).find(f => 
+      f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
+    if (!farmer) return store;
+
+    const fields = ['name', 'mobile', 'phone', 'email', 'address', 'state', 'district', 'block', 'tehsil', 'village', 'status', 'category', 'national_farmer_id', 'agriStackId'];
+    fields.forEach(fld => {
+      if (req.body[fld] !== undefined) {
+        farmer[fld] = req.body[fld];
+      }
+    });
+
+    if (req.body.mobile) farmer.phone = req.body.mobile;
+    if (req.body.phone) farmer.mobile = req.body.phone;
+    if (req.body.block) farmer.tehsil = req.body.block;
+    if (req.body.tehsil) farmer.block = req.body.tehsil;
+
+    farmer.updated_at = new Date().toISOString();
+    updatedRecord = farmer;
+    return store;
+  });
+
+  if (!updatedRecord) {
+    return res.status(404).json({ success: false, message: `Farmer '${id}' not found in database.` });
+  }
+
+  res.json({
+    success: true,
+    message: `Farmer '${id}' profile updated via PUT.`,
+    data: updatedRecord
+  });
+});
+
 
 // Deactivate farmer (soft delete)
 router.delete('/:id', (req, res) => {

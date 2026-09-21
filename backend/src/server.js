@@ -8,13 +8,16 @@ const rateLimiter = require('./middleware/rateLimiter');
 // Routers
 const authRouter = require('./modules/auth/authRouter');
 const farmerRouter = require('./modules/farmers/farmerRouter');
+const landRouter = require('./modules/lands/landRouter');
 const suadrRouter = require('./modules/suadr/suadrRouter');
 const schemeRouter = require('./modules/schemes/schemeRouter');
 const hpasnRouter = require('./modules/hpasn/hpasnRouter');
 const marketplaceRouter = require('./modules/marketplace/marketplaceRouter');
 const storageRouter = require('./modules/storage/storageRouter');
 const accessRouter = require('./modules/access/accessRouter');
+const redisService = require('./services/redisService');
 const { metricsMiddleware, getPrometheusMetrics } = require('./middleware/metrics');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -393,12 +396,34 @@ app.post('/api/ml/prediction', (req, res) => {
 // Mount Platform APIs
 app.use('/api/auth', authRouter);
 app.use('/api/farmers', farmerRouter);
+app.use('/api/lands', landRouter);
 app.use('/api/suadr', suadrRouter);
 app.use('/api/schemes', schemeRouter);
 app.use('/api/hpasn', hpasnRouter);
 app.use('/api/marketplace', marketplaceRouter);
 app.use('/api/storage', storageRouter);
 app.use('/api', accessRouter);
+
+// Redis Infrastructure Status & Inspection Endpoints
+app.get('/api/redis/status', (req, res) => {
+  res.json({ success: true, ...redisService.getStats() });
+});
+
+app.get('/api/redis/queues', async (req, res) => {
+  const queueData = await redisService.getQueueStats();
+  res.json({ success: true, ...queueData });
+});
+
+app.get('/api/redis/sessions', async (req, res) => {
+  const sessions = await redisService.listActiveSessions();
+  res.json({ success: true, count: sessions.length, sessions });
+});
+
+app.post('/api/redis/flush-cache', async (req, res) => {
+  const result = await redisService.flushCache();
+  res.json({ success: true, message: "Redis cache flushed successfully.", ...result });
+});
+
 
 // SPA fallback: Serve frontend index.html if file exists, or redirect to port 5173
 app.get('*', (req, res, next) => {

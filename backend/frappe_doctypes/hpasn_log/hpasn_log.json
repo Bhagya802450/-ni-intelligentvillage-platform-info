@@ -1,10 +1,11 @@
 {
   "doctype": "DocType",
-  "name": "HPASN Consent Log",
-  "module": "HP Agriculture",
+  "name": "HPASN Exchange Audit Log",
+  "module": "HP Agriculture Service Network",
   "custom": 0,
   "autoname": "format:TXN-ASN-{#####}",
   "read_only": 1,
+  "description": "Cryptographically signed immutable audit record for HP-ASN inter-system data exchanges between Government Systems, Partner Systems, and Frappe/PostgreSQL.",
   "fields": [
     {
       "fieldname": "transaction_id",
@@ -14,28 +15,56 @@
       "in_list_view": 1
     },
     {
-      "fieldname": "source_dept",
-      "label": "Source Department",
+      "fieldname": "who_requested",
+      "label": "Who Requested? (Requester System / Entity)",
       "fieldtype": "Data",
       "reqd": 1,
       "in_list_view": 1
     },
     {
-      "fieldname": "target_dept",
-      "label": "Target Department",
+      "fieldname": "what_data",
+      "label": "What Data? (Cadastral / Soil / Crop Scope)",
       "fieldtype": "Data",
       "reqd": 1,
       "in_list_view": 1
     },
     {
-      "fieldname": "purpose",
-      "label": "Exchange Purpose / Scope",
+      "fieldname": "when",
+      "label": "When? (Timestamp)",
+      "fieldtype": "Datetime",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "why",
+      "label": "Why? (Purpose / Regulatory Justification)",
       "fieldtype": "Data",
       "reqd": 1
     },
     {
+      "fieldname": "was_consent_required",
+      "label": "Was Consent Required?",
+      "fieldtype": "Check",
+      "default": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "was_access_allowed",
+      "label": "Was Access Allowed?",
+      "fieldtype": "Check",
+      "default": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "system_type",
+      "label": "System Type (Government / Partner)",
+      "fieldtype": "Select",
+      "options": "GOVERNMENT\nPARTNER",
+      "default": "GOVERNMENT"
+    },
+    {
       "fieldname": "farmer_id",
-      "label": "Farmer Reference",
+      "label": "Target Farmer ID",
       "fieldtype": "Link",
       "options": "Farmer"
     },
@@ -46,7 +75,7 @@
     },
     {
       "fieldname": "hash_signature",
-      "label": "Cryptographic Hash (HMAC-SHA256)",
+      "label": "Cryptographic Hash Signature (HMAC-SHA256)",
       "fieldtype": "Data",
       "reqd": 1
     }

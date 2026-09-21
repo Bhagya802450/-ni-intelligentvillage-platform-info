@@ -1,31 +1,33 @@
-// Rate limiting middleware to mimic Redis/Nginx Token Bucket rate limiter
-const requestCounts = new Map();
-const WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS = 120; // 120 req/min
+// Rate limiting middleware powered by Redis Token Bucket / Sliding Window
+const redisService = require('../services/redisService');
 
-function rateLimiter(req, res, next) {
+async function rateLimiter(req, res, next) {
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
-  const now = Date.now();
+  const maxRequests = 120; // 120 req/min
+  const windowMs = 60 * 1000;
 
-  let clientData = requestCounts.get(ip);
-  if (!clientData || (now - clientData.startTime) > WINDOW_MS) {
-    clientData = { count: 1, startTime: now };
-    requestCounts.set(ip, clientData);
-  } else {
-    clientData.count++;
+  try {
+    const rateCheck = await redisService.checkRateLimit(`ratelimit:${ip}`, maxRequests, windowMs);
+
+    res.setHeader('X-RateLimit-Limit', rateCheck.limit);
+    res.setHeader('X-RateLimit-Remaining', rateCheck.remaining);
+    res.setHeader('X-RateLimit-Reset', rateCheck.resetTime);
+    res.setHeader('X-RateLimit-Engine', 'Redis-v7');
+
+    if (!rateCheck.allowed) {
+      return res.status(429).json({
+        success: false,
+        engine: "Redis Rate Limiter",
+        message: "Too many requests to HP-ASN Gateway. Rate limit exceeded (120 req/min). Please slow down.",
+        resetAt: rateCheck.resetTime
+      });
+    }
+
+    next();
+  } catch (err) {
+    // Fail open if rate limiter fails
+    next();
   }
-
-  res.setHeader('X-RateLimit-Limit', MAX_REQUESTS);
-  res.setHeader('X-RateLimit-Remaining', Math.max(0, MAX_REQUESTS - clientData.count));
-
-  if (clientData.count > MAX_REQUESTS) {
-    return res.status(429).json({
-      success: false,
-      message: "Too many requests to HP-ASN Gateway. Rate limit exceeded (120 req/min). Please slow down."
-    });
-  }
-
-  next();
 }
 
 module.exports = rateLimiter;

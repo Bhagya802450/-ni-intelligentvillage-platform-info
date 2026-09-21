@@ -151,6 +151,26 @@ export const api = {
     body: JSON.stringify({ transactionId, signature })
   }),
 
+  // Redis Infrastructure & Performance Monitoring
+  getRedisStatus: () => fetchJson('/redis/status'),
+  getRedisQueues: () => fetchJson('/redis/queues'),
+  getRedisSessions: () => fetchJson('/redis/sessions'),
+
+  // Direct Land & Crop APIs (Step 6)
+  getLandsList: () => fetchJson('/lands'),
+  getLandById: (landId) => fetchJson(`/lands/${landId}`),
+  getLandCrops: (landId) => fetchJson(`/lands/${landId}/crops`),
+  addLandCrop: (landId, payload) => fetchJson(`/lands/${landId}/crops`, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+
+  // SUADR Step 6 aliases
+  getSuadrSoil: () => fetchJson('/suadr/soil'),
+  getSuadrClimate: () => fetchJson('/suadr/climate'),
+  getSuadrCrops: () => fetchJson('/suadr/crops'),
+  getSuadrMarket: () => fetchJson('/suadr/market'),
+
   // Schemes & DBT
   getSchemes: () => fetchJson('/schemes'),
   getApplications: (params = {}) => {
@@ -181,3 +201,4 @@ export const api = {
     body: JSON.stringify(payload)
   })
 };
+

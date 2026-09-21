@@ -301,7 +301,7 @@ router.post('/soil-data', (req, res) => {
 });
 
 // 2. Climate Data (climate_data: id, location, temperature, humidity, rainfall, date)
-router.get('/climate-data', (req, res) => {
+const getClimateDataHandler = (req, res) => {
   const { location, date } = req.query;
   let list = db.get().suadr?.climate_data || [];
   if (location && location !== 'All') {
@@ -311,7 +311,11 @@ router.get('/climate-data', (req, res) => {
     list = list.filter(c => c.date === date);
   }
   res.json({ success: true, count: list.length, data: list });
-});
+};
+
+router.get('/climate-data', getClimateDataHandler);
+router.get('/climate', getClimateDataHandler);
+
 
 router.post('/climate-data', (req, res) => {
   const { id, location, temperature, humidity, rainfall, date, condition, wind_speed } = req.body;
@@ -399,8 +403,10 @@ const postCropMasterHandler = (req, res) => {
 
 router.get('/crop-master', getCropMasterHandler);
 router.get('/crop-data', getCropMasterHandler);
+router.get('/crops', getCropMasterHandler);
 router.post('/crop-master', postCropMasterHandler);
 router.post('/crop-data', postCropMasterHandler);
+
 
 // 4. Agronomy Data (agronomy_data: id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation)
 router.get('/agronomy-data', (req, res) => {
@@ -492,7 +498,7 @@ router.post('/pest-data', (req, res) => {
 });
 
 // 6. Market Data (market_data: id, market_name, crop, modal_price, min_price, max_price, date)
-router.get('/market-data', (req, res) => {
+const getMarketDataHandler = (req, res) => {
   const { crop, market_name } = req.query;
   let list = db.get().suadr?.market_data || [];
   if (crop && crop !== 'All') {
@@ -502,7 +508,11 @@ router.get('/market-data', (req, res) => {
     list = list.filter(m => (m.market_name || '').toLowerCase().includes(market_name.toLowerCase()));
   }
   res.json({ success: true, count: list.length, data: list });
-});
+};
+
+router.get('/market-data', getMarketDataHandler);
+router.get('/market', getMarketDataHandler);
+
 
 router.post('/market-data', (req, res) => {
   const { id, market_name, crop, modal_price, min_price, max_price, date, arrival_quintals } = req.body;

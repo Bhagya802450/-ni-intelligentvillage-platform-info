@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
 const { authenticate, requireRole, requirePermission, matchesRole } = require('../../middleware/authGuard');
+const redisService = require('../../services/redisService');
+
 
 // GET /api/auth/hierarchy - 3-tier User role hierarchy (User -> Farmer, Officer, Admin)
 router.get('/hierarchy', (req, res) => {
@@ -81,12 +83,22 @@ router.post('/login', (req, res) => {
   if (role === 'OFFICER' || role === 'PATWARI' || role === 'BANK' || role === 'ADMIN' || !role) {
     const officer = (store.officers || []).find(
       o => o.id.toLowerCase() === idLower ||
-           o.email.toLowerCase() === idLower ||
-           o.name.toLowerCase().includes(idLower)
+           (o.email && o.email.toLowerCase() === idLower) ||
+           (o.name && o.name.toLowerCase().includes(idLower))
     );
 
     if (officer) {
       const roleDef = (store.roles || []).find(r => r.roleCode === officer.role);
+      const token = `jwt-token-${officer.role.toLowerCase()}-${officer.id}-${Date.now()}`;
+
+      // Save ephemeral session in Redis
+      redisService.createSession(token, {
+        userId: officer.id,
+        name: officer.name,
+        role: officer.role,
+        department: officer.department
+      }).catch(() => {});
+
       return res.json({
         success: true,
         user: {
@@ -94,7 +106,7 @@ router.post('/login', (req, res) => {
           roleDescription: roleDef?.description,
           scope: roleDef?.scope
         },
-        token: `jwt-token-${officer.role.toLowerCase()}-${officer.id}-${Date.now()}`
+        token
       });
     }
   }
@@ -102,9 +114,13 @@ router.post('/login', (req, res) => {
   // Farmer login
   const cleanId = (identifier || '').replace(/[\s-]/g, '');
   const farmer = (store.farmers || []).find(
-    f => f.phone.replace(/[\s-]/g, '').includes(cleanId) ||
-         f.agriStackId.toLowerCase() === idLower ||
-         f.id.toLowerCase() === idLower
+    f => (f.phone && f.phone.replace(/[\s-]/g, '').includes(cleanId)) ||
+         (f.mobile && f.mobile.replace(/[\s-]/g, '').includes(cleanId)) ||
+         (f.email && f.email.toLowerCase() === idLower) ||
+         (f.national_farmer_id && f.national_farmer_id.toLowerCase() === idLower) ||
+         (f.agriStackId && f.agriStackId.toLowerCase() === idLower) ||
+         (f.farmer_id && f.farmer_id.toLowerCase() === idLower) ||
+         (f.id && f.id.toLowerCase() === idLower)
   );
 
   if (!farmer) {
@@ -115,6 +131,16 @@ router.post('/login', (req, res) => {
   }
 
   const farmerRole = (store.roles || []).find(r => r.roleCode === 'FARMER');
+  const token = `jwt-token-farmer-${farmer.id || farmer.farmer_id}-${Date.now()}`;
+
+  // Save ephemeral session in Redis
+  redisService.createSession(token, {
+    userId: farmer.farmer_id || farmer.id,
+    name: farmer.name,
+    role: "FARMER",
+    district: farmer.district
+  }).catch(() => {});
+
   return res.json({
     success: true,
     user: {
@@ -126,9 +152,10 @@ router.post('/login', (req, res) => {
       roleDescription: farmerRole?.description,
       scope: farmerRole?.scope
     },
-    token: `jwt-token-farmer-${farmer.id}-${Date.now()}`
+    token
   });
 });
+
 
 // GET /api/auth/me - Validate token and return current session
 router.get('/me', (req, res) => {

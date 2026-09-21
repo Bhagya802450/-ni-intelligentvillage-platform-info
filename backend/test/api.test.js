@@ -38,7 +38,9 @@ function request(method, path, body = null, headers = {}) {
 const get = (path, headers = {}) => request('GET', path, null, headers);
 const post = (path, body, headers = {}) => request('POST', path, body, headers);
 const patch = (path, body, headers = {}) => request('PATCH', path, body, headers);
+const put = (path, body, headers = {}) => request('PUT', path, body, headers);
 const del = (path, headers = {}) => request('DELETE', path, null, headers);
+
 
 async function runTests() {
   serverInstance = app.listen(TEST_PORT, async () => {
@@ -529,6 +531,143 @@ async function runTests() {
       const md = newMarket.body.data;
       const hasAllMarketFields = md && md.id && md.market_name && md.crop && md.modal_price && md.min_price && md.max_price && md.date;
       console.log("✔ POST /api/suadr/market-data (All 7 Market Data Fields):", newMarket.status === 201 && hasAllMarketFields ? "PASS" : "FAIL", `([${md?.id}] ${md?.market_name}: ${md?.crop} @ ₹${md?.modal_price}/Qtl [${md?.date}])`);
+
+      // ======================================================================
+      // STEP 4: HP-ASN INTER-SYSTEM DATA EXCHANGE (6 MANDATORY QUESTIONS)
+      // ======================================================================
+      console.log("\n--- [STEP 4: HP-ASN Inter-System Data Flow & Audit Logging] ---");
+      // Government System Flow: Government System -> HP-ASN API -> Frappe Backend -> PostgreSQL
+      const govExchange = await post('/api/hpasn/exchange', {
+        who_requested: "Department of Revenue (HimBhoomi)",
+        what_data: "Farmer Land Cadastral Registry & Khasra Survey #614/3",
+        why: "Subsidized Micro-Drip Irrigation Entitlement Check",
+        was_consent_required: true,
+        was_access_allowed: true,
+        system_type: "GOVERNMENT",
+        query_key: "LAND-SHI-8801"
+      });
+      const ge = govExchange.body.exchange;
+      const govHas6Fields = ge && ge.who_requested && ge.what_data && ge.when && ge.why && ge.was_consent_required !== undefined && ge.was_access_allowed !== undefined;
+      console.log("✔ Government System ➔ HP-ASN API ➔ Frappe (6 Mandatory Questions):", govExchange.status === 200 && govHas6Fields ? "PASS" : "FAIL", `[Who: ${ge?.who_requested}, What: ${ge?.what_data}, Allowed: ${ge?.was_access_allowed}]`);
+
+      // Partner System Flow: Partner System -> HP-ASN API -> Frappe Backend -> PostgreSQL & Redis
+      const partnerExchange = await post('/api/hpasn/exchange', {
+        who_requested: "HDFC Rural Lending Partner",
+        what_data: "Standing Gala Apple Crop Area & Soil Health Card",
+        why: "Kisan Credit Card (KCC) Limit Appraisal",
+        was_consent_required: true,
+        was_access_allowed: true,
+        system_type: "PARTNER",
+        query_key: "FARMER-HP-1001"
+      });
+      const pe = partnerExchange.body.exchange;
+      const partnerHas6Fields = pe && pe.who_requested && pe.what_data && pe.when && pe.why && pe.was_consent_required !== undefined && pe.was_access_allowed !== undefined;
+      console.log("✔ Partner System ➔ HP-ASN API ➔ Frappe (6 Mandatory Questions):", partnerExchange.status === 200 && partnerHas6Fields ? "PASS" : "FAIL", `[Who: ${pe?.who_requested}, Why: ${pe?.why}, Consent: ${pe?.was_consent_required}]`);
+
+      const hpasnLogs = await get('/api/hpasn/logs');
+      console.log("✔ GET /api/hpasn/logs (Cryptographic Audit Ledger with 6 Questions):", hpasnLogs.status === 200 && hpasnLogs.body.count > 0 ? "PASS" : "FAIL", `(${hpasnLogs.body.count} transactions in ledger)`);
+
+      // ======================================================================
+      // STEP 5: REDIS (Rate Limiting, Cache, Sessions, Background Queues)
+      // ======================================================================
+      console.log("\n--- [STEP 5: Redis Integration (Rate Limiting, Cache, Sessions, Queues)] ---");
+      const redisStatus = await get('/api/redis/status');
+      console.log("✔ GET /api/redis/status (Redis 7 Engine Core):", redisStatus.status === 200 && redisStatus.body.status === "ONLINE" ? "PASS" : "FAIL", `(Engine: ${redisStatus.body.backend})`);
+
+      const redisQueues = await get('/api/redis/queues');
+      console.log("✔ GET /api/redis/queues (Background Jobs & Async Queues):", redisQueues.status === 200 && redisQueues.body.queues ? "PASS" : "FAIL", `(Queues: ${Object.keys(redisQueues.body.queues || {}).join(', ')})`);
+
+      const redisSessions = await get('/api/redis/sessions');
+      console.log("✔ GET /api/redis/sessions (Active Ephemeral Sessions):", redisSessions.status === 200 ? "PASS" : "FAIL", `(${redisSessions.body.count || 0} active sessions)`);
+
+      // ======================================================================
+      // STEP 6: EXACT BASIC APIS (Frappe Backed)
+      // ======================================================================
+      console.log("\n--- [STEP 6: Exact Basic APIs from Frappe Specification] ---");
+      // 1. POST /api/auth/login
+      const step6Login = await post('/api/auth/login', { identifier: "surender.thakur@hpfarmers.in" });
+      console.log("✔ 1. POST /api/auth/login:", step6Login.status === 200 ? "PASS" : "FAIL", `(Role: ${step6Login.body.user?.role})`);
+
+      // 2. GET /api/farmers
+      const step6Farmers = await get('/api/farmers');
+      console.log("✔ 2. GET /api/farmers:", step6Farmers.status === 200 && step6Farmers.body.count > 0 ? "PASS" : "FAIL", `(${step6Farmers.body.count} farmers)`);
+
+      // 3. POST /api/farmers
+      const step6NewFarmer = await post('/api/farmers', {
+        name: "Devi Ram Sharma",
+        mobile: "98160 55443",
+        email: "devi.sharma@hpfarmers.in",
+        district: "Solan",
+        block: "Kandaghat",
+        village: "Sadhupul"
+      });
+      console.log("✔ 3. POST /api/farmers:", step6NewFarmer.status === 201 ? "PASS" : "FAIL", `(Created: ${step6NewFarmer.body.data?.farmer_id})`);
+      const createdFarmerId = step6NewFarmer.body.data?.farmer_id || "FARMER-HP-1001";
+
+      // 4. GET /api/farmers/{id}
+      const step6FarmerDetail = await get(`/api/farmers/${createdFarmerId}`);
+      console.log("✔ 4. GET /api/farmers/{id}:", step6FarmerDetail.status === 200 ? "PASS" : "FAIL", `(Found: ${step6FarmerDetail.body.data?.name})`);
+
+      // 5. PUT /api/farmers/{id}
+      const step6FarmerPut = await put(`/api/farmers/${createdFarmerId}`, {
+        name: "Devi Ram Sharma (Updated via PUT)",
+        category: "Small & Marginal",
+        mobile: "98160 55443"
+      });
+      console.log("✔ 5. PUT /api/farmers/{id}:", step6FarmerPut.status === 200 && step6FarmerPut.body.data?.name.includes("Updated via PUT") ? "PASS" : "FAIL", `(Updated Name: ${step6FarmerPut.body.data?.name})`);
+
+      // 6. GET /api/farmers/{id}/land
+      const step6FarmerLand = await get(`/api/farmers/FARMER-HP-1001/land`);
+      console.log("✔ 6. GET /api/farmers/{id}/land:", step6FarmerLand.status === 200 ? "PASS" : "FAIL", `(${step6FarmerLand.body.parcelsCount} parcels)`);
+
+      // 7. POST /api/farmers/{id}/land
+      const step6AddLand = await post(`/api/farmers/FARMER-HP-1001/land`, {
+        survey_number: "712/9",
+        area: 6.5,
+        latitude: 31.1480,
+        longitude: 77.4950,
+        soil_type: "Loam",
+        irrigation_type: "Sprinkler"
+      });
+      const addedLandId = step6AddLand.body.land?.id || "LAND-SHI-8801";
+      console.log("✔ 7. POST /api/farmers/{id}/land:", step6AddLand.status === 201 ? "PASS" : "FAIL", `(Land ID: ${addedLandId})`);
+
+
+      // 8. GET /api/lands/{id}/crops
+      const step6LandCrops = await get(`/api/lands/${addedLandId}/crops`);
+      console.log("✔ 8. GET /api/lands/{id}/crops:", step6LandCrops.status === 200 ? "PASS" : "FAIL", `(Survey: ${step6LandCrops.body.survey_number}, Crops: ${step6LandCrops.body.count})`);
+
+      // 9. POST /api/lands/{id}/crops
+      const step6AddCrop = await post(`/api/lands/${addedLandId}/crops`, {
+        crop_name: "Red Golden Apple",
+        crop_type: "Horticulture / Fruit",
+        sowing_date: "2024-03-01",
+        season: "Perennial",
+        area: 3.2,
+        status: "Fruiting"
+      });
+      console.log("✔ 9. POST /api/lands/{id}/crops:", step6AddCrop.status === 201 ? "PASS" : "FAIL", `(Crop ID: ${step6AddCrop.body.data?.id} on Land: ${step6AddCrop.body.land_id})`);
+
+      // 10. GET /api/suadr/soil
+      const step6SuadrSoil = await get('/api/suadr/soil');
+      console.log("✔ 10. GET /api/suadr/soil:", step6SuadrSoil.status === 200 ? "PASS" : "FAIL", `(${step6SuadrSoil.body.count} soil records)`);
+
+      // 11. GET /api/suadr/climate
+      const step6SuadrClimate = await get('/api/suadr/climate');
+      console.log("✔ 11. GET /api/suadr/climate:", step6SuadrClimate.status === 200 ? "PASS" : "FAIL", `(${step6SuadrClimate.body.count} climate records)`);
+
+      // 12. GET /api/suadr/crops
+      const step6SuadrCrops = await get('/api/suadr/crops');
+      console.log("✔ 12. GET /api/suadr/crops:", step6SuadrCrops.status === 200 ? "PASS" : "FAIL", `(${step6SuadrCrops.body.count} crop master records)`);
+
+      // 13. GET /api/suadr/pests
+      const step6SuadrPests = await get('/api/suadr/pests');
+      console.log("✔ 13. GET /api/suadr/pests:", step6SuadrPests.status === 200 ? "PASS" : "FAIL", `(${step6SuadrPests.body.count} pest entries)`);
+
+      // 14. GET /api/suadr/market
+      const step6SuadrMarket = await get('/api/suadr/market');
+      console.log("✔ 14. GET /api/suadr/market:", step6SuadrMarket.status === 200 ? "PASS" : "FAIL", `(${step6SuadrMarket.body.count} market rate records)`);
+
 
       console.log(`\n========================================================================`);
       console.log(`🎉 ALL 4 CORE MODULES FULLY TESTED & VALIDATED SUCCESSFULLY! 🚀`);
