@@ -301,19 +301,69 @@ CREATE TABLE IF NOT EXISTS scheme_applications (
     utr_reference VARCHAR(64)
 );
 
--- 7. HP-ASN Inter-Departmental Consent & Data Exchange Audit Trail
+-- 7. HP-ASN Inter-System Data Exchange Audit Trail
+-- Implements the 6 Mandatory Questions:
+-- 1. Who requested?        (who_requested)
+-- 2. What data?            (what_data)
+-- 3. When?                 (when_timestamp)
+-- 4. Why?                  (why_purpose)
+-- 5. Was consent required? (was_consent_required)
+-- 6. Was access allowed?   (was_access_allowed)
 CREATE TABLE IF NOT EXISTS hpasn_audit_logs (
     transaction_id VARCHAR(64) PRIMARY KEY,
-    source_department VARCHAR(100) NOT NULL,
-    target_department VARCHAR(100) NOT NULL,
-    purpose TEXT NOT NULL,
+    who_requested VARCHAR(150) NOT NULL,
+    what_data TEXT NOT NULL,
+    when_timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    why_purpose TEXT NOT NULL,
+    was_consent_required BOOLEAN DEFAULT TRUE,
+    was_access_allowed BOOLEAN DEFAULT TRUE,
+    system_type VARCHAR(32) DEFAULT 'GOVERNMENT' CHECK (system_type IN ('GOVERNMENT', 'PARTNER')),
+    target_system VARCHAR(150) DEFAULT 'Frappe Backend (PostgreSQL)',
     farmer_id VARCHAR(64) REFERENCES farmers(farmer_id),
-    consent_granted BOOLEAN DEFAULT TRUE,
     consent_method VARCHAR(100),
     response_latency_ms INT,
     hash_signature VARCHAR(128) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    -- Backward-compatible columns
+    source_department VARCHAR(100),
+    target_department VARCHAR(100),
+    purpose TEXT,
+    consent_granted BOOLEAN DEFAULT TRUE
 );
+
+-- View representing the canonical 6-Question HP-ASN Exchange Ledger
+CREATE OR REPLACE VIEW hpasn_exchange_ledger AS
+SELECT 
+    transaction_id,
+    who_requested,
+    what_data,
+    when_timestamp AS "when",
+    why_purpose AS "why",
+    was_consent_required,
+    was_access_allowed,
+    system_type,
+    target_system,
+    farmer_id,
+    hash_signature,
+    response_latency_ms
+FROM hpasn_audit_logs;
+
+-- 8. Redis Multi-Tier Architecture Metadata (Temporary Fast-Access Specification)
+CREATE TABLE IF NOT EXISTS redis_architecture_spec (
+    component VARCHAR(64) PRIMARY KEY,
+    technology VARCHAR(64) NOT NULL,
+    purpose TEXT NOT NULL,
+    ttl_policy VARCHAR(64),
+    active_channels TEXT[]
+);
+
+INSERT INTO redis_architecture_spec (component, technology, purpose, ttl_policy, active_channels) VALUES
+('API_RATE_LIMITING', 'Redis Token Bucket', 'Gateway ingress rate limiting enforcing 120 req/min sliding window', '1-minute sliding window', ARRAY['ratelimit:ip']),
+('CACHE', 'Redis Volatile-LRU', 'High-speed caching for SUADR soil, climate telemetry, and mandi spot rates', '5-minute TTL (auto-evict)', ARRAY['cache:soil', 'cache:climate', 'cache:mandi']),
+('SESSIONS', 'Redis Ephemeral Store', 'Active authentication sessions for Farmer, Officer, and Admin principals', '24-hour TTL', ARRAY['session:token']),
+('QUEUES', 'Redis BullMQ / FIFO', 'Asynchronous background queues for DBT distribution, SMS alerts, and audit hashing', 'Job completion eviction', ARRAY['dbt-transfers', 'advisory-sms', 'satellite-ndvi', 'hpasn-audit'])
+ON CONFLICT (component) DO NOTHING;
+
 
 -- 8. Mandi & Market Prices
 CREATE TABLE IF NOT EXISTS mandi_prices (
