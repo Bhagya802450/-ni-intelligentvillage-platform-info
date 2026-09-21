@@ -34,6 +34,15 @@ function authenticate(req, res, next) {
 
   if (officer) {
     const roleDef = (store.roles || []).find(r => r.roleCode === officer.role);
+    const officerRoleDefault = (officer.role === 'STATE_ADMIN' || officer.role === 'ADMIN')
+      ? ["admin:manage_users", "admin:manage_roles", "admin:manage_system_data", "iam:manage_roles", "hpasn:manage_policies", "audit:inspect_tamper_log", "*"]
+      : ["officer:view_farmers", "officer:verify_farmer", "officer:update_field_info"];
+    const perms = Array.from(new Set([
+      ...(officer.permissions || []),
+      ...(roleDef?.allowedActions || []),
+      ...officerRoleDefault
+    ]));
+
     user = {
       id: officer.id,
       name: officer.name,
@@ -42,7 +51,7 @@ function authenticate(req, res, next) {
       designation: officer.designation,
       department: officer.department,
       district: officer.district,
-      permissions: officer.permissions || roleDef?.allowedActions || [],
+      permissions: perms,
       token
     };
   } else {
@@ -52,6 +61,16 @@ function authenticate(req, res, next) {
 
     if (farmer) {
       const farmerRole = (store.roles || []).find(r => r.roleCode === 'FARMER');
+      const farmerPerms = Array.from(new Set([
+        ...(farmerRole?.allowedActions || []),
+        "farmer:view_profile",
+        "farmer:view_land",
+        "farmer:view_crops",
+        "farmer:read_own",
+        "farmer:apply_schemes",
+        "farmer:mandi_trade"
+      ]));
+
       user = {
         id: farmer.id,
         name: farmer.name,
@@ -59,7 +78,7 @@ function authenticate(req, res, next) {
         agriStackId: farmer.agriStackId,
         phone: farmer.phone,
         district: farmer.district,
-        permissions: farmerRole?.allowedActions || ["farmer:read_own", "farmer:apply_schemes", "farmer:mandi_trade"],
+        permissions: farmerPerms,
         token
       };
     }

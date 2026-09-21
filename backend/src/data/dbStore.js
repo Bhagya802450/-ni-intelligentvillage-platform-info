@@ -666,6 +666,10 @@ let cache = loadData();
 
 module.exports = {
   get: () => cache,
+  save: () => {
+    saveData(cache);
+    return cache;
+  },
   update: (updaterFn) => {
     cache = updaterFn(cache);
     saveData(cache);

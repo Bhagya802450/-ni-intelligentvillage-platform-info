@@ -162,6 +162,76 @@ async function runTests() {
       console.log("✔ [5-Step Pipeline Simulation] POST /api/auth/pipeline-verify:", pipelineSim.status === 200 && pipelineSim.body.pipeline?.length === 5 ? "PASS" : "FAIL", `(5 Pipeline Steps Evaluated)`);
 
       // ----------------------------------------------------------------------
+      // CONCRETE ACCESS APIS (Farmer, Officer, Admin)
+      // ----------------------------------------------------------------------
+      console.log("\n--- [CONCRETE ACCESS APIS: Farmer, Officer, Admin] ---");
+
+      // 1. Farmer Endpoints
+      console.log("-> Testing Farmer APIs:");
+      // View own profile
+      const farmerProfile = await get('/api/farmer/profile', { Authorization: `Bearer ${farmerLogin.body.token}` });
+      console.log("✔ GET /api/farmer/profile (View own profile):", farmerProfile.status === 200 && farmerProfile.body.profile?.name === 'Surender Thakur' ? "PASS" : "FAIL");
+
+      // View own land
+      const farmerLand = await get('/api/farmer/land', { Authorization: `Bearer ${farmerLogin.body.token}` });
+      console.log("✔ GET /api/farmer/land (View own land):", farmerLand.status === 200 && farmerLand.body.parcelsCount > 0 ? "PASS" : "FAIL");
+
+      // View own crops
+      const farmerCrops = await get('/api/farmer/crops', { Authorization: `Bearer ${farmerLogin.body.token}` });
+      console.log("✔ GET /api/farmer/crops (View own crops):", farmerCrops.status === 200 && farmerCrops.body.cropsCount > 0 ? "PASS" : "FAIL");
+
+      // Security block: Officer trying to call farmer-only endpoint
+      const officerBlockedFromFarmer = await get('/api/farmer/profile', { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ Security: Officer blocked from Farmer profile (403):", officerBlockedFromFarmer.status === 403 ? "PASS" : "FAIL");
+
+      // 2. Officer Endpoints
+      console.log("-> Testing Officer APIs:");
+      // View farmers
+      const officerViewFarmers = await get('/api/officer/farmers', { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ GET /api/officer/farmers (View farmers):", officerViewFarmers.status === 200 && officerViewFarmers.body.count > 0 ? "PASS" : "FAIL");
+
+      // Verify farmer
+      const officerVerify = await post('/api/officer/verify-farmer', {
+        farmerId: "FARMER-HP-1001",
+        parcelId: "LAND-SHI-101",
+        verificationStatus: "VERIFIED_HIMBHOOMI_MATCH",
+        remarks: "Cadastral field survey matches HimBhoomi revenue record."
+      }, { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ POST /api/officer/verify-farmer (Verify farmer):", officerVerify.status === 200 && officerVerify.body.verificationRecord?.status === "VERIFIED_HIMBHOOMI_MATCH" ? "PASS" : "FAIL");
+
+      // Update field information
+      const officerFieldUpdate = await post('/api/officer/update-field-info', {
+        farmerId: "FARMER-HP-1001",
+        soilMoisture: 48,
+        pestRisk: "LOW",
+        cropStatus: "Optimal vegetative stage",
+        fieldNotes: "Adequate soil organic carbon observed."
+      }, { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ POST /api/officer/update-field-info (Update field information):", officerFieldUpdate.status === 200 && officerFieldUpdate.body.fieldInformation?.soilMoisture === 48 ? "PASS" : "FAIL");
+
+      // Security block: Farmer blocked from Officer endpoints
+      const farmerBlockedFromOfficer = await get('/api/officer/farmers', { Authorization: `Bearer ${farmerLogin.body.token}` });
+      console.log("✔ Security: Farmer blocked from Officer endpoint (403):", farmerBlockedFromOfficer.status === 403 ? "PASS" : "FAIL");
+
+      // 3. Admin Endpoints
+      console.log("-> Testing Admin APIs:");
+      // Manage users
+      const adminUsers = await get('/api/admin/users', { Authorization: `Bearer ${adminLogin.body.token}` });
+      console.log("✔ GET /api/admin/users (Manage users):", adminUsers.status === 200 && adminUsers.body.count > 0 ? "PASS" : "FAIL");
+
+      // Manage roles
+      const adminRoles = await get('/api/admin/roles', { Authorization: `Bearer ${adminLogin.body.token}` });
+      console.log("✔ GET /api/admin/roles (Manage roles):", adminRoles.status === 200 && adminRoles.body.roles?.length > 0 ? "PASS" : "FAIL");
+
+      // Manage system data
+      const adminSystemData = await get('/api/admin/system-data', { Authorization: `Bearer ${adminLogin.body.token}` });
+      console.log("✔ GET /api/admin/system-data (Manage system data):", adminSystemData.status === 200 && adminSystemData.body.systemData?.gatewayStatus === "HEALTHY" ? "PASS" : "FAIL");
+
+      // Security block: Officer blocked from Admin endpoints
+      const officerBlockedFromAdmin = await get('/api/admin/users', { Authorization: `Bearer ${officerLogin.body.token}` });
+      console.log("✔ Security: Officer blocked from Admin endpoint (403):", officerBlockedFromAdmin.status === 403 ? "PASS" : "FAIL");
+
+      // ----------------------------------------------------------------------
       // MODULE 3: Unified Farmer Database
       // ----------------------------------------------------------------------
       console.log("\n--- [MODULE 3: Unified Farmer Database] ---");

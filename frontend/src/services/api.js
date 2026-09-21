@@ -51,6 +51,30 @@ export const api = {
     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
   }),
 
+  // Concrete Access APIs:
+  // Farmer
+  getFarmerProfile: (token) => fetchJson('/farmer/profile', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+  getFarmerLand: (token) => fetchJson('/farmer/land', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+  getFarmerCrops: (token) => fetchJson('/farmer/crops', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+
+  // Officer
+  getOfficerFarmers: (token) => fetchJson('/officer/farmers', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+  officerVerifyFarmer: (token, payload) => fetchJson('/officer/verify-farmer', {
+    method: 'POST',
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    body: JSON.stringify(payload)
+  }),
+  officerUpdateFieldInfo: (token, payload) => fetchJson('/officer/update-field-info', {
+    method: 'POST',
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    body: JSON.stringify(payload)
+  }),
+
+  // Admin
+  getAdminUsers: (token) => fetchJson('/admin/users', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+  getAdminRoles: (token) => fetchJson('/admin/roles', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+  getAdminSystemData: (token) => fetchJson('/admin/system-data', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
+
   // =========================================================================
   // MODULE 3: Unified Farmer Database
   // =========================================================================

@@ -13,6 +13,7 @@ const schemeRouter = require('./modules/schemes/schemeRouter');
 const hpasnRouter = require('./modules/hpasn/hpasnRouter');
 const marketplaceRouter = require('./modules/marketplace/marketplaceRouter');
 const storageRouter = require('./modules/storage/storageRouter');
+const accessRouter = require('./modules/access/accessRouter');
 const { metricsMiddleware, getPrometheusMetrics } = require('./middleware/metrics');
 
 const app = express();
@@ -397,6 +398,7 @@ app.use('/api/schemes', schemeRouter);
 app.use('/api/hpasn', hpasnRouter);
 app.use('/api/marketplace', marketplaceRouter);
 app.use('/api/storage', storageRouter);
+app.use('/api', accessRouter);
 
 // SPA fallback: Serve frontend index.html if file exists, or redirect to port 5173
 app.get('*', (req, res, next) => {

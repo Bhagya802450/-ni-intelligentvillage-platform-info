@@ -28,6 +28,76 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
   const [pipelineSteps, setPipelineSteps] = useState(null);
   const [guardedApiResponse, setGuardedApiResponse] = useState(null);
 
+  // Concrete Access APIs state (Farmer, Officer, Admin)
+  const [roleApiTesting, setRoleApiTesting] = useState(false);
+  const [roleApiActiveAction, setRoleApiActiveAction] = useState(null);
+  const [roleApiResult, setRoleApiResult] = useState(null);
+
+  const testConcreteEndpoint = async (roleType, actionKey) => {
+    setRoleApiTesting(true);
+    setRoleApiActiveAction(actionKey);
+    setRoleApiResult(null);
+
+    try {
+      const creds = {
+        'FARMER': '98160 12345',
+        'OFFICER': 'OFF-HP-801',
+        'ADMIN': 'ADM-HP-001'
+      };
+      const loginRes = await api.login(null, creds[roleType]);
+      const token = loginRes.token;
+
+      let res = null;
+      switch (actionKey) {
+        case 'farmer_profile':
+          res = await api.getFarmerProfile(token);
+          break;
+        case 'farmer_land':
+          res = await api.getFarmerLand(token);
+          break;
+        case 'farmer_crops':
+          res = await api.getFarmerCrops(token);
+          break;
+        case 'officer_farmers':
+          res = await api.getOfficerFarmers(token);
+          break;
+        case 'officer_verify':
+          res = await api.officerVerifyFarmer(token, {
+            farmerId: "FARMER-HP-1001",
+            parcelId: "LAND-SHI-101",
+            verificationStatus: "VERIFIED_HIMBHOOMI_MATCH",
+            remarks: "Cadastral field survey matches HimBhoomi revenue record."
+          });
+          break;
+        case 'officer_field':
+          res = await api.officerUpdateFieldInfo(token, {
+            farmerId: "FARMER-HP-1001",
+            soilMoisture: 46,
+            pestRisk: "LOW",
+            cropStatus: "Optimal Growth"
+          });
+          break;
+        case 'admin_users':
+          res = await api.getAdminUsers(token);
+          break;
+        case 'admin_roles':
+          res = await api.getAdminRoles(token);
+          break;
+        case 'admin_system':
+          res = await api.getAdminSystemData(token);
+          break;
+        default:
+          break;
+      }
+      setRoleApiResult(res);
+    } catch (e) {
+      console.error(e);
+      setRoleApiResult({ success: false, error: e.message });
+    } finally {
+      setRoleApiTesting(false);
+    }
+  };
+
   useEffect(() => {
     async function loadIamData() {
       const [rRes, pRes] = await Promise.all([
@@ -648,6 +718,240 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
                 {JSON.stringify(guardedApiResponse, null, 2)}
               </pre>
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Concrete Role-Based Access APIs (Farmer, Officer, Admin) */}
+      <div className="glass-card" style={{ padding: '24px', border: '1px solid rgba(59, 130, 246, 0.4)', background: 'linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, rgba(15, 23, 42, 0.6) 100%)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Lock size={22} color="#38bdf8" />
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>
+                {isKn
+                  ? 'ಪಾತ್ರ ಪ್ರವೇಶ API ಅನುಷ್ಠಾನಗಳು (Role-Based Access APIs)'
+                  : 'Guarded Role-Based Access APIs (Farmer, Officer, Admin)'}
+              </h2>
+            </div>
+            <div style={{ fontSize: '0.8rem', color: '#93c5fd', fontWeight: 700, marginTop: '3px' }}>
+              Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API
+            </div>
+          </div>
+          <span className="badge badge-info" style={{ fontSize: '0.75rem' }}>
+            Zero-Trust Strict Pipeline
+          </span>
+        </div>
+
+        <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+          {isKn
+            ? 'ಪ್ರತಿ ಪಾತ್ರವು (Farmer, Officer, Admin) ಕಡ್ಡಾಯವಾಗಿ ಶ್ರೇಣೀಕೃತ ಲಾಗಿನ್, ದೃಢೀಕರಣ, ಪಾತ್ರ ಪರಿಶೀಲನೆ, ಮತ್ತು ನಿರ್ದಿಷ್ಟ ಅನುಮತಿ ಹೊಂದಿರಬೇಕು.'
+            : 'Click any endpoint below to simulate the full security pipeline: Login ➔ Authentication ➔ Role Check ➔ Permission ➔ Access API.'}
+        </p>
+
+        {/* 3 Columns: Farmer, Officer, Admin */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '18px', marginBottom: '20px' }}>
+          
+          {/* Column 1: Farmer */}
+          <div style={{
+            background: 'rgba(16, 185, 129, 0.06)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            borderRadius: '12px',
+            padding: '18px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.2rem' }}>👨‍🌾</span>
+                <strong style={{ fontSize: '1rem', color: '#34d399' }}>Farmer</strong>
+              </div>
+              <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>ROLE: FARMER</span>
+            </div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
+              {isKn ? 'ವೈಯಕ್ತಿಕ ಪ್ರೊಫೈಲ್, ನೋಂದಾಯಿತ ಜಮೀನು ಮತ್ತು ಬೆಳೆ ವಿವರಗಳ ಪ್ರವೇಶ.' : 'Beneficiary access to personal identity, land parcels, and crop yields.'}
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                { key: 'farmer_profile', label: isKn ? '├── View own profile' : '├── View own profile', endpoint: 'GET /api/farmer/profile', perm: 'farmer:view_profile' },
+                { key: 'farmer_land', label: isKn ? '├── View own land' : '├── View own land', endpoint: 'GET /api/farmer/land', perm: 'farmer:view_land' },
+                { key: 'farmer_crops', label: isKn ? '└── View own crops' : '└── View own crops', endpoint: 'GET /api/farmer/crops', perm: 'farmer:view_crops' }
+              ].map(action => (
+                <button
+                  key={action.key}
+                  onClick={() => testConcreteEndpoint('FARMER', action.key)}
+                  disabled={roleApiTesting}
+                  style={{
+                    background: roleApiActiveAction === action.key ? 'rgba(16, 185, 129, 0.25)' : 'rgba(0,0,0,0.35)',
+                    border: `1px solid ${roleApiActiveAction === action.key ? '#10b981' : 'var(--border-subtle)'}`,
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    textAlign: 'left',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.84rem' }}>{action.label}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#34d399', fontWeight: 600 }}>Invoke API →</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'monospace' }}>
+                    <span>{action.endpoint}</span>
+                    <span>[{action.perm}]</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Column 2: Officer */}
+          <div style={{
+            background: 'rgba(56, 189, 248, 0.06)',
+            border: '1px solid rgba(56, 189, 248, 0.3)',
+            borderRadius: '12px',
+            padding: '18px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.2rem' }}>👮‍♂️</span>
+                <strong style={{ fontSize: '1rem', color: '#38bdf8' }}>Officer</strong>
+              </div>
+              <span className="badge badge-info" style={{ fontSize: '0.68rem' }}>ROLE: OFFICER</span>
+            </div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
+              {isKn ? 'ತಹಸಿಲ್ ರೈತರ ವಿವರಗಳು, ಖಾಸ್ರಾ ಪರಿಶೀಲನೆ ಮತ್ತು ಕ್ಷೇತ್ರ ಮಾಹಿತಿ ಅಪ್ಡೇಟ್.' : 'Field officer ERP for village inspections, title verification, and soil telemetry.'}
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                { key: 'officer_farmers', label: isKn ? '├── View farmers' : '├── View farmers', endpoint: 'GET /api/officer/farmers', perm: 'officer:view_farmers' },
+                { key: 'officer_verify', label: isKn ? '├── Verify farmer' : '├── Verify farmer', endpoint: 'POST /api/officer/verify-farmer', perm: 'officer:verify_farmer' },
+                { key: 'officer_field', label: isKn ? '└── Update field information' : '└── Update field information', endpoint: 'POST /api/officer/update-field-info', perm: 'officer:update_field_info' }
+              ].map(action => (
+                <button
+                  key={action.key}
+                  onClick={() => testConcreteEndpoint('OFFICER', action.key)}
+                  disabled={roleApiTesting}
+                  style={{
+                    background: roleApiActiveAction === action.key ? 'rgba(56, 189, 248, 0.25)' : 'rgba(0,0,0,0.35)',
+                    border: `1px solid ${roleApiActiveAction === action.key ? '#38bdf8' : 'var(--border-subtle)'}`,
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    textAlign: 'left',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.84rem' }}>{action.label}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: 600 }}>Invoke API →</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'monospace' }}>
+                    <span>{action.endpoint}</span>
+                    <span>[{action.perm}]</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Column 3: Admin */}
+          <div style={{
+            background: 'rgba(168, 85, 247, 0.06)',
+            border: '1px solid rgba(168, 85, 247, 0.3)',
+            borderRadius: '12px',
+            padding: '18px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.2rem' }}>🛡️</span>
+                <strong style={{ fontSize: '1rem', color: '#c084fc' }}>Admin</strong>
+              </div>
+              <span className="badge badge-purple" style={{ fontSize: '0.68rem' }}>ROLE: ADMIN</span>
+            </div>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '14px' }}>
+              {isKn ? 'ಬಳಕೆದಾರರು, ಪಾತ್ರ ಶ್ರೇಣಿಗಳು ಮತ್ತು ರಾಜ್ಯ ಸಿಸ್ಟಮ್ ಡೇಟಾ ಸಂರಚನೆ.' : 'Statewide core governance, RBAC role definitions, and system data.'}
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                { key: 'admin_users', label: isKn ? '├── Manage users' : '├── Manage users', endpoint: 'GET /api/admin/users', perm: 'admin:manage_users' },
+                { key: 'admin_roles', label: isKn ? '├── Manage roles' : '├── Manage roles', endpoint: 'GET /api/admin/roles', perm: 'admin:manage_roles' },
+                { key: 'admin_system', label: isKn ? '└── Manage system data' : '└── Manage system data', endpoint: 'GET /api/admin/system-data', perm: 'admin:manage_system_data' }
+              ].map(action => (
+                <button
+                  key={action.key}
+                  onClick={() => testConcreteEndpoint('ADMIN', action.key)}
+                  disabled={roleApiTesting}
+                  style={{
+                    background: roleApiActiveAction === action.key ? 'rgba(168, 85, 247, 0.25)' : 'rgba(0,0,0,0.35)',
+                    border: `1px solid ${roleApiActiveAction === action.key ? '#c084fc' : 'var(--border-subtle)'}`,
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    textAlign: 'left',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.84rem' }}>{action.label}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#c084fc', fontWeight: 600 }}>Invoke API →</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-dim)', fontFamily: 'monospace' }}>
+                    <span>{action.endpoint}</span>
+                    <span>[{action.perm}]</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Live Payload Inspector for Selected Concrete Action */}
+        {roleApiResult && (
+          <div style={{
+            background: 'rgba(0,0,0,0.4)',
+            borderRadius: '10px',
+            border: '1px solid var(--border-subtle)',
+            padding: '16px',
+            marginTop: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={18} color="#10b981" />
+                <strong style={{ fontSize: '0.9rem', color: '#34d399' }}>
+                  {isKn ? 'ಲೈವ್ API ಫಲಿತಾಂಶ (HTTP 200 OK - Pipeline Completed)' : 'Live API Payload: Protected Controller Execution'}
+                </strong>
+              </div>
+              <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
+                {roleApiResult.action || 'API ACCESS GRANTED'}
+              </span>
+            </div>
+            <pre style={{
+              background: '#090d16',
+              padding: '12px',
+              borderRadius: '6px',
+              fontSize: '0.74rem',
+              color: '#38bdf8',
+              margin: 0,
+              maxHeight: '180px',
+              overflow: 'auto',
+              border: '1px solid rgba(255,255,255,0.06)'
+            }}>
+              {JSON.stringify(roleApiResult, null, 2)}
+            </pre>
           </div>
         )}
       </div>
