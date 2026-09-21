@@ -68,7 +68,7 @@ export default function AiServicePipeline({ farmer, lang }) {
               <span className="badge badge-success">Redis Queue Orchestrated</span>
             </div>
             <h2 style={{ fontSize: '1.6rem', fontWeight: 800 }}>
-              {lang === 'hi' ? 'एआई माइक्रो-सर्विस पाइपलाइन' : 'Python AI & Satellite Service Pipeline'}
+              {lang === 'kn' ? 'ಎಐ ಮೈಕ್ರೋ-ಸರ್ವಿಸ್ ಪೈಪ್‌ಲೈನ್' : 'Python AI & Satellite Service Pipeline'}
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
               End-to-end execution flow: React ➔ Frappe API ➔ Redis Queue ➔ Python AI Service (Satellite, Classification, Disease & Prediction).

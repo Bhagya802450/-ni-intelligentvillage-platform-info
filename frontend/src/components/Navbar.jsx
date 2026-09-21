@@ -47,7 +47,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
               </span>
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              Himachal Pradesh Agriculture Service Network & State Unified Digital Database
+              {lang === 'kn' ? 'ಹಿಮಾಚಲ ಪ್ರದೇಶ ಕೃಷಿ ಸೇವಾ ನೆಟ್‌ವರ್ಕ್ ಮತ್ತು ರಾಜ್ಯ ಏಕೀಕೃತ ಡಿಜಿಟಲ್ ಡೇಟಾಬೇಸ್' : 'Himachal Pradesh Agriculture Service Network & State Unified Digital Database'}
             </p>
           </div>
         </div>
@@ -66,13 +66,13 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
             <span style={{ color: '#38bdf8', fontWeight: 600 }}>PostgreSQL + Redis</span>
           </div>
 
-          {/* Language Switcher */}
+          {/* Language Switcher: Kannada & English only */}
           <button
-            onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
+            onClick={() => setLang(lang === 'en' ? 'kn' : 'en')}
             className="btn btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '6px 12px', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#fcd34d' }}
+            style={{ fontSize: '0.82rem', padding: '6px 14px', borderColor: 'rgba(245, 158, 11, 0.5)', color: '#fcd34d', fontWeight: 700 }}
           >
-            🌐 {lang === 'en' ? 'हिन्दी' : 'English'}
+            🌐 {lang === 'en' ? 'ಕನ್ನಡ' : 'English'}
           </button>
 
           {/* Role Switcher Pill */}
@@ -101,7 +101,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
                 color: currentRole === 'FARMER' ? '#fff' : 'var(--text-muted)'
               }}
             >
-              👨‍🌾 {lang === 'hi' ? 'किसान पोर्टल' : 'Farmer Portal'}
+              👨‍🌾 {lang === 'kn' ? 'ರೈತ ಪೋರ್ಟಲ್' : 'Farmer Portal'}
             </button>
             <button
               onClick={() => setCurrentRole('OFFICER')}
@@ -120,7 +120,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
                 color: currentRole === 'OFFICER' ? '#fff' : 'var(--text-muted)'
               }}
             >
-              👮‍♂️ {lang === 'hi' ? 'कृषि अधिकारी ईआरपी' : 'Agriculture Officer ERP'}
+              👮‍♂️ {lang === 'kn' ? 'ಕೃಷಿ ಅಧಿಕಾರಿ ಇಆರ್‌ಪಿ' : 'Agriculture Officer ERP'}
             </button>
           </div>
         </div>
@@ -142,57 +142,57 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
           onClick={() => setActiveTab('dashboard')}
         >
           {currentRole === 'FARMER' 
-            ? (lang === 'hi' ? '🏡 किसान होम' : '🏡 Farmer Home') 
-            : (lang === 'hi' ? '📊 अधिकारी कंट्रोल टावर' : '📊 Officer Control Tower')}
+            ? (lang === 'kn' ? '🏡 ರೈತ ಮುಖಪುಟ' : '🏡 Farmer Home') 
+            : (lang === 'kn' ? '📊 ಅಧಿಕಾರಿ ನಿಯಂತ್ರಣ ಕೊಠಡಿ' : '📊 Officer Control Tower')}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'registry' ? 'active' : ''}`}
           onClick={() => setActiveTab('registry')}
         >
-          {lang === 'hi' ? '🌾 एकीकृत किसान डेटाबेस एवं भूमि' : '🌾 Unified Farmer DB & Land'}
+          {lang === 'kn' ? '🌾 ಏಕೀಕೃತ ರೈತ ಡೇಟಾಬೇಸ್ ಮತ್ತು ಭೂಮಿ' : '🌾 Unified Farmer DB & Land'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'suadr' ? 'active' : ''}`}
           onClick={() => setActiveTab('suadr')}
         >
-          {lang === 'hi' ? '🧪 SUADR मृदा एवं कृषि सलाह' : '🧪 SUADR Soil & Agro Intelligence'}
+          {lang === 'kn' ? '🧪 SUADR ಮಣ್ಣು ಮತ್ತು ಕೃಷಿ ಸಲಹೆ' : '🧪 SUADR Soil & Agro Intelligence'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'schemes' ? 'active' : ''}`}
           onClick={() => setActiveTab('schemes')}
         >
-          {lang === 'hi' ? '💰 डीबीटी एवं सरकारी योजनाएं' : '💰 DBT & Schemes Engine'}
+          {lang === 'kn' ? '💰 ಡಿಬಿಟಿ ಮತ್ತು ಯೋಜನೆಗಳು' : '💰 DBT & Schemes Engine'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'hpasn' ? 'active' : ''}`}
           onClick={() => setActiveTab('hpasn')}
         >
-          {lang === 'hi' ? '🌐 HP-ASN डेटा एक्सचेंज' : '🌐 HP-ASN Data Exchange'}
+          {lang === 'kn' ? '🌐 HP-ASN ಡೇಟಾ ವಿನಿಮಯ' : '🌐 HP-ASN Data Exchange'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'mandi' ? 'active' : ''}`}
           onClick={() => setActiveTab('mandi')}
         >
-          {lang === 'hi' ? '📈 मंडी भाव' : '📈 Mandi Spot Rates'}
+          {lang === 'kn' ? '📈 ಮಾರುಕಟ್ಟೆ ದರಗಳು' : '📈 Mandi Spot Rates'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'ai-pipeline' ? 'active' : ''}`}
           onClick={() => setActiveTab('ai-pipeline')}
         >
-          {lang === 'hi' ? '🧠 AI एवं सैटेलाइट पाइपलाइन' : '🧠 AI & Satellite Pipeline'}
+          {lang === 'kn' ? '🧠 AI ಮತ್ತು ಉಪಗ್ರಹ ಪೈಪ್‌ಲೈನ್' : '🧠 AI & Satellite Pipeline'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'architecture' ? 'active' : ''}`}
           onClick={() => setActiveTab('architecture')}
         >
-          {lang === 'hi' ? '🏗️ 10-स्तरीय आर्किटेक्चर' : '🏗️ 10-Tier Architecture'}
+          {lang === 'kn' ? '🏗️ 10-ಹಂತದ ವಾಸ್ತುಶಿಲ್ಪ' : '🏗️ 10-Tier Architecture'}
         </button>
       </div>
     </header>
