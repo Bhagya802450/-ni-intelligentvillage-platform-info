@@ -37,11 +37,11 @@ router.get('/:id', (req, res) => {
   }
 
   // Also pull associated soil cards & schemes
-  const soilCards = store.suadr.soilProfiles.filter(s => 
+  const soilCards = (store.suadr?.soilProfiles || []).filter(s => 
     farmer.landParcels.some(p => p.soilHealthId === s.shcId)
   );
 
-  const applications = store.applications.filter(a => a.farmerId === farmer.id);
+  const applications = (store.applications || []).filter(a => a.farmerId === farmer.id);
 
   res.json({
     success: true,
@@ -98,6 +98,7 @@ router.post('/', (req, res) => {
         irrigationType: initialLand.irrigationType || "Rainfed",
         primaryCrop: initialLand.primaryCrop || "Wheat / Maize",
         soilHealthId: `SHC-${district.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        verificationStatus: "PENDING_PATWARI_VERIFICATION",
         coordinates: { lat: 31.1048, lng: 77.1734 }
       }
     ] : [],
@@ -136,6 +137,7 @@ router.post('/:id/land', (req, res) => {
       irrigationType: irrigationType || "Rainfed",
       primaryCrop: primaryCrop || "Seasonal Crop",
       soilHealthId: `SHC-${farmer.district.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      verificationStatus: "PENDING_PATWARI_VERIFICATION",
       coordinates: { lat: 31.1 + Math.random() * 0.5, lng: 77.1 + Math.random() * 0.5 }
     };
 
@@ -148,10 +150,92 @@ router.post('/:id/land', (req, res) => {
     return res.status(404).json({ success: false, message: "Farmer not found." });
   }
 
+  res.status(201).json({
+    success: true,
+    message: "Cadastral land parcel added successfully to Unified Farmer Database.",
+    data: updatedFarmer
+  });
+});
+
+// PATCH /api/farmers/:id/parcels/:parcelId/verify - Revenue Officer (Patwari) verification
+router.patch('/:id/parcels/:parcelId/verify', (req, res) => {
+  const { id, parcelId } = req.params;
+  const { verifiedBy, officerRemarks, status = "VERIFIED_HIMBHOOMI_MATCH" } = req.body;
+
+  let verifiedParcel = null;
+
+  db.update(store => {
+    const farmer = store.farmers.find(f => f.id === id);
+    if (!farmer) return store;
+
+    const parcel = (farmer.landParcels || []).find(p => p.parcelId === parcelId);
+    if (!parcel) return store;
+
+    parcel.verificationStatus = status;
+    parcel.verifiedBy = verifiedBy || "Ramesh Chand Sharma (PAT-HP-301)";
+    parcel.verifiedAt = new Date().toISOString();
+    parcel.officerRemarks = officerRemarks || "Physical boundary verified with Halqua Cadastral Sheet & Jamabandi.";
+    verifiedParcel = parcel;
+    return store;
+  });
+
+  if (!verifiedParcel) {
+    return res.status(404).json({ success: false, message: "Farmer or Land Parcel not found." });
+  }
+
   res.json({
     success: true,
-    message: "Land parcel linked to HimBhoomi cadastral records.",
-    data: updatedFarmer
+    message: "Land Parcel successfully verified by Revenue Officer (Patwari).",
+    parcel: verifiedParcel
+  });
+});
+
+// GET /api/farmers/:id/cadastral-geojson - Returns GeoJSON boundary features for parcel
+router.get('/:id/cadastral-geojson', (req, res) => {
+  const { id } = req.params;
+  const store = db.get();
+  const farmer = store.farmers.find(f => f.id === id);
+
+  if (!farmer) {
+    return res.status(404).json({ success: false, message: "Farmer not found." });
+  }
+
+  const features = (farmer.landParcels || []).map((p, idx) => {
+    const lat = p.coordinates?.lat || 31.1215;
+    const lng = p.coordinates?.lng || 77.5321;
+    const delta = 0.002 * (idx + 1);
+
+    return {
+      type: "Feature",
+      properties: {
+        parcelId: p.parcelId,
+        khasraNo: p.khasraNo,
+        khatauniNo: p.khatauniNo,
+        areaBigha: p.areaBigha,
+        areaHectares: p.areaHectares,
+        primaryCrop: p.primaryCrop,
+        irrigationType: p.irrigationType,
+        farmerName: farmer.name,
+        verificationStatus: p.verificationStatus || "VERIFIED_HIMBHOOMI_MATCH"
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [lng - delta, lat - delta],
+          [lng + delta, lat - delta],
+          [lng + delta, lat + delta],
+          [lng - delta, lat + delta],
+          [lng - delta, lat - delta]
+        ]]
+      }
+    };
+  });
+
+  res.json({
+    type: "FeatureCollection",
+    farmerId: farmer.id,
+    farmerName: farmer.name,
+    features
   });
 });
 

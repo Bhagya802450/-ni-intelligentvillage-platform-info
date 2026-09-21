@@ -492,6 +492,145 @@ const initialData = {
       modalPricePerQuintal: 2850,
       trend: "STABLE (+0.5%)"
     }
+  ],
+
+  officers: [
+    {
+      id: "OFF-HP-801",
+      email: "dao.shimla@hpagriculture.gov.in",
+      name: "Dr. Vikram Chauhan",
+      role: "AGRICULTURE_OFFICER",
+      designation: "District Agriculture Officer (DAO)",
+      department: "Department of Agriculture, HP",
+      district: "Shimla",
+      jurisdiction: ["Kotkhai", "Jubbal", "Rohru", "Theog"],
+      permissions: ["schemes:approve", "schemes:disburse_dbt", "suadr:create_shc", "advisories:publish", "ml:run_satellite_inference"]
+    },
+    {
+      id: "OFF-HP-802",
+      email: "ado.solan@hpagriculture.gov.in",
+      name: "Meenakshi Verma",
+      role: "AGRICULTURE_OFFICER",
+      designation: "Agriculture Development Officer (ADO)",
+      department: "Department of Agriculture, HP",
+      district: "Solan",
+      jurisdiction: ["Kandaghat", "Solan", "Nalagarh"],
+      permissions: ["schemes:approve", "schemes:disburse_dbt", "suadr:create_shc", "advisories:publish", "ml:run_satellite_inference"]
+    },
+    {
+      id: "PAT-HP-301",
+      email: "patwari.kotkhai@himbhoomi.gov.in",
+      name: "Ramesh Chand Sharma",
+      role: "VILLAGE_REVENUE_OFFICER",
+      designation: "Halqua Patwari / Revenue Officer",
+      department: "Department of Revenue (HimBhoomi Land Records)",
+      district: "Shimla",
+      jurisdiction: ["Kiari", "Kotkhai", "Gumma"],
+      permissions: ["cadastral:verify_khasra", "farmer:read_all_village", "himbhoomi:sync_jamabandi", "hpasn:audit_read"]
+    },
+    {
+      id: "BNK-HP-501",
+      email: "nodal.dbt@hpscb.com",
+      name: "Anjali Dogra",
+      role: "BANK_NODAL_OFFICER",
+      designation: "Nodal Officer (DBT & KCC Credit)",
+      department: "HP State Cooperative Bank / NPCI APBS",
+      district: "Statewide (HQ Shimla)",
+      jurisdiction: ["All 12 Districts"],
+      permissions: ["banking:verify_npci", "dbt:trace_apbs", "kcc:manage_limits", "hpasn:banking_exchange"]
+    },
+    {
+      id: "ADM-HP-001",
+      email: "admin.hpasn@hp.gov.in",
+      name: "Rajiv Kumar Verma",
+      role: "STATE_ADMIN",
+      designation: "State System Administrator & HP-ASN Nodal Officer",
+      department: "Directorate of Agriculture / DIT Himachal Pradesh",
+      district: "Himachal Pradesh State HQ",
+      jurisdiction: ["Full State Infrastructure"],
+      permissions: ["iam:manage_roles", "hpasn:manage_policies", "audit:inspect_tamper_log", "system:configure_gateway", "cadastral:verify_khasra", "schemes:approve"]
+    }
+  ],
+
+  roles: [
+    {
+      roleCode: "FARMER",
+      name: "Registered Farmer",
+      scope: "Self (Single Farmer Record)",
+      description: "Access to personalized land parcel records, Soil Health Cards, DBT subsidy application, Mandi trading, and field satellite NDVI analytics.",
+      allowedActions: ["farmer:read_own", "farmer:apply_schemes", "farmer:mandi_trade", "suadr:read_advisories", "ml:view_field_ndvi"]
+    },
+    {
+      roleCode: "VILLAGE_REVENUE_OFFICER",
+      name: "Halqua Patwari / Revenue Officer",
+      scope: "Village / Patwar Circle",
+      description: "Inspection of cadastral Khasra maps, verification of land titles against Jamabandi (HimBhoomi), and geo-boundary sign-off.",
+      allowedActions: ["cadastral:verify_khasra", "farmer:read_all_village", "himbhoomi:sync_jamabandi", "hpasn:audit_read"]
+    },
+    {
+      roleCode: "AGRICULTURE_OFFICER",
+      name: "Agriculture Development / District Officer (ADO/DAO)",
+      scope: "Tehsil / District",
+      description: "Review and approval of DBT subsidy applications, issuing laboratory Soil Health Cards, publishing seasonal advisories, and satellite crop analytics.",
+      allowedActions: ["schemes:approve", "schemes:disburse_dbt", "suadr:create_shc", "advisories:publish", "ml:run_satellite_inference"]
+    },
+    {
+      roleCode: "BANK_NODAL_OFFICER",
+      name: "Banking & DBT Nodal Officer",
+      scope: "Bank Branches / NPCI Switch",
+      description: "Validation of Aadhaar Payment Bridge System (APBS) bank mandate, DBT batch settlement, and Kisan Credit Card (KCC) limits.",
+      allowedActions: ["banking:verify_npci", "dbt:trace_apbs", "kcc:manage_limits", "hpasn:banking_exchange"]
+    },
+    {
+      roleCode: "STATE_ADMIN",
+      name: "State Infrastructure Administrator",
+      scope: "Statewide Core Engine",
+      description: "HP-ASN Inter-department data exchange governance policies, tamper-proof audit trail oversight, rate-limiting, and IAM configuration.",
+      allowedActions: ["iam:manage_roles", "hpasn:manage_policies", "audit:inspect_tamper_log", "system:configure_gateway", "cadastral:verify_khasra", "schemes:approve"]
+    }
+  ],
+
+  hpasnPolicies: [
+    {
+      policyId: "POL-HPASN-01",
+      agreementName: "HimBhoomi Cadastral Land Sync Agreement",
+      parties: ["Dept of Revenue", "Dept of Agriculture"],
+      legalBasis: "HP Digital Governance Act & Aadhaar Act Section 7",
+      encryption: "TLS 1.3 + HMAC-SHA256 Payload Signing",
+      slaLatencyMs: "< 350ms",
+      purpose: "Prevent bogus beneficiary claims by verifying Khasra ownership before DBT subsidy approval.",
+      status: "ACTIVE_ENFORCED"
+    },
+    {
+      policyId: "POL-HPASN-02",
+      agreementName: "NPCI Aadhaar Payment Bridge Gateway Settlement",
+      parties: ["Dept of Agriculture", "HP State Cooperative Bank / NPCI"],
+      legalBasis: "Direct Benefit Transfer (DBT) Central Mission Guidelines",
+      encryption: "ISO-20022 / AES-256 GCM",
+      slaLatencyMs: "< 500ms",
+      purpose: "Direct electronic credit of subsidy funds to authenticated farmer bank accounts without intermediaries.",
+      status: "ACTIVE_ENFORCED"
+    },
+    {
+      policyId: "POL-HPASN-03",
+      agreementName: "Agro-Meteorological Telemetry Stream",
+      parties: ["India Meteorological Department (IMD)", "SUADR Backbone"],
+      legalBasis: "National Disaster Management Authority Advisory Protocol",
+      encryption: "MQTT / WSS Stream with GeoJSON",
+      slaLatencyMs: "< 100ms",
+      purpose: "Real-time automated weather warning and frost alert dissemination to apple orchardists and farmers.",
+      status: "ACTIVE_ENFORCED"
+    },
+    {
+      policyId: "POL-HPASN-04",
+      agreementName: "Horticulture & HPMC Cold Chain Certification",
+      parties: ["Dept of Horticulture", "HPMC", "APMC Himachal Pradesh"],
+      legalBasis: "HP Agri-Horticulture Produce Marketing Act",
+      encryption: "OAuth 2.0 Mutual TLS",
+      slaLatencyMs: "< 250ms",
+      purpose: "Synchronize apple grading, cold atmosphere CA store quota, and MSP procurement prices.",
+      status: "ACTIVE_ENFORCED"
+    }
   ]
 };
 
@@ -503,7 +642,12 @@ function loadData() {
       return initialData;
     }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    const merged = { ...initialData, ...parsed };
+    if (!parsed.officers || !parsed.roles || !parsed.hpasnPolicies) {
+      saveData(merged);
+    }
+    return merged;
   } catch (err) {
     console.error('Error reading db file, using memory initialData:', err);
     return initialData;
@@ -533,3 +677,4 @@ module.exports = {
     return cache;
   }
 };
+

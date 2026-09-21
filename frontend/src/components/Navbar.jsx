@@ -154,6 +154,13 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
         </button>
 
         <button
+          className={`nav-pill ${activeTab === 'iam' ? 'active' : ''}`}
+          onClick={() => setActiveTab('iam')}
+        >
+          {lang === 'kn' ? '🛡️ IAM ಮತ್ತು ಪ್ರವೇಶ ನಿಯಂತ್ರಣ' : '🛡️ IAM & Access Control'}
+        </button>
+
+        <button
           className={`nav-pill ${activeTab === 'suadr' ? 'active' : ''}`}
           onClick={() => setActiveTab('suadr')}
         >

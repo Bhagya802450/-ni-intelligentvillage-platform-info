@@ -3,32 +3,42 @@
 
 This document details the functional responsibilities, data structures, and API contracts for the core platform modules assigned to the platform:
 
+1. **HP Agriculture Service Network (HP-ASN)** - Secure Inter-Departmental Consent-Based Data Exchange
+2. **Identity & Access Management (IAM)** - Zero-Trust RBAC, Sessions & Aadhaar / AgriStack e-KYC
+3. **Unified Farmer Database** - Master Registry, Cadastral Khasra Parcels & HimBhoomi Sync
+4. **State Unified Digital Database (SUADR)** - Soil Health, Micro-Climate Telemetry, Agro-Climatic Zones & Pest Intelligence
+
 ---
 
 ## 1. Module 1: HP Agriculture Service Network (HP-ASN)
 ### *Secure Data-Exchange & Inter-Departmental Network*
 
 ### 📌 Functional Responsibility
-- Acts as the **secure data-exchange layer** connecting government departments (Revenue, Horticulture, Agriculture, Banking, and IMD Met).
+- Acts as the **secure data-exchange layer** connecting government departments (Revenue, Horticulture, Agriculture, Banking, Civil Supplies, and IMD Met).
 - Eliminates departmental silos while enforcing **citizen/farmer consent**.
-- Implements an immutable audit ledger with **HMAC-SHA256 cryptographic signatures** for zero-repudiation.
+- Implements an immutable audit ledger with **HMAC-SHA256 cryptographic signatures** for non-repudiation.
+- Enforces bilateral data sharing agreements and SLA latency standards across Himachal Pradesh state IT infrastructure.
 
 ### 🏛️ Connected Departments
 1. **Department of Revenue (*HimBhoomi / Jamabandi*)**: Cadastral parcel maps, Khasra numbers, land ownership title verification.
-2. **Department of Horticulture (*HPMC*)**: Apple orchard grading, cold chain allotments, subsidized rootstock issuance.
+2. **Department of Horticulture (*HPMC*)**: Apple orchard grading, cold atmosphere (CA) stores, subsidized rootstock issuance.
 3. **HP State Cooperative Bank (*HPSC / NPCI APBS*)**: Direct Benefit Transfer (DBT) bank account validation and settlement tracing.
 4. **India Meteorological Department (*IMD Agro-Met*)**: Automatic Weather Station (AWS) micro-climate streams and frost alerts.
+5. **Department of Food & Civil Supplies**: Ration card e-PDS verification and MSP procurement quotas.
 
 ### 💻 Code & Schema Files:
 - **REST API Router**: [`backend/src/modules/hpasn/hpasnRouter.js`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/backend/src/modules/hpasn/hpasnRouter.js)
 - **Frappe DocType**: [`backend/frappe_doctypes/hpasn_log/hpasn_log.json`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/backend/frappe_doctypes/hpasn_log/hpasn_log.json)
 - **PostgreSQL Table**: `hpasn_audit_logs` in [`backend/db/schema.sql`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/backend/db/schema.sql)
-- **Interactive Portal**: [`frontend/src/pages/HpasnExchange.jsx`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/frontend/src/pages/HpasnExchange.jsx)
+- **Interactive UI**: [`frontend/src/pages/HpasnExchange.jsx`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/frontend/src/pages/HpasnExchange.jsx)
 
 ### 🔌 API Endpoints:
 - `GET /api/hpasn/departments`: Lists all connected state partner systems and protocols.
+- `GET /api/hpasn/policies`: Retrieves bilateral data governance agreements, legal basis, and encryption protocols.
 - `GET /api/hpasn/logs`: Retrieves the cryptographic consent audit ledger.
-- `POST /api/hpasn/request-consent`: Signs and initiates an inter-departmental data transfer.
+- `POST /api/hpasn/request-consent`: Signs and initiates an inter-departmental data transfer with HMAC-SHA256 digest.
+- `POST /api/hpasn/exchange`: Simulates live bilateral inter-department data query (e.g. Khasra title lookup).
+- `POST /api/hpasn/verify-signature`: Cryptographically validates transaction digest to prove non-repudiation.
 
 ---
 
@@ -37,19 +47,26 @@ This document details the functional responsibilities, data structures, and API 
 
 ### 📌 Functional Responsibility
 - Handles user authentication, session security, and **Role-Based Access Control (RBAC)** across the platform.
-- Provides distinct permission tiers:
-  - **👨‍🌾 Farmers**: Self-service portal, view my land holdings, apply for DBT schemes, query AI advisory.
-  - **👮‍♂️ Agriculture Officers (DAO/BTM)**: Field inspection queue, on-site remarks, grant sanctioning, audit reviews.
-  - **🛡️ State Admins**: Subsystem telemetry, rate limit policies, and inter-department API tokens.
+- Provides 5 distinct permission tiers:
+  1. **👨‍🌾 FARMER**: Access personal land parcels, Soil Health Cards, submit DBT scheme applications, trade on APMC Mandi, and view Sentinel-2 NDVI satellite imagery.
+  2. **📜 VILLAGE_REVENUE_OFFICER (Halqua Patwari)**: Inspect cadastral Khasra maps, verify land titles against Jamabandi (HimBhoomi), and issue physical boundary sign-offs.
+  3. **👮‍♂️ AGRICULTURE_OFFICER (ADO/DAO)**: Review and approve DBT subsidy applications, record laboratory Soil Health Cards, publish seasonal agronomy advisories.
+  4. **🏦 BANK_NODAL_OFFICER**: Validate Aadhaar Payment Bridge System (APBS) mandates, monitor DBT tranche settlements, and manage Kisan Credit Card (KCC) limits.
+  5. **🛡️ STATE_ADMIN**: HP-ASN inter-department data exchange governance, tamper-proof audit trail oversight, rate-limiting, and IAM configuration.
 - **Aadhaar e-KYC & AgriStack Linkage**: Verifies farmer identities and binds them to national AgriStack IDs (`AGRI-HP-2026-XXXX`).
 
 ### 💻 Code & Schema Files:
 - **REST API Router**: [`backend/src/modules/auth/authRouter.js`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/backend/src/modules/auth/authRouter.js)
-- **RBAC Navbar & Role Switcher**: [`frontend/src/components/Navbar.jsx`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/frontend/src/components/Navbar.jsx)
+- **Interactive IAM UI**: [`frontend/src/pages/IamView.jsx`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/frontend/src/pages/IamView.jsx)
+- **RBAC Navbar & Switcher**: [`frontend/src/components/Navbar.jsx`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/frontend/src/components/Navbar.jsx)
 - **PostgreSQL Table**: `users` in [`backend/db/schema.sql`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/backend/db/schema.sql)
 
 ### 🔌 API Endpoints:
-- `POST /api/auth/login`: Authenticates Farmer (phone / AgriStack ID) or Officer (officer ID / email).
+- `POST /api/auth/login`: Authenticates Farmer or Officers with assigned roles and permission arrays.
+- `GET /api/auth/me`: Validates session Bearer token and returns active permissions.
+- `GET /api/auth/roles`: Full RBAC roles and permissions matrix.
+- `GET /api/auth/principals`: Directory of authorized departmental officials.
+- `POST /api/auth/check-permission`: Policy evaluation engine returning `PERMIT` or `DENY` decisions.
 - `POST /api/auth/verify-aadhaar`: Simulates Aadhaar OTP e-KYC bridge and generates verified AgriStack ID.
 
 ---
@@ -65,7 +82,9 @@ This document details the functional responsibilities, data structures, and API 
   - *Khatauni Number* (e.g. `18`)
   - Operational area in **Bighas** and **Hectares**
   - Irrigation type (Micro-drip, Sprinkler, Kuhl, Rainfed)
-  - Geo-coordinates (Latitude & Longitude centroid)
+  - Geo-coordinates (Centroid Latitude & Longitude)
+  - Cadastral GeoJSON boundary polygons for satellite GIS integration
+  - Patwari verification status (`VERIFIED_HIMBHOOMI_MATCH`)
 
 ### 💻 Code & Schema Files:
 - **REST API Router**: [`backend/src/modules/farmers/farmerRouter.js`](file:///c:/Users/Admin/Desktop/ni-intelligentvillage-platform-info/backend/src/modules/farmers/farmerRouter.js)
@@ -79,6 +98,8 @@ This document details the functional responsibilities, data structures, and API 
 - `GET /api/farmers/:id`: Pulls full profile with linked land parcels, soil health cards, and active schemes.
 - `POST /api/farmers`: Enrolls new farmer with automatic AgriStack ID assignment.
 - `POST /api/farmers/:id/land`: Links cadastral Khasra survey parcel to an existing farmer.
+- `PATCH /api/farmers/:id/parcels/:parcelId/verify`: Revenue Officer (Patwari) land verification sign-off.
+- `GET /api/farmers/:id/cadastral-geojson`: Generates GeoJSON FeatureCollection polygons for map rendering.
 
 ---
 
@@ -93,7 +114,8 @@ This document details the functional responsibilities, data structures, and API 
   - Micronutrients: Organic Carbon %, Zinc (ppm), Boron (ppm)
   - Regional Agronomy Prescriptions
 - **Agro-Climatic Intelligence**: Covers all 4 Himachal elevation zones (Sub-Montane 300m to Cold Desert >2,200m).
-- **Real-Time Telemetry**: Live temperature, humidity, rainfall probability, and frost warnings.
+- **Crop Suitability Matrix**: Zone-specific recommendations with yield benchmarks.
+- **Real-Time Telemetry**: Live Automatic Weather Station (AWS) temperature, humidity, rainfall, and soil moisture telemetry.
 - **Pest & Disease Diagnostics**: Knowledge base with natural farming (*SPNF / Jeevamrit / Neemastra*) recipes and chemical IPM alternatives.
 
 ### 💻 Code & Schema Files:
@@ -104,8 +126,12 @@ This document details the functional responsibilities, data structures, and API 
 
 ### 🔌 API Endpoints:
 - `GET /api/suadr/soil`: Soil test profiles with Tehsil/District filters.
+- `GET /api/suadr/soil/:shcId`: Detailed Soil Health Card with NPK, micronutrients, and advice.
+- `POST /api/suadr/soil`: Laboratory registration of newly tested soil samples.
 - `GET /api/suadr/zones`: HP agro-climatic zones and crop suitability tables.
-- `GET /api/suadr/telemetry`: Live micro-climate sensor streams.
+- `GET /api/suadr/zones/:zoneId/crops`: Zone-specific crop suitability and expected quintal yields.
+- `GET /api/suadr/telemetry`: Live micro-climate AWS sensor streams.
+- `POST /api/suadr/telemetry`: Ingestion of automated weather station readings.
 - `GET /api/suadr/pests`: Pest diagnostic handbook.
 - `POST /api/suadr/advisory-query`: Rule-based agronomy inference engine.
 
@@ -116,13 +142,14 @@ This document details the functional responsibilities, data structures, and API 
 ```
        ┌────────────────────────────────────────────────────────┐
        │      MODULE 2: Identity & Access Management (IAM)      │
-       │   Aadhaar e-KYC • AgriStack IDs • Farmer & Officer RBAC│
+       │   Aadhaar e-KYC • AgriStack IDs • 5 RBAC User Roles    │
        └───────────────────────────┬────────────────────────────┘
-                                   │ Authenticates User Session
+                                   │ Authenticates & Authorizes Action
                                    ▼
        ┌────────────────────────────────────────────────────────┐
        │          MODULE 3: Unified Farmer Database             │
        │   Farmer Profiles • Cadastral Khasra Land Parcels      │
+       │   Patwari Verification • GeoJSON Boundary Maps        │
        └──────────────┬──────────────────────────┬──────────────┘
                       │ Linked Land Parcel ID    │ Farmer ID
                       ▼                          ▼
@@ -130,6 +157,7 @@ This document details the functional responsibilities, data structures, and API 
 │     MODULE 4: SUADR Database    │   │  MODULE 1: HP-ASN Service Net   │
 │ Soil NPK • Climate Telemetry    │   │ Consent Logs • Inter-Dept Data  │
 │ Agro Zones • Pest Intelligence  │   │ Revenue (HimBhoomi) ↔ Banking   │
+│ Crop Suitability • Advisory     │   │ SHA-256 Non-Repudiation Signatures│
 └────────────────┬────────────────┘   └────────────────┬────────────────┘
                  │                                     │
                  └──────────────────┬──────────────────┘

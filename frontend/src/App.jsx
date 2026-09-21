@@ -9,6 +9,7 @@ import HpasnExchange from './pages/HpasnExchange';
 import MandiMarketplace from './pages/MandiMarketplace';
 import ArchitectureView from './pages/ArchitectureView';
 import AiServicePipeline from './pages/AiServicePipeline';
+import IamView from './pages/IamView';
 import { api } from './services/api';
 
 export default function App() {
@@ -104,6 +105,11 @@ export default function App() {
                 farmers={farmers}
                 onRefreshData={loadAllData}
               />
+            )}
+
+            {/* IAM Identity & Access Management */}
+            {activeTab === 'iam' && (
+              <IamView lang={lang} />
             )}
 
             {/* SUADR Soil & Climate Tab */}

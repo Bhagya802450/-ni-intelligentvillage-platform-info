@@ -21,17 +21,30 @@ export const api = {
   // Health & Gateway
   getHealth: () => fetchJson('/health'),
 
-  // Auth & AgriStack
+  // =========================================================================
+  // MODULE 2: Identity & Access Management (IAM)
+  // =========================================================================
   login: (role, identifier) => fetchJson('/auth/login', {
     method: 'POST',
     body: JSON.stringify({ role, identifier })
+  }),
+  getRoles: () => fetchJson('/auth/roles'),
+  getPrincipals: () => fetchJson('/auth/principals'),
+  getCurrentSession: (token) => fetchJson('/auth/me', {
+    headers: { 'Authorization': `Bearer ${token}` }
+  }),
+  checkPermission: (role, action) => fetchJson('/auth/check-permission', {
+    method: 'POST',
+    body: JSON.stringify({ role, action })
   }),
   verifyAadhaar: (aadhaarNumber, otp) => fetchJson('/auth/verify-aadhaar', {
     method: 'POST',
     body: JSON.stringify({ aadhaarNumber, otp })
   }),
 
-  // Unified Farmer Database
+  // =========================================================================
+  // MODULE 3: Unified Farmer Database
+  // =========================================================================
   getFarmers: (district = '', search = '') => fetchJson(`/farmers?district=${district}&search=${search}`),
   getFarmerById: (id) => fetchJson(`/farmers/${id}`),
   registerFarmer: (payload) => fetchJson('/farmers', {
@@ -42,16 +55,51 @@ export const api = {
     method: 'POST',
     body: JSON.stringify(parcel)
   }),
+  verifyLandParcel: (farmerId, parcelId, data) => fetchJson(`/farmers/${farmerId}/parcels/${parcelId}/verify`, {
+    method: 'PATCH',
+    body: JSON.stringify(data)
+  }),
+  getCadastralGeojson: (farmerId) => fetchJson(`/farmers/${farmerId}/cadastral-geojson`),
 
-  // SUADR
+  // =========================================================================
+  // MODULE 4: State Unified Digital Database (SUADR)
+  // =========================================================================
   getSoilProfiles: (district = '') => fetchJson(`/suadr/soil?district=${district}`),
   getSoilById: (shcId) => fetchJson(`/suadr/soil/${shcId}`),
+  recordSoilSample: (payload) => fetchJson('/suadr/soil', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
   getAgroZones: () => fetchJson('/suadr/zones'),
+  getZoneCrops: (zoneId) => fetchJson(`/suadr/zones/${zoneId}/crops`),
   getTelemetry: () => fetchJson('/suadr/telemetry'),
+  ingestTelemetry: (payload) => fetchJson('/suadr/telemetry', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
   getPests: (crop = '') => fetchJson(`/suadr/pests?crop=${crop}`),
   queryAdvisory: (query) => fetchJson('/suadr/advisory-query', {
     method: 'POST',
     body: JSON.stringify(query)
+  }),
+
+  // =========================================================================
+  // MODULE 1: HP Agriculture Service Network (HP-ASN)
+  // =========================================================================
+  getAsnDepartments: () => fetchJson('/hpasn/departments'),
+  getAsnPolicies: () => fetchJson('/hpasn/policies'),
+  getAsnLogs: () => fetchJson('/hpasn/logs'),
+  requestAsnConsent: (payload) => fetchJson('/hpasn/request-consent', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+  exchangeAsn: (payload) => fetchJson('/hpasn/exchange', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }),
+  verifyAsnSignature: (transactionId, signature) => fetchJson('/hpasn/verify-signature', {
+    method: 'POST',
+    body: JSON.stringify({ transactionId, signature })
   }),
 
   // Schemes & DBT
@@ -69,14 +117,6 @@ export const api = {
     body: JSON.stringify({ status, officerRemarks: remarks, officerName })
   }),
   getSchemeAnalytics: () => fetchJson('/schemes/analytics'),
-
-  // HP-ASN Inter-Department Exchange
-  getAsnDepartments: () => fetchJson('/hpasn/departments'),
-  getAsnLogs: () => fetchJson('/hpasn/logs'),
-  requestAsnConsent: (payload) => fetchJson('/hpasn/request-consent', {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  }),
 
   // Mandi
   getMandiRates: (district = '', commodity = '') => fetchJson(`/marketplace/mandi-rates?district=${district}&commodity=${commodity}`),
