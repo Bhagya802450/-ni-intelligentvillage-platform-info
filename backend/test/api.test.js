@@ -38,6 +38,7 @@ function request(method, path, body = null, headers = {}) {
 const get = (path, headers = {}) => request('GET', path, null, headers);
 const post = (path, body, headers = {}) => request('POST', path, body, headers);
 const patch = (path, body, headers = {}) => request('PATCH', path, body, headers);
+const del = (path, headers = {}) => request('DELETE', path, null, headers);
 
 async function runTests() {
   serverInstance = app.listen(TEST_PORT, async () => {
@@ -234,9 +235,48 @@ async function runTests() {
       // ----------------------------------------------------------------------
       // MODULE 3: Unified Farmer Database
       // ----------------------------------------------------------------------
-      console.log("\n--- [MODULE 3: Unified Farmer Database] ---");
+      console.log("\n--- [MODULE 3: Unified Farmer Database (AgriStack Aligned)] ---");
       const farmers = await get('/api/farmers');
       console.log("✔ GET /api/farmers:", farmers.body.success ? "PASS" : "FAIL", `(${farmers.body.count} farmers in database)`);
+
+      // Verify the 14 Farmer Model attributes on first record
+      const f1 = farmers.body.data?.[0];
+      const hasAll14Fields = f1 && 
+        f1.id && f1.farmer_id && f1.name && f1.mobile && f1.email &&
+        f1.address && f1.state && f1.district && f1.block && f1.village &&
+        f1.national_farmer_id && f1.status && f1.created_at && f1.updated_at;
+      console.log("✔ Farmer Data Model (All 14 Attributes Present):", hasAll14Fields ? "PASS" : "FAIL", `(${f1?.farmer_id}: ${f1?.name} - ${f1?.national_farmer_id})`);
+
+      // Test Farmer Model Creation with all 14 fields
+      const newFarmerReq = await post('/api/farmers', {
+        farmer_id: "FARMER-HP-9901",
+        name: "Kuldeep Singh Chandel",
+        mobile: "+91 98170 54321",
+        email: "kuldeep.chandel@hpfarmers.in",
+        address: "Village Sandhole, Block Dharampur, District Mandi, HP",
+        state: "Himachal Pradesh",
+        district: "Mandi",
+        block: "Dharampur",
+        village: "Sandhole",
+        national_farmer_id: "AGRI-HP-2026-8844",
+        status: "ACTIVE"
+      });
+      console.log("✔ POST /api/farmers (Create with 14 Farmer Model Fields):", newFarmerReq.status === 201 && newFarmerReq.body.data?.national_farmer_id === "AGRI-HP-2026-8844" ? "PASS" : "FAIL", `(${newFarmerReq.body.data?.farmer_id})`);
+
+      // Test Lookup by National Farmer ID (AgriStack ID)
+      const lookupByNationalId = await get('/api/farmers/AGRI-HP-2026-8844');
+      console.log("✔ GET /api/farmers/:national_farmer_id (AgriStack lookup):", lookupByNationalId.status === 200 && lookupByNationalId.body.data?.name === "Kuldeep Singh Chandel" ? "PASS" : "FAIL");
+
+      // Test Farmer Profile Update (PATCH)
+      const updateFarmer = await patch('/api/farmers/FARMER-HP-9901', {
+        mobile: "+91 98170 99999",
+        category: "Medium"
+      });
+      console.log("✔ PATCH /api/farmers/:id (Update mobile & category):", updateFarmer.status === 200 && updateFarmer.body.data?.mobile === "+91 98170 99999" ? "PASS" : "FAIL");
+
+      // Test Farmer Deactivation (DELETE / soft-delete)
+      const deactivateFarmer = await del('/api/farmers/FARMER-HP-9901');
+      console.log("✔ DELETE /api/farmers/:id (Deactivate account):", deactivateFarmer.status === 200 ? "PASS" : "FAIL");
 
       const farmerDetail = await get('/api/farmers/FARMER-HP-1001');
       console.log("✔ GET /api/farmers/:id:", farmerDetail.body.success ? "PASS" : "FAIL", `(${farmerDetail.body.data?.name} - ${farmerDetail.body.data?.landParcels?.length} parcels)`);

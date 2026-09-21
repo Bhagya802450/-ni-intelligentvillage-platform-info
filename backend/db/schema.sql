@@ -42,17 +42,27 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 2. Unified Farmer Database (AgriStack Aligned)
 CREATE TABLE IF NOT EXISTS farmers (
-    farmer_id VARCHAR(64) PRIMARY KEY,
-    agristack_id VARCHAR(64) UNIQUE NOT NULL,
-    aadhaar_hash VARCHAR(64) NOT NULL,
+    id VARCHAR(64) PRIMARY KEY,
+    farmer_id VARCHAR(64) UNIQUE NOT NULL,
     name VARCHAR(150) NOT NULL,
+    mobile VARCHAR(20) NOT NULL,
+    email VARCHAR(100),
+    address TEXT,
+    state VARCHAR(100) DEFAULT 'Himachal Pradesh',
+    district VARCHAR(64) NOT NULL,
+    block VARCHAR(64),
+    village VARCHAR(100) NOT NULL,
+    national_farmer_id VARCHAR(64) UNIQUE NOT NULL,
+    status VARCHAR(32) DEFAULT 'ACTIVE',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    -- Additional AgriStack details & legacy aliases
+    phone VARCHAR(20),
+    tehsil VARCHAR(64),
+    agristack_id VARCHAR(64),
     father_name VARCHAR(150),
-    phone VARCHAR(20) NOT NULL,
     gender VARCHAR(16),
     dob DATE,
-    district VARCHAR(64) NOT NULL,
-    tehsil VARCHAR(64) NOT NULL,
-    village VARCHAR(100) NOT NULL,
     pincode VARCHAR(10),
     farmer_category VARCHAR(64) DEFAULT 'Small & Marginal',
     is_natural_farming BOOLEAN DEFAULT FALSE,
@@ -60,7 +70,7 @@ CREATE TABLE IF NOT EXISTS farmers (
     bank_ifsc VARCHAR(16),
     bank_name VARCHAR(100),
     is_dbt_linked BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    aadhaar_hash VARCHAR(64)
 );
 
 -- 3. Cadastral Land Parcel Records (HimBhoomi Linked)

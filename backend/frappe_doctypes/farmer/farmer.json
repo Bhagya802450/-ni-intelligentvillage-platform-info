@@ -8,31 +8,52 @@
   "track_changes": 1,
   "fields": [
     {
-      "fieldname": "agristack_id",
-      "label": "AgriStack ID",
+      "fieldname": "id",
+      "label": "Internal ID",
       "fieldtype": "Data",
       "reqd": 1,
-      "unique": 1
+      "unique": 1,
+      "in_list_view": 1
     },
     {
-      "fieldname": "aadhaar_hash",
-      "label": "Aadhaar Hash (Last 4)",
+      "fieldname": "farmer_id",
+      "label": "Farmer ID",
       "fieldtype": "Data",
-      "reqd": 1
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
     },
     {
-      "fieldname": "farmer_name",
+      "fieldname": "name",
       "label": "Farmer Full Name",
       "fieldtype": "Data",
       "reqd": 1,
       "in_list_view": 1
     },
     {
-      "fieldname": "phone",
-      "label": "Mobile Number",
+      "fieldname": "mobile",
+      "label": "Mobile Contact",
       "fieldtype": "Data",
       "reqd": 1,
       "in_list_view": 1
+    },
+    {
+      "fieldname": "email",
+      "label": "Email Address",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "address",
+      "label": "Full Residential Address",
+      "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "state",
+      "label": "State",
+      "fieldtype": "Data",
+      "default": "Himachal Pradesh",
+      "reqd": 1
     },
     {
       "fieldname": "district",
@@ -44,16 +65,48 @@
       "in_standard_filter": 1
     },
     {
-      "fieldname": "tehsil",
-      "label": "Tehsil",
+      "fieldname": "block",
+      "label": "Block / Tehsil",
       "fieldtype": "Data",
       "reqd": 1
     },
     {
       "fieldname": "village",
-      "label": "Village",
+      "label": "Village / Patwar Circle",
       "fieldtype": "Data",
       "reqd": 1
+    },
+    {
+      "fieldname": "national_farmer_id",
+      "label": "National Farmer ID (AgriStack ID)",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "status",
+      "label": "Account Status",
+      "fieldtype": "Select",
+      "options": "ACTIVE\nPENDING_VERIFICATION\nSUSPENDED\nINACTIVE",
+      "default": "ACTIVE",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "created_at",
+      "label": "Created At",
+      "fieldtype": "Datetime"
+    },
+    {
+      "fieldname": "updated_at",
+      "label": "Updated At",
+      "fieldtype": "Datetime"
+    },
+    {
+      "fieldname": "aadhaar_hash",
+      "label": "Aadhaar Hash (Last 4)",
+      "fieldtype": "Data"
     },
     {
       "fieldname": "farmer_category",
@@ -93,7 +146,14 @@
   ],
   "permissions": [
     {
-      "role": "Agriculture Officer",
+      "role": "Admin",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "Officer",
       "read": 1,
       "write": 1,
       "create": 1

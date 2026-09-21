@@ -95,19 +95,27 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
             </p>
           </div>
 
-          {/* Identification Chips */}
+          {/* Identification Chips: 14 Core Model Fields */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              AgriStack Unified ID: <span className="mono-chip">{farmer.agriStackId}</span>
+              National Farmer ID: <span className="mono-chip" style={{ color: '#38bdf8' }}>{farmer.national_farmer_id || farmer.agriStackId}</span>
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Farmer ID: <span className="mono-chip">{farmer.id}</span>
+              Farmer ID: <span className="mono-chip">{farmer.farmer_id || farmer.id}</span>
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Aadhaar Hash: <span className="mono-chip">{farmer.aadhaarHash}</span>
+              Mobile: <span className="mono-chip">{farmer.mobile || farmer.phone}</span>
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600 }}>
-              DBT Linked Bank: {farmer.bankDetails?.bankName} ({farmer.bankDetails?.accountNo})
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Block / Tehsil: <span className="mono-chip">{farmer.block || farmer.tehsil}</span>
+            </div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <span className={`badge ${farmer.status === 'ACTIVE' || !farmer.status ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.7rem' }}>
+                STATUS: {farmer.status || 'ACTIVE'}
+              </span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
+                State: {farmer.state || 'Himachal Pradesh'}
+              </span>
             </div>
           </div>
         </div>

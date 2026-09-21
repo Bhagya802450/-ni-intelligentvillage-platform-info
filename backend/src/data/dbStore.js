@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const Farmer = require('../models/Farmer');
 
 const DB_FILE = path.join(__dirname, 'seed_data.json');
 
@@ -7,16 +8,26 @@ const initialData = {
   farmers: [
     {
       id: "FARMER-HP-1001",
+      farmer_id: "FARMER-HP-1001",
+      name: "Surender Thakur",
+      mobile: "+91 98160 12345",
+      email: "surender.thakur@hpfarmers.in",
+      address: "Village Kiari, Tehsil Kotkhai, District Shimla, HP",
+      state: "Himachal Pradesh",
+      district: "Shimla",
+      block: "Kotkhai",
+      village: "Kiari",
+      national_farmer_id: "AGRI-HP-2026-9812",
+      status: "ACTIVE",
+      created_at: "2024-03-10T10:00:00Z",
+      updated_at: "2026-09-21T10:00:00Z",
       agriStackId: "AGRI-HP-2026-9812",
       aadhaarHash: "XXXX-XXXX-4521",
-      name: "Surender Thakur",
       fatherName: "Bishamber Thakur",
       phone: "+91 98160 12345",
       gender: "Male",
       dob: "1978-04-12",
-      district: "Shimla",
       tehsil: "Kotkhai",
-      village: "Kiari",
       pincode: "171202",
       category: "Small & Marginal",
       naturalFarmingPractitioner: true,
@@ -644,6 +655,9 @@ function loadData() {
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     const parsed = JSON.parse(raw);
     const merged = { ...initialData, ...parsed };
+    if (Array.isArray(merged.farmers)) {
+      merged.farmers = merged.farmers.map(f => new Farmer(f).toJSON());
+    }
     if (!parsed.officers || !parsed.roles || !parsed.hpasnPolicies) {
       saveData(merged);
     }

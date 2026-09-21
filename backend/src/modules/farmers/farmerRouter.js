@@ -1,35 +1,54 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
+const Farmer = require('../../models/Farmer');
 
 // GET all farmers with optional filter
 router.get('/', (req, res) => {
-  const { district, search } = req.query;
-  let list = db.get().farmers;
+  const { district, block, status, search } = req.query;
+  let list = db.get().farmers || [];
 
   if (district && district !== 'All') {
-    list = list.filter(f => f.district.toLowerCase() === district.toLowerCase());
+    list = list.filter(f => (f.district || '').toLowerCase() === district.toLowerCase());
+  }
+
+  if (block && block !== 'All') {
+    list = list.filter(f => 
+      (f.block || f.tehsil || '').toLowerCase() === block.toLowerCase()
+    );
+  }
+
+  if (status && status !== 'All') {
+    list = list.filter(f => (f.status || 'ACTIVE').toUpperCase() === status.toUpperCase());
   }
 
   if (search) {
     const q = search.toLowerCase();
     list = list.filter(f => 
-      f.name.toLowerCase().includes(q) ||
-      f.agriStackId.toLowerCase().includes(q) ||
-      f.phone.includes(q) ||
-      f.village.toLowerCase().includes(q)
+      (f.name && f.name.toLowerCase().includes(q)) ||
+      (f.farmer_id && f.farmer_id.toLowerCase().includes(q)) ||
+      (f.national_farmer_id && f.national_farmer_id.toLowerCase().includes(q)) ||
+      (f.agriStackId && f.agriStackId.toLowerCase().includes(q)) ||
+      (f.mobile && f.mobile.includes(q)) ||
+      (f.phone && f.phone.includes(q)) ||
+      (f.village && f.village.toLowerCase().includes(q))
     );
   }
 
-  res.json({ success: true, count: list.length, data: list });
+  res.json({
+    success: true,
+    model: "Unified Farmer Database (AgriStack Aligned)",
+    count: list.length,
+    data: list
+  });
 });
 
-// GET specific farmer by ID or AgriStack ID
+// GET specific farmer by ID, farmer_id, or national_farmer_id
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   const store = db.get();
-  const farmer = store.farmers.find(
-    f => f.id === id || f.agriStackId === id
+  const farmer = (store.farmers || []).find(
+    f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
   );
 
   if (!farmer) {
@@ -55,57 +74,40 @@ router.get('/:id', (req, res) => {
 
 // Register new farmer in Unified Farmer Database
 router.post('/', (req, res) => {
-  const {
-    name, fatherName, phone, district, tehsil, village, pincode,
-    category, aadhaarNumber, naturalFarmingPractitioner, initialLand
-  } = req.body;
-
-  if (!name || !phone || !district) {
-    return res.status(400).json({ success: false, message: "Name, phone number, and district are mandatory." });
+  const validation = Farmer.validate(req.body);
+  if (!validation.isValid) {
+    return res.status(400).json({
+      success: false,
+      message: "Farmer validation failed in Unified Farmer Database.",
+      errors: validation.errors
+    });
   }
 
-  const newFarmerId = `FARMER-HP-${Math.floor(1000 + Math.random() * 9000)}`;
-  const agriStackId = `AGRI-HP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+  const farmerInstance = new Farmer(req.body);
+  const newFarmer = farmerInstance.toJSON();
 
-  const newFarmer = {
-    id: newFarmerId,
-    agriStackId,
-    aadhaarHash: aadhaarNumber ? `XXXX-XXXX-${aadhaarNumber.slice(-4)}` : "XXXX-XXXX-9999",
-    name,
-    fatherName: fatherName || "N/A",
-    phone,
-    gender: req.body.gender || "Male",
-    dob: req.body.dob || "1985-01-01",
-    district,
-    tehsil: tehsil || "Sadar",
-    village: village || "Rural",
-    pincode: pincode || "171001",
-    category: category || "Small & Marginal",
-    naturalFarmingPractitioner: !!naturalFarmingPractitioner,
-    bankDetails: {
-      accountNo: "XXXXXXXX" + Math.floor(1000 + Math.random() * 9000),
-      ifsc: "HPSC0000101",
-      bankName: "HP State Cooperative Bank",
-      dbtLinked: true
-    },
-    landParcels: initialLand ? [
+  // If initial land parcel was provided in payload, attach it
+  if (req.body.initialLand) {
+    const il = req.body.initialLand;
+    const districtPrefix = (newFarmer.district || 'SHI').substring(0, 3).toUpperCase();
+    newFarmer.landParcels = [
       {
-        parcelId: `LAND-${district.substring(0, 3).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`,
-        khasraNo: initialLand.khasraNo || "101/1",
-        khatauniNo: initialLand.khatauniNo || "1",
-        areaBigha: Number(initialLand.areaBigha) || 5.0,
-        areaHectares: ((Number(initialLand.areaBigha) || 5.0) * 0.08).toFixed(2),
-        irrigationType: initialLand.irrigationType || "Rainfed",
-        primaryCrop: initialLand.primaryCrop || "Wheat / Maize",
-        soilHealthId: `SHC-${district.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+        parcelId: `LAND-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`,
+        khasraNo: il.khasraNo || "101/1",
+        khatauniNo: il.khatauniNo || "1",
+        areaBigha: Number(il.areaBigha) || 5.0,
+        areaHectares: ((Number(il.areaBigha) || 5.0) * 0.08).toFixed(2),
+        irrigationType: il.irrigationType || "Rainfed",
+        primaryCrop: il.primaryCrop || "Wheat / Maize",
+        soilHealthId: `SHC-${districtPrefix}-${Math.floor(1000 + Math.random() * 9000)}`,
         verificationStatus: "PENDING_PATWARI_VERIFICATION",
         coordinates: { lat: 31.1048, lng: 77.1734 }
       }
-    ] : [],
-    createdAt: new Date().toISOString()
-  };
+    ];
+  }
 
   db.update(store => {
+    store.farmers = store.farmers || [];
     store.farmers.unshift(newFarmer);
     return store;
   });
@@ -114,6 +116,72 @@ router.post('/', (req, res) => {
     success: true,
     message: "Farmer registered in Unified Farmer Database (AgriStack linked).",
     data: newFarmer
+  });
+});
+
+// Update farmer profile
+router.patch('/:id', (req, res) => {
+  const { id } = req.params;
+  let updatedRecord = null;
+
+  db.update(store => {
+    const farmer = (store.farmers || []).find(f => 
+      f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
+    if (!farmer) return store;
+
+    const fields = ['name', 'mobile', 'phone', 'email', 'address', 'state', 'district', 'block', 'tehsil', 'village', 'status', 'category'];
+    fields.forEach(fld => {
+      if (req.body[fld] !== undefined) {
+        farmer[fld] = req.body[fld];
+      }
+    });
+
+    if (req.body.mobile) farmer.phone = req.body.mobile;
+    if (req.body.phone) farmer.mobile = req.body.phone;
+    if (req.body.block) farmer.tehsil = req.body.block;
+    if (req.body.tehsil) farmer.block = req.body.tehsil;
+
+    farmer.updated_at = new Date().toISOString();
+    updatedRecord = farmer;
+    return store;
+  });
+
+  if (!updatedRecord) {
+    return res.status(404).json({ success: false, message: `Farmer '${id}' not found in database.` });
+  }
+
+  res.json({
+    success: true,
+    message: "Farmer profile updated successfully.",
+    data: updatedRecord
+  });
+});
+
+// Deactivate farmer (soft delete)
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  let deactivated = false;
+
+  db.update(store => {
+    const farmer = (store.farmers || []).find(f => 
+      f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
+    if (farmer) {
+      farmer.status = "INACTIVE";
+      farmer.updated_at = new Date().toISOString();
+      deactivated = true;
+    }
+    return store;
+  });
+
+  if (!deactivated) {
+    return res.status(404).json({ success: false, message: `Farmer '${id}' not found in database.` });
+  }
+
+  res.json({
+    success: true,
+    message: `Farmer '${id}' account status marked as INACTIVE.`
   });
 });
 

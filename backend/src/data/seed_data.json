@@ -1,18 +1,53 @@
 {
   "farmers": [
     {
+      "id": "FARMER-HP-9901",
+      "farmer_id": "FARMER-HP-9901",
+      "name": "Kuldeep Singh Chandel",
+      "mobile": "+91 98170 99999",
+      "email": "kuldeep.chandel@hpfarmers.in",
+      "address": "Village Sandhole, Block Dharampur, District Mandi, HP",
+      "state": "Himachal Pradesh",
+      "district": "Mandi",
+      "block": "Dharampur",
+      "village": "Sandhole",
+      "national_farmer_id": "AGRI-HP-2026-8844",
+      "status": "INACTIVE",
+      "created_at": "2026-09-21T11:12:26.405Z",
+      "updated_at": "2026-09-21T11:12:26.421Z",
+      "phone": "+91 98170 99999",
+      "tehsil": "Dharampur",
+      "agriStackId": "AGRI-HP-2026-8844",
+      "aadhaarHash": "XXXX-XXXX-8823",
+      "category": "Medium",
+      "naturalFarmingPractitioner": false,
+      "bankDetails": {
+        "accountNo": "XXXXXXXX4131",
+        "ifsc": "HPSC0000101",
+        "bankName": "HP State Cooperative Bank",
+        "dbtLinked": true
+      },
+      "landParcels": []
+    },
+    {
       "id": "FARMER-HP-1001",
+      "farmer_id": "FARMER-HP-1001",
+      "name": "Surender Thakur",
+      "mobile": "+91 98160 12345",
+      "email": "surender.thakur@hpfarmers.in",
+      "address": "Village Kiari, Block Kotkhai, District Shimla, HP",
+      "state": "Himachal Pradesh",
+      "district": "Shimla",
+      "block": "Kotkhai",
+      "village": "Kiari",
+      "national_farmer_id": "AGRI-HP-2026-9812",
+      "status": "ACTIVE",
+      "created_at": "2024-03-10T10:00:00Z",
+      "updated_at": "2026-09-21T11:12:26.005Z",
+      "phone": "+91 98160 12345",
+      "tehsil": "Kotkhai",
       "agriStackId": "AGRI-HP-2026-9812",
       "aadhaarHash": "XXXX-XXXX-4521",
-      "name": "Surender Thakur",
-      "fatherName": "Bishamber Thakur",
-      "phone": "+91 98160 12345",
-      "gender": "Male",
-      "dob": "1978-04-12",
-      "district": "Shimla",
-      "tehsil": "Kotkhai",
-      "village": "Kiari",
-      "pincode": "171202",
       "category": "Small & Marginal",
       "naturalFarmingPractitioner": true,
       "bankDetails": {
@@ -36,12 +71,12 @@
             "lng": 77.5321
           },
           "fieldTelemetry": {
-            "soilMoisture": 45,
+            "soilMoisture": 48,
             "pestRisk": "LOW",
-            "cropStatus": "Normal Growth",
+            "cropStatus": "Optimal vegetative stage",
             "updatedBy": "Dr. Vikram Chauhan",
-            "updatedAt": "2026-09-21T11:05:16.155Z",
-            "fieldNotes": "Field inspection logged by Agricultural Officer."
+            "updatedAt": "2026-09-21T11:12:26.374Z",
+            "fieldNotes": "Adequate soil organic carbon observed."
           }
         },
         {
@@ -219,23 +254,46 @@
           "verifiedBy": "Ramesh Chand Sharma (PAT-HP-301)",
           "verifiedAt": "2026-09-21T11:03:41.418Z",
           "officerRemarks": "Field geo-coordinates verified on HimBhoomi cadastral map."
+        },
+        {
+          "parcelId": "LAND-SHI-447",
+          "khasraNo": "505/2",
+          "khatauniNo": "22",
+          "areaBigha": 8.5,
+          "areaHectares": "0.68",
+          "irrigationType": "Drip Irrigation",
+          "primaryCrop": "Kiwi & Pears",
+          "soilHealthId": "SHC-SHI-8838",
+          "verificationStatus": "VERIFIED_HIMBHOOMI_MATCH",
+          "coordinates": {
+            "lat": 31.509958805393403,
+            "lng": 77.32382178845137
+          },
+          "verifiedBy": "Ramesh Chand Sharma (PAT-HP-301)",
+          "verifiedAt": "2026-09-21T11:12:26.438Z",
+          "officerRemarks": "Field geo-coordinates verified on HimBhoomi cadastral map."
         }
-      ],
-      "createdAt": "2024-03-10T10:00:00Z"
+      ]
     },
     {
       "id": "FARMER-HP-1002",
+      "farmer_id": "FARMER-HP-1002",
+      "name": "Sunita Devi Sharma",
+      "mobile": "+91 94180 67890",
+      "email": "sunita.devi.sharma@hpfarmers.in",
+      "address": "Village Siri, Block Kandaghat, District Solan, HP",
+      "state": "Himachal Pradesh",
+      "district": "Solan",
+      "block": "Kandaghat",
+      "village": "Siri",
+      "national_farmer_id": "AGRI-HP-2026-7734",
+      "status": "ACTIVE",
+      "created_at": "2024-06-15T11:30:00Z",
+      "updated_at": "2026-09-21T11:12:26.008Z",
+      "phone": "+91 94180 67890",
+      "tehsil": "Kandaghat",
       "agriStackId": "AGRI-HP-2026-7734",
       "aadhaarHash": "XXXX-XXXX-8823",
-      "name": "Sunita Devi Sharma",
-      "fatherName": "Kewal Krishan",
-      "phone": "+91 94180 67890",
-      "gender": "Female",
-      "dob": "1985-09-22",
-      "district": "Solan",
-      "tehsil": "Kandaghat",
-      "village": "Siri",
-      "pincode": "173215",
       "category": "Women Farmer / Marginal",
       "naturalFarmingPractitioner": true,
       "bankDetails": {
@@ -259,22 +317,27 @@
             "lng": 77.1082
           }
         }
-      ],
-      "createdAt": "2024-06-15T11:30:00Z"
+      ]
     },
     {
       "id": "FARMER-HP-1003",
+      "farmer_id": "FARMER-HP-1003",
+      "name": "Rajeshwar Singh Rana",
+      "mobile": "+91 98055 43210",
+      "email": "rajeshwar.singh.rana@hpfarmers.in",
+      "address": "Village Bundla, Block Palampur, District Kangra, HP",
+      "state": "Himachal Pradesh",
+      "district": "Kangra",
+      "block": "Palampur",
+      "village": "Bundla",
+      "national_farmer_id": "AGRI-HP-2026-3391",
+      "status": "ACTIVE",
+      "created_at": "2024-01-20T09:15:00Z",
+      "updated_at": "2026-09-21T11:12:26.008Z",
+      "phone": "+91 98055 43210",
+      "tehsil": "Palampur",
       "agriStackId": "AGRI-HP-2026-3391",
       "aadhaarHash": "XXXX-XXXX-1904",
-      "name": "Rajeshwar Singh Rana",
-      "fatherName": "Dharmender Rana",
-      "phone": "+91 98055 43210",
-      "gender": "Male",
-      "dob": "1972-11-05",
-      "district": "Kangra",
-      "tehsil": "Palampur",
-      "village": "Bundla",
-      "pincode": "176061",
       "category": "Medium",
       "naturalFarmingPractitioner": false,
       "bankDetails": {
@@ -298,8 +361,7 @@
             "lng": 76.5363
           }
         }
-      ],
-      "createdAt": "2024-01-20T09:15:00Z"
+      ]
     }
   ],
   "officers": [
@@ -407,6 +469,25 @@
   ],
   "suadr": {
     "soilProfiles": [
+      {
+        "shcId": "SHC-SHI-6416",
+        "district": "Shimla",
+        "tehsil": "Kotkhai",
+        "ph": 6.4,
+        "phCategory": "Neutral (Optimal)",
+        "nitrogenKgHa": 260,
+        "nitrogenRating": "Medium",
+        "phosphorusKgHa": 22,
+        "phosphorusRating": "High",
+        "potassiumKgHa": 290,
+        "potassiumRating": "High",
+        "organicCarbonPercent": 1.45,
+        "organicCarbonRating": "Very High",
+        "zincPpm": 0.85,
+        "boronPpm": 0.5,
+        "lastTested": "2026-09-21",
+        "recommendation": "Optimal soil profile for high-density Gala apple."
+      },
       {
         "shcId": "SHC-SHI-5022",
         "district": "Shimla",
@@ -721,7 +802,7 @@
         "rainfallTodayMm": 0,
         "soilMoisturePercent": 44,
         "frostRisk": "LOW",
-        "updatedAt": "2026-09-21T11:03:41.498Z"
+        "updatedAt": "2026-09-21T11:12:26.476Z"
       },
       "Solan": {
         "tempCelsius": 24.2,
@@ -867,6 +948,20 @@
     }
   ],
   "hpasnLogs": [
+    {
+      "transactionId": "TXN-ASN-25432",
+      "sourceDept": "Agriculture Dept (HP-ASN Gateway)",
+      "targetDept": "Department of Revenue (HimBhoomi)",
+      "purpose": "Jamabandi Khasra verification for DBT",
+      "farmerId": "FARMER-HP-1001",
+      "dataScope": "Cadastral Parcels",
+      "consentGranted": true,
+      "consentMethod": "Aadhaar e-Sign / Digital Farmer Locker Consent",
+      "status": "SUCCESS_VERIFIED",
+      "responseLatencyMs": 226,
+      "hashSignature": "0x171c2ec51913bef780d747a1d1bd0bf69cfbb8d60ab5d08c6bb87a6d433a9975",
+      "timestamp": "2026-09-21T11:12:26.203Z"
+    },
     {
       "transactionId": "TXN-ASN-34242",
       "sourceDept": "Agriculture Dept (HP-ASN Gateway)",
