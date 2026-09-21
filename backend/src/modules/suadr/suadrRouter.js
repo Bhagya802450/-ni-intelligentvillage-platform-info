@@ -538,4 +538,85 @@ router.post('/market-data', (req, res) => {
   });
 });
 
+// =========================================================================
+// KARNATAKA DISTRICTS & AGRO-CLIMATIC DIRECTORY (31 Districts, 10 Zones)
+// =========================================================================
+const { karnatakaDistricts, karnatakaAgroZones } = require('../../data/karnatakaDistricts');
+
+// GET /api/suadr/karnataka-districts - List all 31 districts of Karnataka
+router.get('/karnataka-districts', (req, res) => {
+  const { division, zone, search } = req.query;
+  let list = karnatakaDistricts;
+
+  if (division && division !== 'All') {
+    list = list.filter(d => 
+      d.division.toLowerCase().includes(division.toLowerCase()) || 
+      d.division_kn.includes(division)
+    );
+  }
+
+  if (zone && zone !== 'All') {
+    list = list.filter(d => 
+      d.agro_climatic_zone.toLowerCase().includes(zone.toLowerCase()) ||
+      d.agro_climatic_zone_kn.includes(zone)
+    );
+  }
+
+  if (search) {
+    const q = search.toLowerCase();
+    list = list.filter(d => 
+      d.name.toLowerCase().includes(q) ||
+      d.name_kn.includes(q) ||
+      d.headquarters.toLowerCase().includes(q) ||
+      d.headquarters_kn.includes(q) ||
+      d.soil_type.toLowerCase().includes(q) ||
+      d.major_crops.some(c => c.toLowerCase().includes(q)) ||
+      d.major_crops_kn.some(c => c.includes(q))
+    );
+  }
+
+  res.json({
+    success: true,
+    state: "Karnataka",
+    state_kn: "ಕರ್ನಾಟಕ",
+    total_districts: karnatakaDistricts.length,
+    count: list.length,
+    data: list
+  });
+});
+
+// GET /api/suadr/karnataka-districts/:idOrName - Single Karnataka district details
+router.get('/karnataka-districts/:idOrName', (req, res) => {
+  const param = req.params.idOrName.toLowerCase();
+  const district = karnatakaDistricts.find(d => 
+    d.id.toLowerCase() === param || 
+    d.name.toLowerCase() === param || 
+    d.name_kn === req.params.idOrName ||
+    d.headquarters.toLowerCase() === param
+  );
+
+  if (!district) {
+    return res.status(404).json({
+      success: false,
+      message: `Karnataka district '${req.params.idOrName}' not found in SUADR directory.`
+    });
+  }
+
+  res.json({
+    success: true,
+    data: district
+  });
+});
+
+// GET /api/suadr/karnataka-zones - 10 Agro-Climatic Zones of Karnataka
+router.get('/karnataka-zones', (req, res) => {
+  res.json({
+    success: true,
+    state: "Karnataka",
+    state_kn: "ಕರ್ನಾಟಕ",
+    total_zones: karnatakaAgroZones.length,
+    data: karnatakaAgroZones
+  });
+});
+
 module.exports = router;

@@ -127,6 +127,11 @@ export const api = {
     body: JSON.stringify(query)
   }),
 
+  // Karnataka District & Agro-Climatic Directory
+  getKarnatakaDistricts: (division = '', zone = '', search = '') => fetchJson(`/suadr/karnataka-districts?division=${division}&zone=${zone}&search=${search}`),
+  getKarnatakaDistrict: (idOrName) => fetchJson(`/suadr/karnataka-districts/${encodeURIComponent(idOrName)}`),
+  getKarnatakaZones: () => fetchJson('/suadr/karnataka-zones'),
+
   // =========================================================================
   // MODULE 1: HP Agriculture Service Network (HP-ASN)
   // =========================================================================
