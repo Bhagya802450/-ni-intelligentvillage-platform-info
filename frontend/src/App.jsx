@@ -8,6 +8,7 @@ import SchemesView from './pages/SchemesView';
 import HpasnExchange from './pages/HpasnExchange';
 import MandiMarketplace from './pages/MandiMarketplace';
 import ArchitectureView from './pages/ArchitectureView';
+import AiServicePipeline from './pages/AiServicePipeline';
 import { api } from './services/api';
 
 export default function App() {
@@ -133,6 +134,11 @@ export default function App() {
             {/* System Architecture View */}
             {activeTab === 'architecture' && (
               <ArchitectureView />
+            )}
+
+            {/* Python AI Service Pipeline (React -> Frappe API -> Redis Queue -> Python AI) */}
+            {activeTab === 'ai-pipeline' && (
+              <AiServicePipeline farmer={activeFarmer} lang={lang} />
             )}
           </>
         )}
