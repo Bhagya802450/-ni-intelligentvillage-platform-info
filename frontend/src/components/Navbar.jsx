@@ -75,19 +75,23 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
             🌐 {lang === 'en' ? 'ಕನ್ನಡ' : 'English'}
           </button>
 
-          {/* Role Switcher Pill */}
+          {/* User Role Hierarchy: User ├── Farmer ├── Officer └── Admin */}
           <div style={{
-            background: 'rgba(0, 0, 0, 0.4)',
-            padding: '4px',
+            background: 'rgba(0, 0, 0, 0.45)',
+            padding: '3px 4px',
             borderRadius: 'var(--radius-sm)',
             display: 'flex',
             alignItems: 'center',
-            border: '1px solid var(--border-subtle)'
+            border: '1px solid var(--border-subtle)',
+            gap: '3px'
           }}>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', padding: '0 6px', fontWeight: 800 }}>
+              USER:
+            </span>
             <button
               onClick={() => setCurrentRole('FARMER')}
               style={{
-                padding: '6px 14px',
+                padding: '6px 12px',
                 borderRadius: '6px',
                 border: 'none',
                 cursor: 'pointer',
@@ -95,18 +99,18 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '5px',
                 transition: 'all 0.2s',
                 background: currentRole === 'FARMER' ? 'var(--primary)' : 'transparent',
                 color: currentRole === 'FARMER' ? '#fff' : 'var(--text-muted)'
               }}
             >
-              👨‍🌾 {lang === 'kn' ? 'ರೈತ ಪೋರ್ಟಲ್' : 'Farmer Portal'}
+              👨‍🌾 {lang === 'kn' ? 'ರೈತ' : 'Farmer'}
             </button>
             <button
               onClick={() => setCurrentRole('OFFICER')}
               style={{
-                padding: '6px 14px',
+                padding: '6px 12px',
                 borderRadius: '6px',
                 border: 'none',
                 cursor: 'pointer',
@@ -114,13 +118,32 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '5px',
                 transition: 'all 0.2s',
                 background: currentRole === 'OFFICER' ? '#3b82f6' : 'transparent',
                 color: currentRole === 'OFFICER' ? '#fff' : 'var(--text-muted)'
               }}
             >
-              👮‍♂️ {lang === 'kn' ? 'ಕೃಷಿ ಅಧಿಕಾರಿ ಇಆರ್‌ಪಿ' : 'Agriculture Officer ERP'}
+              👮‍♂️ {lang === 'kn' ? 'ಅಧಿಕಾರಿ' : 'Officer'}
+            </button>
+            <button
+              onClick={() => setCurrentRole('ADMIN')}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                transition: 'all 0.2s',
+                background: currentRole === 'ADMIN' ? '#8b5cf6' : 'transparent',
+                color: currentRole === 'ADMIN' ? '#fff' : 'var(--text-muted)'
+              }}
+            >
+              🛡️ {lang === 'kn' ? 'ನಿರ್ವಾಹಕ' : 'Admin'}
             </button>
           </div>
         </div>
@@ -143,7 +166,9 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
         >
           {currentRole === 'FARMER' 
             ? (lang === 'kn' ? '🏡 ರೈತ ಮುಖಪುಟ' : '🏡 Farmer Home') 
-            : (lang === 'kn' ? '📊 ಅಧಿಕಾರಿ ನಿಯಂತ್ರಣ ಕೊಠಡಿ' : '📊 Officer Control Tower')}
+            : currentRole === 'OFFICER'
+              ? (lang === 'kn' ? '📊 ಅಧಿಕಾರಿ ನಿಯಂತ್ರಣ ಕೊಠಡಿ' : '📊 Officer Control Tower')
+              : (lang === 'kn' ? '🛡️ ರಾಜ್ಯ ನಿರ್ವಾಹಕ ಕಮಾಂಡ್' : '🛡️ State Admin Command')}
         </button>
 
         <button

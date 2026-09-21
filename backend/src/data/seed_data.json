@@ -103,6 +103,24 @@
           "verifiedBy": "Ramesh Chand Sharma (PAT-HP-301)",
           "verifiedAt": "2026-09-21T10:28:31.248Z",
           "officerRemarks": "Field geo-coordinates verified on HimBhoomi cadastral map."
+        },
+        {
+          "parcelId": "LAND-SHI-223",
+          "khasraNo": "505/2",
+          "khatauniNo": "22",
+          "areaBigha": 8.5,
+          "areaHectares": "0.68",
+          "irrigationType": "Drip Irrigation",
+          "primaryCrop": "Kiwi & Pears",
+          "soilHealthId": "SHC-SHI-6672",
+          "verificationStatus": "VERIFIED_HIMBHOOMI_MATCH",
+          "coordinates": {
+            "lat": 31.244495773018766,
+            "lng": 77.11136445566983
+          },
+          "verifiedBy": "Ramesh Chand Sharma (PAT-HP-301)",
+          "verifiedAt": "2026-09-21T10:39:26.503Z",
+          "officerRemarks": "Field geo-coordinates verified on HimBhoomi cadastral map."
         }
       ],
       "createdAt": "2024-03-10T10:00:00Z"
@@ -291,6 +309,25 @@
   ],
   "suadr": {
     "soilProfiles": [
+      {
+        "shcId": "SHC-SHI-3478",
+        "district": "Shimla",
+        "tehsil": "Kotkhai",
+        "ph": 6.4,
+        "phCategory": "Neutral (Optimal)",
+        "nitrogenKgHa": 260,
+        "nitrogenRating": "Medium",
+        "phosphorusKgHa": 22,
+        "phosphorusRating": "High",
+        "potassiumKgHa": 290,
+        "potassiumRating": "High",
+        "organicCarbonPercent": 1.45,
+        "organicCarbonRating": "Very High",
+        "zincPpm": 0.85,
+        "boronPpm": 0.5,
+        "lastTested": "2026-09-21",
+        "recommendation": "Optimal soil profile for high-density Gala apple."
+      },
       {
         "shcId": "SHC-SHI-7715",
         "district": "Shimla",
@@ -491,7 +528,7 @@
         "rainfallTodayMm": 0,
         "soilMoisturePercent": 44,
         "frostRisk": "LOW",
-        "updatedAt": "2026-09-21T10:28:31.291Z"
+        "updatedAt": "2026-09-21T10:39:26.552Z"
       },
       "Solan": {
         "tempCelsius": 24.2,
@@ -637,6 +674,20 @@
     }
   ],
   "hpasnLogs": [
+    {
+      "transactionId": "TXN-ASN-64090",
+      "sourceDept": "Agriculture Dept (HP-ASN Gateway)",
+      "targetDept": "Department of Revenue (HimBhoomi)",
+      "purpose": "Jamabandi Khasra verification for DBT",
+      "farmerId": "FARMER-HP-1001",
+      "dataScope": "Cadastral Parcels",
+      "consentGranted": true,
+      "consentMethod": "Aadhaar e-Sign / Digital Farmer Locker Consent",
+      "status": "SUCCESS_VERIFIED",
+      "responseLatencyMs": 110,
+      "hashSignature": "0x61de3650be6978689192596b2b440f11e48ba5b07fd1e6c9babc463145e0634c",
+      "timestamp": "2026-09-21T10:39:26.379Z"
+    },
     {
       "transactionId": "TXN-ASN-12954",
       "sourceDept": "Agriculture Dept (HP-ASN Gateway)",

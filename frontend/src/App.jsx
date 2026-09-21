@@ -10,12 +10,13 @@ import MandiMarketplace from './pages/MandiMarketplace';
 import ArchitectureView from './pages/ArchitectureView';
 import AiServicePipeline from './pages/AiServicePipeline';
 import IamView from './pages/IamView';
+import AdminPortal from './pages/AdminPortal';
 import { api } from './services/api';
 
 export default function App() {
-  const [currentRole, setCurrentRole] = useState('FARMER'); // 'FARMER' | 'OFFICER'
+  const [currentRole, setCurrentRole] = useState('FARMER'); // 'FARMER' | 'OFFICER' | 'ADMIN'
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [lang, setLang] = useState('en'); // 'en' | 'hi'
+  const [lang, setLang] = useState('en'); // 'en' | 'kn'
   
   // App Data
   const [farmers, setFarmers] = useState([]);
@@ -27,6 +28,15 @@ export default function App() {
     jurisdiction: ["Kotkhai", "Jubbal", "Rohru", "Theog"],
     email: "dao.shimla@hpagriculture.gov.in",
     role: "OFFICER"
+  });
+  const [adminUser, setAdminUser] = useState({
+    id: "ADM-HP-001",
+    name: "Rajiv Kumar Verma",
+    designation: "State System Administrator & HP-ASN Nodal Officer",
+    department: "Directorate of Agriculture / DIT Himachal Pradesh",
+    district: "State HQ (Shimla)",
+    email: "admin.hpasn@hp.gov.in",
+    role: "ADMIN"
   });
   const [applications, setApplications] = useState([]);
   const [analytics, setAnalytics] = useState(null);
@@ -88,13 +98,24 @@ export default function App() {
                   onApplySchemeSuccess={loadAllData}
                   onNavigateTab={(tab) => setActiveTab(tab)}
                 />
-              ) : (
+              ) : currentRole === 'OFFICER' ? (
                 <OfficerPortal
                   officer={officer}
                   applications={applications}
                   farmers={farmers}
                   analytics={analytics}
                   onRefreshData={loadAllData}
+                />
+              ) : (
+                <AdminPortal
+                  adminUser={adminUser}
+                  gatewayStatus={gatewayStatus}
+                  farmers={farmers}
+                  applications={applications}
+                  analytics={analytics}
+                  lang={lang}
+                  onRefreshData={loadAllData}
+                  onNavigateTab={(tab) => setActiveTab(tab)}
                 />
               )
             )}
