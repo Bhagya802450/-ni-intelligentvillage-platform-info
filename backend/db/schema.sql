@@ -89,6 +89,27 @@ CREATE TABLE IF NOT EXISTS land_parcels (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 4. Crop Records (Standing Crops Linked to Farmer & Land Parcel)
+-- Hierarchy: Farmer ├── Land └── Crop
+CREATE TABLE IF NOT EXISTS crops (
+    crop_id VARCHAR(64) PRIMARY KEY,
+    farmer_id VARCHAR(64) NOT NULL REFERENCES farmers(farmer_id) ON DELETE CASCADE,
+    parcel_id VARCHAR(64) NOT NULL REFERENCES land_parcels(parcel_id) ON DELETE CASCADE,
+    crop_name VARCHAR(100) NOT NULL,
+    variety VARCHAR(100),
+    season VARCHAR(32) NOT NULL CHECK (season IN ('Kharif', 'Rabi', 'Zaid', 'Perennial')),
+    sowing_date DATE,
+    harvest_date DATE,
+    area_bigha NUMERIC(8, 2) NOT NULL,
+    crop_stage VARCHAR(32) DEFAULT 'Vegetative' CHECK (crop_stage IN ('Sowing', 'Vegetative', 'Flowering', 'Fruiting', 'Ripening', 'Harvested')),
+    health_status VARCHAR(32) DEFAULT 'Optimal' CHECK (health_status IN ('Optimal', 'Moderate Stress', 'Severe Stress')),
+    estimated_yield_quintals NUMERIC(8, 2),
+    actual_yield_quintals NUMERIC(8, 2),
+    ndvi_score NUMERIC(4, 2) DEFAULT 0.76,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 4. State Unified Digital Database (SUADR) - Soil Profiles & Agro-Intelligence
 CREATE TABLE IF NOT EXISTS suadr_soil_profiles (
     shc_id VARCHAR(64) PRIMARY KEY,
@@ -163,5 +184,7 @@ CREATE TABLE IF NOT EXISTS mandi_prices (
 CREATE INDEX IF NOT EXISTS idx_farmers_district ON farmers(district);
 CREATE INDEX IF NOT EXISTS idx_farmers_agristack ON farmers(agristack_id);
 CREATE INDEX IF NOT EXISTS idx_parcels_farmer ON land_parcels(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_crops_farmer ON crops(farmer_id);
+CREATE INDEX IF NOT EXISTS idx_crops_parcel ON crops(parcel_id);
 CREATE INDEX IF NOT EXISTS idx_applications_status ON scheme_applications(status);
 CREATE INDEX IF NOT EXISTS idx_mandi_district_commodity ON mandi_prices(district, commodity);

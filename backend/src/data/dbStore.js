@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const Farmer = require('../models/Farmer');
+const Land = require('../models/Land');
+const Crop = require('../models/Crop');
 
 const DB_FILE = path.join(__dirname, 'seed_data.json');
 
@@ -47,7 +49,25 @@ const initialData = {
           irrigationType: "Micro-Drip & Rainfed",
           primaryCrop: "Apple (Royal Delicious)",
           soilHealthId: "SHC-SHM-4019",
-          coordinates: { lat: 31.1215, lng: 77.5321 }
+          coordinates: { lat: 31.1215, lng: 77.5321 },
+          crops: [
+            {
+              crop_id: "CROP-SHM-101",
+              farmer_id: "FARMER-HP-1001",
+              parcel_id: "LAND-KOT-081",
+              crop_name: "Apple",
+              variety: "Royal Delicious",
+              season: "Perennial",
+              sowing_date: "2018-02-15",
+              harvest_date: "2026-09-30",
+              area_bigha: 14.5,
+              crop_stage: "Fruiting",
+              health_status: "Optimal",
+              estimated_yield_quintals: 125.0,
+              actual_yield_quintals: null,
+              ndvi_score: 0.82
+            }
+          ]
         },
         {
           parcelId: "LAND-KOT-082",
@@ -58,24 +78,50 @@ const initialData = {
           irrigationType: "Rainfed",
           primaryCrop: "Maize & French Beans",
           soilHealthId: "SHC-SHM-4020",
-          coordinates: { lat: 31.1230, lng: 77.5340 }
+          coordinates: { lat: 31.1230, lng: 77.5340 },
+          crops: [
+            {
+              crop_id: "CROP-SHM-102",
+              farmer_id: "FARMER-HP-1001",
+              parcel_id: "LAND-KOT-082",
+              crop_name: "Maize & French Beans",
+              variety: "Kanchan Composite & Falguni",
+              season: "Kharif",
+              sowing_date: "2026-05-20",
+              harvest_date: "2026-10-15",
+              area_bigha: 6.2,
+              crop_stage: "Vegetative",
+              health_status: "Optimal",
+              estimated_yield_quintals: 36.0,
+              actual_yield_quintals: null,
+              ndvi_score: 0.74
+            }
+          ]
         }
       ],
       createdAt: "2024-03-10T10:00:00Z"
     },
     {
       id: "FARMER-HP-1002",
+      farmer_id: "FARMER-HP-1002",
       agriStackId: "AGRI-HP-2026-7734",
+      national_farmer_id: "AGRI-HP-2026-7734",
       aadhaarHash: "XXXX-XXXX-8823",
       name: "Sunita Devi Sharma",
       fatherName: "Kewal Krishan",
       phone: "+91 94180 67890",
+      mobile: "+91 94180 67890",
+      email: "sunita.sharma@hpfarmers.in",
       gender: "Female",
       dob: "1985-09-22",
+      state: "Himachal Pradesh",
       district: "Solan",
+      block: "Kandaghat",
       tehsil: "Kandaghat",
       village: "Siri",
+      address: "Village Siri, Tehsil Kandaghat, District Solan, HP",
       pincode: "173215",
+      status: "ACTIVE",
       category: "Women Farmer / Marginal",
       naturalFarmingPractitioner: true,
       bankDetails: {
@@ -94,24 +140,50 @@ const initialData = {
           irrigationType: "Sprinkler / Borewell",
           primaryCrop: "Off-Season Tomato (Himsona)",
           soilHealthId: "SHC-SOL-1044",
-          coordinates: { lat: 30.9812, lng: 77.1082 }
+          coordinates: { lat: 30.9812, lng: 77.1082 },
+          crops: [
+            {
+              crop_id: "CROP-SOL-201",
+              farmer_id: "FARMER-HP-1002",
+              parcel_id: "LAND-SOL-112",
+              crop_name: "Off-Season Tomato",
+              variety: "Himsona Hybrid",
+              season: "Kharif",
+              sowing_date: "2026-04-10",
+              harvest_date: "2026-08-25",
+              area_bigha: 8.0,
+              crop_stage: "Flowering",
+              health_status: "Optimal",
+              estimated_yield_quintals: 95.0,
+              actual_yield_quintals: 92.5,
+              ndvi_score: 0.79
+            }
+          ]
         }
       ],
       createdAt: "2024-06-15T11:30:00Z"
     },
     {
       id: "FARMER-HP-1003",
+      farmer_id: "FARMER-HP-1003",
       agriStackId: "AGRI-HP-2026-3391",
+      national_farmer_id: "AGRI-HP-2026-3391",
       aadhaarHash: "XXXX-XXXX-1904",
       name: "Rajeshwar Singh Rana",
       fatherName: "Dharmender Rana",
       phone: "+91 98055 43210",
+      mobile: "+91 98055 43210",
+      email: "rajeshwar.rana@hpfarmers.in",
       gender: "Male",
       dob: "1972-11-05",
+      state: "Himachal Pradesh",
       district: "Kangra",
+      block: "Palampur",
       tehsil: "Palampur",
       village: "Bundla",
+      address: "Village Bundla, Tehsil Palampur, District Kangra, HP",
       pincode: "176061",
+      status: "ACTIVE",
       category: "Medium",
       naturalFarmingPractitioner: false,
       bankDetails: {
@@ -130,7 +202,41 @@ const initialData = {
           irrigationType: "Canal / Kuhl Irrigation",
           primaryCrop: "Organic Kangra Tea & Wheat",
           soilHealthId: "SHC-KNG-9920",
-          coordinates: { lat: 32.1109, lng: 76.5363 }
+          coordinates: { lat: 32.1109, lng: 76.5363 },
+          crops: [
+            {
+              crop_id: "CROP-KNG-301",
+              farmer_id: "FARMER-HP-1003",
+              parcel_id: "LAND-KNG-502",
+              crop_name: "Kangra Organic Tea",
+              variety: "Camellia Sinensis Clone",
+              season: "Perennial",
+              sowing_date: "2015-03-01",
+              harvest_date: "2026-10-30",
+              area_bigha: 16.0,
+              crop_stage: "Vegetative",
+              health_status: "Optimal",
+              estimated_yield_quintals: 42.0,
+              actual_yield_quintals: null,
+              ndvi_score: 0.88
+            },
+            {
+              crop_id: "CROP-KNG-302",
+              farmer_id: "FARMER-HP-1003",
+              parcel_id: "LAND-KNG-502",
+              crop_name: "Wheat",
+              variety: "Sharbati HPW-368",
+              season: "Rabi",
+              sowing_date: "2025-11-10",
+              harvest_date: "2026-04-20",
+              area_bigha: 6.0,
+              crop_stage: "Harvested",
+              health_status: "Optimal",
+              estimated_yield_quintals: 28.0,
+              actual_yield_quintals: 27.8,
+              ndvi_score: 0.65
+            }
+          ]
         }
       ],
       createdAt: "2024-01-20T09:15:00Z"
@@ -645,20 +751,65 @@ const initialData = {
   ]
 };
 
+// Helper to extract all crops across all farmers
+function extractAllCrops(farmers = []) {
+  const all = [];
+  farmers.forEach(f => {
+    (f.landParcels || []).forEach(p => {
+      if (Array.isArray(p.crops)) {
+        all.push(...p.crops);
+      }
+    });
+  });
+  return all;
+}
+
 // Initialize file if not present
 function loadData() {
   try {
     if (!fs.existsSync(DB_FILE)) {
+      initialData.crops = extractAllCrops(initialData.farmers);
       fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
       return initialData;
     }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     const parsed = JSON.parse(raw);
     const merged = { ...initialData, ...parsed };
+
     if (Array.isArray(merged.farmers)) {
-      merged.farmers = merged.farmers.map(f => new Farmer(f).toJSON());
+      merged.farmers = merged.farmers.map(f => {
+        // Ensure each parcel has crops linked
+        if (Array.isArray(f.landParcels)) {
+          f.landParcels.forEach(p => {
+            if (!Array.isArray(p.crops) || p.crops.length === 0) {
+              const cropName = (p.primaryCrop || 'Seasonal Crop').split('(')[0].trim();
+              const cropPrefix = (f.district || 'HP').substring(0, 3).toUpperCase();
+              p.crops = [
+                new Crop({
+                  crop_id: `CROP-${cropPrefix}-${Math.floor(100 + Math.random() * 900)}`,
+                  farmer_id: f.farmer_id || f.id,
+                  parcel_id: p.parcelId,
+                  crop_name: cropName,
+                  variety: p.primaryCrop && p.primaryCrop.includes('(') ? p.primaryCrop.split('(')[1].replace(')', '') : 'Standard Cultivar',
+                  season: cropName.toLowerCase().includes('apple') || cropName.toLowerCase().includes('tea') ? 'Perennial' : 'Kharif',
+                  area_bigha: Number(p.areaBigha) || 5.0,
+                  crop_stage: 'Vegetative',
+                  health_status: 'Optimal',
+                  estimated_yield_quintals: ((Number(p.areaBigha) || 5.0) * 6.5).toFixed(1),
+                  ndvi_score: 0.78
+                }).toJSON()
+              ];
+            }
+          });
+        }
+        return new Farmer(f).toJSON();
+      });
     }
-    if (!parsed.officers || !parsed.roles || !parsed.hpasnPolicies) {
+
+    // Populate top-level crops array
+    merged.crops = extractAllCrops(merged.farmers);
+
+    if (!parsed.officers || !parsed.roles || !parsed.hpasnPolicies || !parsed.crops) {
       saveData(merged);
     }
     return merged;
@@ -670,6 +821,9 @@ function loadData() {
 
 function saveData(data) {
   try {
+    if (Array.isArray(data.farmers)) {
+      data.crops = extractAllCrops(data.farmers);
+    }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
     console.error('Error saving db file:', err);

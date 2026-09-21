@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, MapPin, CheckCircle, Layers, FileSpreadsheet, ShieldAlert, ShieldCheck, Map } from 'lucide-react';
+import { Search, Plus, MapPin, CheckCircle, Layers, FileSpreadsheet, ShieldAlert, ShieldCheck, Map, GitFork, Sprout, Wheat, PlusCircle, Activity, ChevronRight } from 'lucide-react';
 import { api } from '../services/api';
 
 export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
@@ -23,6 +23,22 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
   const [verifyingParcelId, setVerifyingParcelId] = useState(null);
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [loadingGeoJson, setLoadingGeoJson] = useState(false);
+
+  // Hierarchy & Crop modal states
+  const [showHierarchyTree, setShowHierarchyTree] = useState(true);
+  const [showAddCropModal, setShowAddCropModal] = useState(false);
+  const [selectedParcelForCrop, setSelectedParcelForCrop] = useState('');
+  const [cropFormData, setCropFormData] = useState({
+    crop_name: 'Apple',
+    variety: 'Royal Delicious',
+    season: 'Perennial',
+    area_bigha: '5.0',
+    crop_stage: 'Vegetative',
+    health_status: 'Optimal',
+    estimated_yield_quintals: '35.0',
+    ndvi_score: '0.82'
+  });
+  const [addingCrop, setAddingCrop] = useState(false);
 
   const isKn = lang === 'kn';
 
@@ -102,6 +118,52 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
       console.error("Error fetching cadastral GeoJSON:", err);
     } finally {
       setLoadingGeoJson(false);
+    }
+  };
+
+  const handleOpenAddCrop = (parcelId) => {
+    setSelectedParcelForCrop(parcelId);
+    setShowAddCropModal(true);
+  };
+
+  const handleAddCropSubmit = async (e) => {
+    e.preventDefault();
+    if (!activeFarmer || !selectedParcelForCrop) return;
+    setAddingCrop(true);
+    try {
+      const res = await api.addFarmerCrop(activeFarmer.id, {
+        parcelId: selectedParcelForCrop,
+        crop_name: cropFormData.crop_name,
+        variety: cropFormData.variety,
+        season: cropFormData.season,
+        area_bigha: cropFormData.area_bigha,
+        crop_stage: cropFormData.crop_stage,
+        health_status: cropFormData.health_status,
+        estimated_yield_quintals: cropFormData.estimated_yield_quintals,
+        ndvi_score: cropFormData.ndvi_score
+      });
+
+      if (res.success) {
+        // Update activeFarmer local state with newly added crop
+        setActiveFarmer(prev => {
+          const updatedParcels = (prev.landParcels || []).map(p => {
+            if (p.parcelId === selectedParcelForCrop) {
+              const currentCrops = p.crops || [];
+              return { ...p, crops: [...currentCrops, res.crop] };
+            }
+            return p;
+          });
+          return { ...prev, landParcels: updatedParcels };
+        });
+        setShowAddCropModal(false);
+        if (onRefreshData) onRefreshData();
+      } else {
+        alert(res.message || "Failed to add crop.");
+      }
+    } catch (err) {
+      console.error("Error adding crop:", err);
+    } finally {
+      setAddingCrop(false);
     }
   };
 
@@ -273,6 +335,78 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
               <span className="badge badge-success">{isKn ? 'ಡಿಬಿಟಿ ಸಕ್ರಿಯ' : 'DBT ACTIVE'}</span>
             </div>
 
+            {/* Relational Hierarchy: Farmer ├── Land └── Crop */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(56, 189, 248, 0.08) 100%)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <GitFork size={18} color="#34d399" />
+                  <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#34d399' }}>
+                    {isKn ? 'ಡೇಟಾ ಮಾಡೆಲ್ ಶ್ರೇಣಿ: Farmer ├── Land └── Crop' : 'Relational Data Model Hierarchy: Farmer ├── Land └── Crop'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowHierarchyTree(!showHierarchyTree)}
+                  className="btn btn-secondary"
+                  style={{ fontSize: '0.72rem', padding: '3px 8px' }}
+                >
+                  {showHierarchyTree ? (isKn ? 'ಶ್ರೇಣಿ ಮರೆಮಾಡಿ' : 'Hide Tree') : (isKn ? 'ಶ್ರೇಣಿ ವೀಕ್ಷಿಸಿ' : 'View Tree')}
+                </button>
+              </div>
+
+              {showHierarchyTree && (
+                <div style={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.82rem',
+                  background: 'rgba(0, 0, 0, 0.45)',
+                  padding: '14px',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  lineHeight: '1.6'
+                }}>
+                  <div style={{ color: '#34d399', fontWeight: 800 }}>
+                    👨‍🌾 Farmer: {activeFarmer.name} ({activeFarmer.agriStackId})
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.4)', paddingLeft: '8px' }}>│</div>
+                  {(activeFarmer.landParcels || []).map((parcel, pIdx, arr) => {
+                    const isLastParcel = pIdx === arr.length - 1;
+                    const cropsOnParcel = parcel.crops || [];
+
+                    return (
+                      <div key={parcel.parcelId || pIdx} style={{ paddingLeft: '8px' }}>
+                        <div style={{ color: '#38bdf8', fontWeight: 600 }}>
+                          {isLastParcel ? '└──' : '├──'} 🗺️ Land: Khasra {parcel.khasraNo} ({parcel.parcelId}) • {parcel.areaBigha} Bighas
+                        </div>
+                        {cropsOnParcel.length > 0 ? (
+                          cropsOnParcel.map((c, cIdx, cArr) => {
+                            const isLastCrop = cIdx === cArr.length - 1;
+                            return (
+                              <div key={c.crop_id || cIdx} style={{ paddingLeft: isLastParcel ? '24px' : '28px', color: '#fcd34d' }}>
+                                {isLastCrop ? '└──' : '├──'} 🌾 Crop: {c.crop_name} ({c.variety || 'Standard'}) • {c.season} • Stage: {c.crop_stage} • NDVI: <span style={{ color: '#34d399' }}>{c.ndvi_score}</span>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div style={{ paddingLeft: isLastParcel ? '24px' : '28px', color: 'var(--text-muted)' }}>
+                            └── 🌾 Crop: {parcel.primaryCrop || 'Seasonal Crop'} (Standing)
+                          </div>
+                        )}
+                        {!isLastParcel && <div style={{ color: 'rgba(255,255,255,0.4)' }}>│</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             {/* Cadastral GeoJSON View Button */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h4 style={{ fontSize: '1rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -309,19 +443,19 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
               </div>
             )}
 
-            {/* Land Parcels List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {/* Land Parcels List with Linked Crops */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {activeFarmer.landParcels?.map((parcel, idx) => (
                 <div key={idx} style={{
                   background: 'rgba(0,0,0,0.3)',
                   border: '1px solid var(--border-subtle)',
                   borderRadius: 'var(--radius-sm)',
-                  padding: '14px',
+                  padding: '16px',
                   position: 'relative'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
                     <div>
-                      <span style={{ fontSize: '1rem', fontWeight: 700, color: '#38bdf8' }}>
+                      <span style={{ fontSize: '1.05rem', fontWeight: 700, color: '#38bdf8' }}>
                         {isKn ? 'ಖಸ್ರಾ ನಂ.' : 'Khasra No.'} {parcel.khasraNo}
                       </span>
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '10px' }}>
@@ -367,6 +501,69 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
                       <span style={{ color: 'var(--text-muted)' }}>{isKn ? 'ಮಣ್ಣು ಕಾರ್ಡ್ ಐಡಿ:' : 'Soil Card ID:'}</span>
                       <div className="mono-chip" style={{ color: '#34d399' }}>{parcel.soilHealthId}</div>
                     </div>
+                  </div>
+
+                  {/* Standing Crops Section (Crop DocType Linked to this Parcel) */}
+                  <div style={{
+                    marginTop: '14px',
+                    padding: '12px',
+                    background: 'rgba(16, 185, 129, 0.05)',
+                    border: '1px solid rgba(16, 185, 129, 0.18)',
+                    borderRadius: '6px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Sprout size={15} /> 
+                        {isKn ? 'ಈ ಪಾರ್ಸೆಲ್‌ನಲ್ಲಿ ಬೆಳೆ ದಾಖಲೆಗಳು (Crop Records)' : 'Standing Crops on this Parcel (Crop Records)'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAddCrop(parcel.parcelId)}
+                        className="btn btn-secondary"
+                        style={{ fontSize: '0.7rem', padding: '3px 8px', color: '#34d399', borderColor: 'rgba(16, 185, 129, 0.3)' }}
+                      >
+                        <PlusCircle size={12} /> {isKn ? 'ಬೆಳೆ ಸೇರಿಸಿ' : 'Add Crop'}
+                      </button>
+                    </div>
+
+                    {parcel.crops && parcel.crops.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {parcel.crops.map((crop, cIdx) => (
+                          <div key={crop.crop_id || cIdx} style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            gap: '8px',
+                            padding: '8px 10px',
+                            background: 'rgba(0,0,0,0.35)',
+                            borderRadius: '4px',
+                            fontSize: '0.78rem'
+                          }}>
+                            <div>
+                              <strong style={{ color: '#fcd34d' }}>{crop.crop_name}</strong>
+                              <span style={{ color: 'var(--text-muted)', marginLeft: '6px' }}>({crop.variety || 'Standard'})</span>
+                              <span className="mono-chip" style={{ marginLeft: '8px', fontSize: '0.7rem' }}>{crop.season}</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span className="badge badge-info" style={{ fontSize: '0.68rem' }}>
+                                Stage: {crop.crop_stage}
+                              </span>
+                              <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>
+                                NDVI: {crop.ndvi_score || 0.78}
+                              </span>
+                              <span style={{ color: 'var(--text-dim)', fontSize: '0.72rem' }}>
+                                Yield: {crop.estimated_yield_quintals || '—'} Qtl
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {isKn ? 'ಯಾವುದೇ ಬೆಳೆ ನಮೂದಿಸಿಲ್ಲ. ಬೆಳೆ ಸೇರಿಸಲು ಮೇಲಿನ ಬಟನ್ ಬಳಸಿ.' : 'No crop records explicitly logged yet. Click "Add Crop" to record.'}
+                      </div>
+                    )}
                   </div>
 
                   {/* Cadastral Geo-Coordinates */}
@@ -558,6 +755,151 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
                   {registering 
                     ? (isKn ? 'ನೋಂದಾಯಿಸಲಾಗುತ್ತಿದೆ...' : 'Registering...') 
                     : (isKn ? 'ಅಗ್ರಿಸ್ಟಾಕ್‌ನಲ್ಲಿ ನೋಂದಾಯಿಸಿ' : 'Register in AgriStack')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Crop Modal Dialog (Farmer ├── Land └── Crop) */}
+      {showAddCropModal && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ padding: '24px', maxWidth: '520px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <Sprout size={20} color="#34d399" />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
+                {isKn ? 'ಭೂಮಿಯ ಪಾರ್ಸೆಲ್‌ಗೆ ಬೆಳೆ ನೋಂದಾಯಿಸಿ' : 'Add Crop to Land Parcel'}
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+              {isKn 
+                ? `ಪಾರ್ಸೆಲ್ ${selectedParcelForCrop} ಗೆ ಸ್ಟ್ಯಾಂಡಿಂಗ್ ಬೆಳೆ ನಮೂದಿಸಿ (Farmer ├── Land └── Crop)`
+                : `Registers a standing crop under parcel ${selectedParcelForCrop} (Hierarchy: Farmer ├── Land └── Crop).`}
+            </p>
+
+            <form onSubmit={handleAddCropSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'ಬೆಳೆಯ ಹೆಸರು' : 'Crop Name'}
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={cropFormData.crop_name}
+                    onChange={(e) => setCropFormData({ ...cropFormData, crop_name: e.target.value })}
+                    placeholder="e.g. Apple, Wheat, Maize"
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'ತಳಿ / ತಳಿ ವೈವಿಧ್ಯ' : 'Cultivar / Variety'}
+                  </label>
+                  <input
+                    type="text"
+                    value={cropFormData.variety}
+                    onChange={(e) => setCropFormData({ ...cropFormData, variety: e.target.value })}
+                    placeholder="e.g. Royal Delicious, Himsona"
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'ಋತು' : 'Agro Season'}
+                  </label>
+                  <select
+                    value={cropFormData.season}
+                    onChange={(e) => setCropFormData({ ...cropFormData, season: e.target.value })}
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  >
+                    <option value="Kharif">Kharif</option>
+                    <option value="Rabi">Rabi</option>
+                    <option value="Zaid">Zaid</option>
+                    <option value="Perennial">Perennial</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'ವಿಸ್ತೀರ್ಣ (ವಿಘಾಗಳು)' : 'Cultivated Area (Bighas)'}
+                  </label>
+                  <input
+                    required
+                    type="number"
+                    step="0.1"
+                    value={cropFormData.area_bigha}
+                    onChange={(e) => setCropFormData({ ...cropFormData, area_bigha: e.target.value })}
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'ಬೆಳೆಯ ಹಂತ' : 'Crop Stage'}
+                  </label>
+                  <select
+                    value={cropFormData.crop_stage}
+                    onChange={(e) => setCropFormData({ ...cropFormData, crop_stage: e.target.value })}
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  >
+                    <option value="Sowing">Sowing</option>
+                    <option value="Vegetative">Vegetative</option>
+                    <option value="Flowering">Flowering</option>
+                    <option value="Fruiting">Fruiting</option>
+                    <option value="Ripening">Ripening</option>
+                    <option value="Harvested">Harvested</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'ಅಂದಾಜು ಇಳುವರಿ (ಕ್ವಿಂಟಾಲ್)' : 'Est. Yield (Qtl)'}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    value={cropFormData.estimated_yield_quintals}
+                    onChange={(e) => setCropFormData({ ...cropFormData, estimated_yield_quintals: e.target.value })}
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    {isKn ? 'NDVI ಸ್ಕೋರ್' : 'NDVI Score'}
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="1"
+                    value={cropFormData.ndvi_score}
+                    onChange={(e) => setCropFormData({ ...cropFormData, ndvi_score: e.target.value })}
+                    style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '12px' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddCropModal(false)}
+                >
+                  {isKn ? 'ರದ್ದುಮಾಡಿ' : 'Cancel'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={addingCrop}
+                  className="btn btn-primary"
+                >
+                  {addingCrop 
+                    ? (isKn ? 'ನೋಂದಾಯಿಸಲಾಗುತ್ತಿದೆ...' : 'Adding Crop...') 
+                    : (isKn ? 'ಬೆಳೆ ಸೇರಿಸಿ' : 'Register Crop')}
                 </button>
               </div>
             </form>

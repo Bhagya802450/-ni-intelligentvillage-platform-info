@@ -301,6 +301,54 @@ async function runTests() {
       console.log("✔ GET /api/farmers/:id/cadastral-geojson:", geojson.body.type === "FeatureCollection" ? "PASS" : "FAIL", `(${geojson.body.features?.length} polygon features)`);
 
       // ----------------------------------------------------------------------
+      // HIERARCHICAL DATA MODEL: Farmer ├── Land └── Crop
+      // ----------------------------------------------------------------------
+      console.log("\n--- [RELATIONAL HIERARCHY: Farmer ├── Land └── Crop] ---");
+      const farmerHierarchy = await get('/api/farmers/FARMER-HP-1001/hierarchy');
+      const hData = farmerHierarchy.body.hierarchy;
+      console.log("✔ GET /api/farmers/:id/hierarchy (Tree structure verified):", 
+        farmerHierarchy.status === 200 && hData?.tree_structure === "Farmer ├── Land └── Crop" && Array.isArray(hData?.land) ? "PASS" : "FAIL",
+        `(${hData?.total_parcels} parcels, ${hData?.total_crops} crops)`
+      );
+
+      const farmerLandList = await get('/api/farmers/FARMER-HP-1001/land');
+      console.log("✔ GET /api/farmers/:id/land:", farmerLandList.status === 200 && farmerLandList.body.parcelsCount > 0 ? "PASS" : "FAIL", `(${farmerLandList.body.parcelsCount} parcels)`);
+
+      const farmerCropsList = await get('/api/farmers/FARMER-HP-1001/crops');
+      console.log("✔ GET /api/farmers/:id/crops:", farmerCropsList.status === 200 && farmerCropsList.body.cropsCount > 0 ? "PASS" : "FAIL", `(${farmerCropsList.body.cropsCount} standing crops)`);
+
+      // Add new crop directly under parcel
+      const firstParcelId = farmerLandList.body.data?.[0]?.parcelId;
+      const addCropRes = await post('/api/farmers/FARMER-HP-1001/crops', {
+        parcelId: firstParcelId,
+        crop_name: "Gala Apple",
+        variety: "Dark Baron Gala",
+        season: "Perennial",
+        area_bigha: 4.5,
+        crop_stage: "Vegetative",
+        health_status: "Optimal",
+        estimated_yield_quintals: 38.0,
+        ndvi_score: 0.84
+      });
+      console.log("✔ POST /api/farmers/:id/crops (Link Crop to Parcel):", 
+        addCropRes.status === 201 && addCropRes.body.crop?.crop_name === "Gala Apple" ? "PASS" : "FAIL",
+        `(Crop ID: ${addCropRes.body.crop?.crop_id} on Parcel ${firstParcelId})`
+      );
+
+      const parcelCrops = await get(`/api/farmers/FARMER-HP-1001/parcels/${firstParcelId}/crops`);
+      console.log("✔ GET /api/farmers/:id/parcels/:parcelId/crops:", parcelCrops.status === 200 && parcelCrops.body.crops?.length > 0 ? "PASS" : "FAIL", `(${parcelCrops.body.crops?.length} crops on parcel)`);
+
+      const cropToUpdate = addCropRes.body.crop?.crop_id;
+      const updateCropRes = await patch(`/api/farmers/FARMER-HP-1001/crops/${cropToUpdate}`, {
+        crop_stage: "Flowering",
+        ndvi_score: 0.89
+      });
+      console.log("✔ PATCH /api/farmers/:id/crops/:cropId (Phenology & NDVI):", updateCropRes.status === 200 && updateCropRes.body.crop?.crop_stage === "Flowering" ? "PASS" : "FAIL", `(NDVI: ${updateCropRes.body.crop?.ndvi_score})`);
+
+      const authFarmerHierarchy = await get('/api/farmer/hierarchy', { Authorization: `Bearer ${farmerLogin.body.token}` });
+      console.log("✔ GET /api/farmer/hierarchy (Authenticated Farmer Session):", authFarmerHierarchy.status === 200 && authFarmerHierarchy.body.tree === "Farmer ├── Land └── Crop" ? "PASS" : "FAIL");
+
+      // ----------------------------------------------------------------------
       // MODULE 4: State Unified Digital Database (SUADR)
       // ----------------------------------------------------------------------
       console.log("\n--- [MODULE 4: State Unified Digital Database (SUADR)] ---");

@@ -90,16 +90,37 @@ router.get('/farmer/crops', authenticate, requireRole('FARMER'), requirePermissi
     return res.status(404).json({ success: false, message: "Farmer record not found." });
   }
 
-  const crops = (farmer.landParcels || []).map(p => ({
-    parcelId: p.parcelId,
-    khasraNo: p.khasraNo,
-    cropName: p.primaryCrop,
-    areaBigha: p.areaBigha,
-    irrigationType: p.irrigationType,
-    estimatedHarvestDate: "2026-10-15",
-    healthStatus: "Optimal",
-    ndviScore: 0.78
-  }));
+  const crops = [];
+  (farmer.landParcels || []).forEach(p => {
+    if (Array.isArray(p.crops) && p.crops.length > 0) {
+      p.crops.forEach(c => crops.push({
+        parcelId: p.parcelId,
+        khasraNo: p.khasraNo,
+        cropId: c.crop_id || c.cropId,
+        cropName: c.crop_name || c.cropName || p.primaryCrop,
+        variety: c.variety,
+        season: c.season,
+        areaBigha: c.area_bigha || c.areaBigha || p.areaBigha,
+        cropStage: c.crop_stage || c.cropStage || 'Vegetative',
+        healthStatus: c.health_status || c.healthStatus || 'Optimal',
+        estimatedYieldQuintals: c.estimated_yield_quintals || c.estimatedYieldQuintals,
+        ndviScore: c.ndvi_score || c.ndviScore || 0.78,
+        sowingDate: c.sowing_date || c.sowingDate,
+        harvestDate: c.harvest_date || c.harvestDate || "2026-10-15"
+      }));
+    } else {
+      crops.push({
+        parcelId: p.parcelId,
+        khasraNo: p.khasraNo,
+        cropName: p.primaryCrop,
+        areaBigha: p.areaBigha,
+        irrigationType: p.irrigationType,
+        estimatedHarvestDate: "2026-10-15",
+        healthStatus: "Optimal",
+        ndviScore: 0.78
+      });
+    }
+  });
 
   res.json({
     success: true,
@@ -111,6 +132,34 @@ router.get('/farmer/crops', authenticate, requireRole('FARMER'), requirePermissi
     farmerName: farmer.name,
     cropsCount: crops.length,
     crops
+  });
+});
+
+// Farmer ├── View hierarchy (Farmer ├── Land └── Crop)
+router.get('/farmer/hierarchy', authenticate, requireRole('FARMER'), (req, res) => {
+  const store = db.get();
+  const farmer = (store.farmers || []).find(f => f.id === req.user.id || f.agriStackId === req.user.agriStackId);
+  if (!farmer) {
+    return res.status(404).json({ success: false, message: "Farmer record not found." });
+  }
+
+  res.json({
+    success: true,
+    tree: "Farmer ├── Land └── Crop",
+    farmer: {
+      id: farmer.id,
+      farmer_id: farmer.farmer_id || farmer.id,
+      name: farmer.name,
+      district: farmer.district,
+      national_farmer_id: farmer.national_farmer_id || farmer.agriStackId
+    },
+    landParcels: (farmer.landParcels || []).map(p => ({
+      parcelId: p.parcelId,
+      khasraNo: p.khasraNo,
+      khatauniNo: p.khatauniNo,
+      areaBigha: p.areaBigha,
+      crops: p.crops || []
+    }))
   });
 });
 

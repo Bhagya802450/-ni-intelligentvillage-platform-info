@@ -76,10 +76,13 @@ export const api = {
   getAdminSystemData: (token) => fetchJson('/admin/system-data', { headers: token ? { 'Authorization': `Bearer ${token}` } : {} }),
 
   // =========================================================================
-  // MODULE 3: Unified Farmer Database
+  // MODULE 3: Unified Farmer Database (Farmer ├── Land └── Crop)
   // =========================================================================
   getFarmers: (district = '', search = '') => fetchJson(`/farmers?district=${district}&search=${search}`),
   getFarmerById: (id) => fetchJson(`/farmers/${id}`),
+  getFarmerHierarchy: (farmerId) => fetchJson(`/farmers/${farmerId}/hierarchy`),
+  getFarmerLandParcels: (farmerId) => fetchJson(`/farmers/${farmerId}/land`),
+  getFarmerCropsList: (farmerId) => fetchJson(`/farmers/${farmerId}/crops`),
   registerFarmer: (payload) => fetchJson('/farmers', {
     method: 'POST',
     body: JSON.stringify(payload)
@@ -87,6 +90,14 @@ export const api = {
   addLandParcel: (farmerId, parcel) => fetchJson(`/farmers/${farmerId}/land`, {
     method: 'POST',
     body: JSON.stringify(parcel)
+  }),
+  addFarmerCrop: (farmerId, cropPayload) => fetchJson(`/farmers/${farmerId}/crops`, {
+    method: 'POST',
+    body: JSON.stringify(cropPayload)
+  }),
+  updateFarmerCrop: (farmerId, cropId, updatePayload) => fetchJson(`/farmers/${farmerId}/crops/${cropId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(updatePayload)
   }),
   verifyLandParcel: (farmerId, parcelId, data) => fetchJson(`/farmers/${farmerId}/parcels/${parcelId}/verify`, {
     method: 'PATCH',

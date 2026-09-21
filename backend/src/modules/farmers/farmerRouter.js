@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
 const Farmer = require('../../models/Farmer');
+const Land = require('../../models/Land');
+const Crop = require('../../models/Crop');
 
 // GET all farmers with optional filter
 router.get('/', (req, res) => {
@@ -185,6 +187,48 @@ router.delete('/:id', (req, res) => {
   });
 });
 
+// GET /api/farmers/:id/hierarchy - Visual & Data Model Hierarchy: Farmer ├── Land └── Crop
+router.get('/:id/hierarchy', (req, res) => {
+  const { id } = req.params;
+  const store = db.get();
+  const farmer = (store.farmers || []).find(
+    f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+  );
+
+  if (!farmer) {
+    return res.status(404).json({ success: false, message: "Farmer not found in Unified Farmer Database." });
+  }
+
+  const farmerModel = new Farmer(farmer);
+  res.json({
+    success: true,
+    model: "Unified Farmer Database (AgriStack Aligned)",
+    tree: "Farmer ├── Land └── Crop",
+    hierarchy: farmerModel.getHierarchy()
+  });
+});
+
+// GET /api/farmers/:id/land - View Land parcels of a farmer
+router.get('/:id/land', (req, res) => {
+  const { id } = req.params;
+  const store = db.get();
+  const farmer = (store.farmers || []).find(
+    f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+  );
+
+  if (!farmer) {
+    return res.status(404).json({ success: false, message: "Farmer not found in Unified Farmer Database." });
+  }
+
+  res.json({
+    success: true,
+    farmer_id: farmer.farmer_id,
+    farmer_name: farmer.name,
+    parcelsCount: (farmer.landParcels || []).length,
+    data: farmer.landParcels || []
+  });
+});
+
 // Add Land Parcel to existing farmer
 router.post('/:id/land', (req, res) => {
   const { id } = req.params;
@@ -193,23 +237,49 @@ router.post('/:id/land', (req, res) => {
   let updatedFarmer = null;
 
   db.update(store => {
-    const farmer = store.farmers.find(f => f.id === id);
+    const farmer = (store.farmers || []).find(
+      f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
     if (!farmer) return store;
 
-    const newParcel = {
-      parcelId: `LAND-${farmer.district.substring(0, 3).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`,
+    const districtPrefix = (farmer.district || 'SHI').substring(0, 3).toUpperCase();
+    const parcelId = `LAND-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`;
+    const bigha = Number(areaBigha) || 4.0;
+    const cropName = (primaryCrop || 'Seasonal Crop').split('(')[0].trim();
+
+    const initialCrop = new Crop({
+      crop_id: `CROP-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`,
+      farmer_id: farmer.farmer_id,
+      parcel_id: parcelId,
+      crop_name: cropName,
+      variety: primaryCrop && primaryCrop.includes('(') ? primaryCrop.split('(')[1].replace(')', '') : 'Standard Cultivar',
+      season: cropName.toLowerCase().includes('apple') || cropName.toLowerCase().includes('tea') ? 'Perennial' : 'Kharif',
+      area_bigha: bigha,
+      crop_stage: 'Vegetative',
+      health_status: 'Optimal',
+      estimated_yield_quintals: (bigha * 6.5).toFixed(1),
+      ndvi_score: 0.78,
+      district: farmer.district
+    }).toJSON();
+
+    const newParcel = new Land({
+      parcelId,
+      farmer_id: farmer.farmer_id,
       khasraNo: khasraNo || "200/1",
       khatauniNo: khatauniNo || "5",
-      areaBigha: Number(areaBigha) || 4.0,
-      areaHectares: ((Number(areaBigha) || 4.0) * 0.08).toFixed(2),
+      areaBigha: bigha,
       irrigationType: irrigationType || "Rainfed",
       primaryCrop: primaryCrop || "Seasonal Crop",
-      soilHealthId: `SHC-${farmer.district.substring(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      soilHealthId: `SHC-${districtPrefix}-${Math.floor(1000 + Math.random() * 9000)}`,
       verificationStatus: "PENDING_PATWARI_VERIFICATION",
-      coordinates: { lat: 31.1 + Math.random() * 0.5, lng: 77.1 + Math.random() * 0.5 }
-    };
+      coordinates: { lat: 31.1 + Math.random() * 0.5, lng: 77.1 + Math.random() * 0.5 },
+      crops: [initialCrop],
+      district: farmer.district
+    }).toJSON();
 
+    farmer.landParcels = farmer.landParcels || [];
     farmer.landParcels.push(newParcel);
+    farmer.updated_at = new Date().toISOString();
     updatedFarmer = farmer;
     return store;
   });
@@ -220,8 +290,164 @@ router.post('/:id/land', (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: "Cadastral land parcel added successfully to Unified Farmer Database.",
+    message: "Cadastral land parcel added successfully with linked initial Crop.",
+    tree: "Farmer ├── Land └── Crop",
     data: updatedFarmer
+  });
+});
+
+// GET /api/farmers/:id/crops - View all crops of a farmer
+router.get('/:id/crops', (req, res) => {
+  const { id } = req.params;
+  const store = db.get();
+  const farmer = (store.farmers || []).find(
+    f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+  );
+
+  if (!farmer) {
+    return res.status(404).json({ success: false, message: "Farmer not found in Unified Farmer Database." });
+  }
+
+  const crops = [];
+  (farmer.landParcels || []).forEach(p => {
+    if (Array.isArray(p.crops)) {
+      crops.push(...p.crops);
+    }
+  });
+
+  res.json({
+    success: true,
+    farmer_id: farmer.farmer_id,
+    farmer_name: farmer.name,
+    cropsCount: crops.length,
+    data: crops
+  });
+});
+
+// POST /api/farmers/:id/crops - Add a Crop to a specific Land parcel of a Farmer
+router.post('/:id/crops', (req, res) => {
+  const { id } = req.params;
+  const { parcelId, parcel_id, crop_name, cropName, variety, season, area_bigha, areaBigha, crop_stage, health_status, estimated_yield_quintals, ndvi_score } = req.body;
+  const targetParcelId = parcelId || parcel_id;
+
+  if (!targetParcelId) {
+    return res.status(400).json({
+      success: false,
+      message: "Field 'parcelId' is required to link Crop to Land parcel (Farmer ├── Land └── Crop)."
+    });
+  }
+
+  let addedCrop = null;
+
+  db.update(store => {
+    const farmer = (store.farmers || []).find(
+      f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
+    if (!farmer) return store;
+
+    const parcel = (farmer.landParcels || []).find(
+      p => p.parcelId === targetParcelId || p.parcel_id === targetParcelId
+    );
+    if (!parcel) return store;
+
+    const districtPrefix = (farmer.district || 'HP').substring(0, 3).toUpperCase();
+    const cropModel = new Crop({
+      crop_id: `CROP-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`,
+      farmer_id: farmer.farmer_id,
+      parcel_id: parcel.parcelId,
+      crop_name: crop_name || cropName || 'Apple',
+      variety: variety || 'High Density Cultivar',
+      season: season || 'Kharif',
+      area_bigha: Number(area_bigha || areaBigha) || Number(parcel.areaBigha) || 4.0,
+      crop_stage: crop_stage || 'Vegetative',
+      health_status: health_status || 'Optimal',
+      estimated_yield_quintals: estimated_yield_quintals !== undefined ? Number(estimated_yield_quintals) : 25.0,
+      ndvi_score: ndvi_score !== undefined ? Number(ndvi_score) : 0.81,
+      district: farmer.district
+    });
+
+    addedCrop = cropModel.toJSON();
+    parcel.crops = parcel.crops || [];
+    parcel.crops.push(addedCrop);
+    farmer.updated_at = new Date().toISOString();
+    return store;
+  });
+
+  if (!addedCrop) {
+    return res.status(404).json({
+      success: false,
+      message: `Farmer '${id}' or Land Parcel '${targetParcelId}' not found.`
+    });
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Crop successfully registered under Land parcel in Unified Farmer Database.",
+    tree: "Farmer ├── Land └── Crop",
+    crop: addedCrop
+  });
+});
+
+// GET /api/farmers/:id/parcels/:parcelId/crops - Crops for specific parcel
+router.get('/:id/parcels/:parcelId/crops', (req, res) => {
+  const { id, parcelId } = req.params;
+  const store = db.get();
+  const farmer = (store.farmers || []).find(
+    f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+  );
+
+  if (!farmer) {
+    return res.status(404).json({ success: false, message: "Farmer not found." });
+  }
+
+  const parcel = (farmer.landParcels || []).find(p => p.parcelId === parcelId || p.parcel_id === parcelId);
+  if (!parcel) {
+    return res.status(404).json({ success: false, message: `Land Parcel '${parcelId}' not found.` });
+  }
+
+  res.json({
+    success: true,
+    parcelId: parcel.parcelId,
+    khasraNo: parcel.khasraNo,
+    crops: parcel.crops || []
+  });
+});
+
+// PATCH /api/farmers/:id/crops/:cropId - Update crop details
+router.patch('/:id/crops/:cropId', (req, res) => {
+  const { id, cropId } = req.params;
+  let updatedCrop = null;
+
+  db.update(store => {
+    const farmer = (store.farmers || []).find(
+      f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
+    if (!farmer) return store;
+
+    for (const parcel of (farmer.landParcels || [])) {
+      const crop = (parcel.crops || []).find(c => c.crop_id === cropId || c.cropId === cropId);
+      if (crop) {
+        ['crop_stage', 'health_status', 'estimated_yield_quintals', 'actual_yield_quintals', 'ndvi_score', 'harvest_date'].forEach(key => {
+          if (req.body[key] !== undefined) {
+            crop[key] = req.body[key];
+          }
+        });
+        crop.updated_at = new Date().toISOString();
+        updatedCrop = crop;
+        break;
+      }
+    }
+    return store;
+  });
+
+  if (!updatedCrop) {
+    return res.status(404).json({ success: false, message: `Crop '${cropId}' not found.` });
+  }
+
+  res.json({
+    success: true,
+    message: "Crop record updated successfully.",
+    crop: updatedCrop
   });
 });
 
@@ -233,10 +459,12 @@ router.patch('/:id/parcels/:parcelId/verify', (req, res) => {
   let verifiedParcel = null;
 
   db.update(store => {
-    const farmer = store.farmers.find(f => f.id === id);
+    const farmer = (store.farmers || []).find(
+      f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+    );
     if (!farmer) return store;
 
-    const parcel = (farmer.landParcels || []).find(p => p.parcelId === parcelId);
+    const parcel = (farmer.landParcels || []).find(p => p.parcelId === parcelId || p.parcel_id === parcelId);
     if (!parcel) return store;
 
     parcel.verificationStatus = status;
@@ -262,7 +490,9 @@ router.patch('/:id/parcels/:parcelId/verify', (req, res) => {
 router.get('/:id/cadastral-geojson', (req, res) => {
   const { id } = req.params;
   const store = db.get();
-  const farmer = store.farmers.find(f => f.id === id);
+  const farmer = (store.farmers || []).find(
+    f => f.id === id || f.farmer_id === id || f.national_farmer_id === id || f.agriStackId === id
+  );
 
   if (!farmer) {
     return res.status(404).json({ success: false, message: "Farmer not found." });
@@ -284,6 +514,8 @@ router.get('/:id/cadastral-geojson', (req, res) => {
         primaryCrop: p.primaryCrop,
         irrigationType: p.irrigationType,
         farmerName: farmer.name,
+        cropsCount: (p.crops || []).length,
+        crops: p.crops || [],
         verificationStatus: p.verificationStatus || "VERIFIED_HIMBHOOMI_MATCH"
       },
       geometry: {

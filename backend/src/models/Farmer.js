@@ -3,6 +3,13 @@
  * Unified Farmer Database (AgriStack Aligned)
  * Core Data Model: Farmer
  * 
+ * Hierarchy:
+ * Farmer
+ *    │
+ *    ├────────── Land
+ *    │
+ *    └────────── Crop
+ * 
  * Fields:
  * - id:                  Internal primary key / UUID / String
  * - farmer_id:           State unique alphanumeric farmer registry identifier
@@ -20,6 +27,9 @@
  * - updated_at:          ISO-8601 last modified timestamp
  * =========================================================================
  */
+
+const Land = require('./Land');
+const Crop = require('./Crop');
 
 class Farmer {
   constructor(data = {}) {
@@ -55,7 +65,57 @@ class Farmer {
       bankName: "HP State Cooperative Bank",
       dbtLinked: true
     };
-    this.landParcels = data.landParcels || [];
+
+    // Sub-hierarchy: Land parcels with nested crops
+    this.landParcels = (data.landParcels || []).map(p => {
+      const landModel = new Land({ ...p, farmer_id: this.farmer_id, district: this.district });
+      if (Array.isArray(p.crops)) {
+        landModel.crops = p.crops.map(c => new Crop({
+          ...c,
+          farmer_id: this.farmer_id,
+          parcel_id: landModel.parcelId,
+          district: this.district
+        }).toJSON());
+      }
+      return landModel.toJSON();
+    });
+  }
+
+  /**
+   * Get all crops across all land parcels
+   */
+  getAllCrops() {
+    const crops = [];
+    (this.landParcels || []).forEach(p => {
+      if (Array.isArray(p.crops)) {
+        crops.push(...p.crops);
+      }
+    });
+    return crops;
+  }
+
+  /**
+   * Return formal hierarchical tree:
+   * Farmer ├── Land └── Crop
+   */
+  getHierarchy() {
+    return {
+      entity: "Farmer",
+      farmer_id: this.farmer_id,
+      name: this.name,
+      district: this.district,
+      national_farmer_id: this.national_farmer_id,
+      status: this.status,
+      total_parcels: this.landParcels.length,
+      total_area_bigha: this.landParcels.reduce((acc, p) => acc + (Number(p.areaBigha) || 0), 0),
+      total_crops: this.getAllCrops().length,
+      tree_structure: "Farmer ├── Land └── Crop",
+      farmer: this.toJSON(),
+      land: this.landParcels.map(parcel => ({
+        ...parcel,
+        crops: parcel.crops || []
+      }))
+    };
   }
 
   /**
