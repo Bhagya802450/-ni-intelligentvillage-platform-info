@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, UserCheck, RefreshCw, Layers, Database, Cpu } from 'lucide-react';
 
-export default function Navbar({ currentRole, setCurrentRole, activeTab, setActiveTab, gatewayStatus }) {
+export default function Navbar({ currentRole, setCurrentRole, activeTab, setActiveTab, gatewayStatus, lang = 'en', setLang }) {
   return (
     <header style={{
       borderBottom: '1px solid var(--border-subtle)',
@@ -66,6 +66,15 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
             <span style={{ color: '#38bdf8', fontWeight: 600 }}>PostgreSQL + Redis</span>
           </div>
 
+          {/* Language Switcher */}
+          <button
+            onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
+            className="btn btn-secondary"
+            style={{ fontSize: '0.8rem', padding: '6px 12px', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#fcd34d' }}
+          >
+            🌐 {lang === 'en' ? 'हिन्दी' : 'English'}
+          </button>
+
           {/* Role Switcher Pill */}
           <div style={{
             background: 'rgba(0, 0, 0, 0.4)',
@@ -92,7 +101,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
                 color: currentRole === 'FARMER' ? '#fff' : 'var(--text-muted)'
               }}
             >
-              👨‍🌾 Farmer Portal
+              👨‍🌾 {lang === 'hi' ? 'किसान पोर्टल' : 'Farmer Portal'}
             </button>
             <button
               onClick={() => setCurrentRole('OFFICER')}
@@ -111,7 +120,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
                 color: currentRole === 'OFFICER' ? '#fff' : 'var(--text-muted)'
               }}
             >
-              👮‍♂️ Agriculture Officer ERP
+              👮‍♂️ {lang === 'hi' ? 'कृषि अधिकारी ईआरपी' : 'Agriculture Officer ERP'}
             </button>
           </div>
         </div>
@@ -132,49 +141,51 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
           className={`nav-pill ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
         >
-          {currentRole === 'FARMER' ? '🏡 Farmer Home' : '📊 Officer Control Tower'}
+          {currentRole === 'FARMER' 
+            ? (lang === 'hi' ? '🏡 किसान होम' : '🏡 Farmer Home') 
+            : (lang === 'hi' ? '📊 अधिकारी कंट्रोल टावर' : '📊 Officer Control Tower')}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'registry' ? 'active' : ''}`}
           onClick={() => setActiveTab('registry')}
         >
-          🌾 Unified Farmer DB & Land
+          {lang === 'hi' ? '🌾 एकीकृत किसान डेटाबेस एवं भूमि' : '🌾 Unified Farmer DB & Land'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'suadr' ? 'active' : ''}`}
           onClick={() => setActiveTab('suadr')}
         >
-          🧪 SUADR Soil & Agro Intelligence
+          {lang === 'hi' ? '🧪 SUADR मृदा एवं कृषि सलाह' : '🧪 SUADR Soil & Agro Intelligence'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'schemes' ? 'active' : ''}`}
           onClick={() => setActiveTab('schemes')}
         >
-          💰 DBT & Schemes Engine
+          {lang === 'hi' ? '💰 डीबीटी एवं सरकारी योजनाएं' : '💰 DBT & Schemes Engine'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'hpasn' ? 'active' : ''}`}
           onClick={() => setActiveTab('hpasn')}
         >
-          🌐 HP-ASN Data Exchange
+          {lang === 'hi' ? '🌐 HP-ASN डेटा एक्सचेंज' : '🌐 HP-ASN Data Exchange'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'mandi' ? 'active' : ''}`}
           onClick={() => setActiveTab('mandi')}
         >
-          📈 Mandi Spot Rates
+          {lang === 'hi' ? '📈 मंडी भाव' : '📈 Mandi Spot Rates'}
         </button>
 
         <button
           className={`nav-pill ${activeTab === 'architecture' ? 'active' : ''}`}
           onClick={() => setActiveTab('architecture')}
         >
-          🏗️ System Architecture
+          {lang === 'hi' ? '🏗️ 10-स्तरीय आर्किटेक्चर' : '🏗️ 10-Tier Architecture'}
         </button>
       </div>
     </header>

@@ -13,6 +13,7 @@ import { api } from './services/api';
 export default function App() {
   const [currentRole, setCurrentRole] = useState('FARMER'); // 'FARMER' | 'OFFICER'
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [lang, setLang] = useState('en'); // 'en' | 'hi'
   
   // App Data
   const [farmers, setFarmers] = useState([]);
@@ -65,6 +66,8 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         gatewayStatus={gatewayStatus}
+        lang={lang}
+        setLang={setLang}
       />
 
       {/* Main Content Area */}
