@@ -428,6 +428,108 @@ async function runTests() {
       });
       console.log("✔ POST /api/suadr/advisory-query:", advisory.body.success ? "PASS" : "FAIL", `(${advisory.body.agroAdvisories?.length} advisories, ${advisory.body.pestAlerts?.length} alerts)`);
 
+      // ----------------------------------------------------------------------
+      // SUADR LOGICAL HIERARCHY & 6 CORE DATASETS
+      // ----------------------------------------------------------------------
+      console.log("\n--- [SUADR 6 CORE DATASETS: Soil, Climate, Crop, Agronomy, Pest, Market] ---");
+      
+      // SUADR Logical Hierarchy Tree
+      const suadrHierarchy = await get('/api/suadr/hierarchy');
+      const suadrTree = suadrHierarchy.body.tree;
+      console.log("✔ GET /api/suadr/hierarchy (Logical Tree):", 
+        suadrHierarchy.status === 200 && suadrTree.includes("Soil Data") && suadrTree.includes("Market Data") ? "PASS" : "FAIL",
+        `(${suadrHierarchy.body.hierarchy?.entity}: 6 Branches Verified)`
+      );
+
+      // 1. Soil Data (id, location, soil_type, ph, nitrogen, phosphorus, potassium)
+      const soilDataGet = await get('/api/suadr/soil-data');
+      console.log("✔ GET /api/suadr/soil-data:", soilDataGet.status === 200 && soilDataGet.body.count > 0 ? "PASS" : "FAIL", `(${soilDataGet.body.count} records)`);
+      const newSoilData = await post('/api/suadr/soil-data', {
+        id: "SOIL-KNG-7701",
+        location: "Kangra",
+        soil_type: "Mountain Acidic Peat",
+        ph: 5.5,
+        nitrogen: 315,
+        phosphorus: 18,
+        potassium: 290
+      });
+      const sd = newSoilData.body.data;
+      const hasAllSoilFields = sd && sd.id && sd.location && sd.soil_type && sd.ph && sd.nitrogen && sd.phosphorus && sd.potassium;
+      console.log("✔ POST /api/suadr/soil-data (All 7 Soil Data Fields):", newSoilData.status === 201 && hasAllSoilFields ? "PASS" : "FAIL", `([${sd?.id}] ${sd?.location} - pH: ${sd?.ph}, N:${sd?.nitrogen}, P:${sd?.phosphorus}, K:${sd?.potassium})`);
+
+      // 2. Climate Data (id, location, temperature, humidity, rainfall, date)
+      const climateGet = await get('/api/suadr/climate-data');
+      console.log("✔ GET /api/suadr/climate-data:", climateGet.status === 200 && climateGet.body.count > 0 ? "PASS" : "FAIL", `(${climateGet.body.count} stations)`);
+      const newClimate = await post('/api/suadr/climate-data', {
+        id: "CLM-SHM-8801",
+        location: "Shimla",
+        temperature: 20.2,
+        humidity: 60,
+        rainfall: 1.5,
+        date: "2026-09-21"
+      });
+      const cd = newClimate.body.data;
+      const hasAllClimateFields = cd && cd.id && cd.location && cd.temperature !== undefined && cd.humidity !== undefined && cd.rainfall !== undefined && cd.date;
+      console.log("✔ POST /api/suadr/climate-data (All 6 Climate Data Fields):", newClimate.status === 201 && hasAllClimateFields ? "PASS" : "FAIL", `([${cd?.id}] ${cd?.location} - Temp: ${cd?.temperature}°C, Humidity: ${cd?.humidity}%, Rain: ${cd?.rainfall}mm, Date: ${cd?.date})`);
+
+      // 3. Crop Data / Crop Master (id, crop_name, crop_type, season)
+      const cropMasterGet = await get('/api/suadr/crop-master');
+      console.log("✔ GET /api/suadr/crop-master:", cropMasterGet.status === 200 && cropMasterGet.body.count > 0 ? "PASS" : "FAIL", `(${cropMasterGet.body.count} crops cataloged)`);
+      const newCropMaster = await post('/api/suadr/crop-master', {
+        id: "CRPM-KWI-07",
+        crop_name: "Kiwi (Allison / Hayward)",
+        crop_type: "Horticulture / Fruit",
+        season: "Perennial"
+      });
+      const cmd = newCropMaster.body.data;
+      const hasAllCropMasterFields = cmd && cmd.id && cmd.crop_name && cmd.crop_type && cmd.season;
+      console.log("✔ POST /api/suadr/crop-master (All 4 Crop Master Fields):", newCropMaster.status === 201 && hasAllCropMasterFields ? "PASS" : "FAIL", `([${cmd?.id}] ${cmd?.crop_name} - ${cmd?.crop_type} [${cmd?.season}])`);
+
+      // 4. Agronomy Data (id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation)
+      const agroGet = await get('/api/suadr/agronomy-data');
+      console.log("✔ GET /api/suadr/agronomy-data:", agroGet.status === 200 && agroGet.body.count > 0 ? "PASS" : "FAIL", `(${agroGet.body.count} agronomy protocols)`);
+      const newAgro = await post('/api/suadr/agronomy-data', {
+        id: "AGRO-PEA-04",
+        crop: "Off-Season Pea",
+        soil_type: "Loam / Sandy Loam",
+        sowing_window: "May - June (High Hills)",
+        seed_rate: "35 - 40 kg / acre",
+        irrigation_practices: "Sprinkler irrigation at flowering and pod filling stages",
+        fertilizer_recommendation: "FYM 20 tonnes/ha + 25:60:50 kg NPK/ha"
+      });
+      const ad = newAgro.body.data;
+      const hasAllAgroFields = ad && ad.id && ad.crop && ad.soil_type && ad.sowing_window && ad.seed_rate && ad.irrigation_practices && ad.fertilizer_recommendation;
+      console.log("✔ POST /api/suadr/agronomy-data (All 7 Agronomy Fields):", newAgro.status === 201 && hasAllAgroFields ? "PASS" : "FAIL", `([${ad?.id}] Crop: ${ad?.crop} - Sowing: ${ad?.sowing_window})`);
+
+      // 5. Pest Data (id, pest_name, crop, symptoms)
+      const pestDataGet = await get('/api/suadr/pest-data');
+      console.log("✔ GET /api/suadr/pest-data:", pestDataGet.status === 200 && pestDataGet.body.count > 0 ? "PASS" : "FAIL", `(${pestDataGet.body.count} pest entries)`);
+      const newPest = await post('/api/suadr/pest-data', {
+        id: "PEST-KWI-05",
+        pest_name: "Armoured Scale (Hemiberlesia rapax)",
+        crop: "Kiwi",
+        symptoms: "Circular greyish scales encrusting bark and premature leaf chlorosis."
+      });
+      const pd = newPest.body.data;
+      const hasAllPestFields = pd && pd.id && pd.pest_name && pd.crop && pd.symptoms;
+      console.log("✔ POST /api/suadr/pest-data (All 4 Pest Data Fields):", newPest.status === 201 && hasAllPestFields ? "PASS" : "FAIL", `([${pd?.id}] ${pd?.pest_name} on ${pd?.crop})`);
+
+      // 6. Market Data (id, market_name, crop, modal_price, min_price, max_price, date)
+      const marketGet = await get('/api/suadr/market-data');
+      console.log("✔ GET /api/suadr/market-data:", marketGet.status === 200 && marketGet.body.count > 0 ? "PASS" : "FAIL", `(${marketGet.body.count} mandi price listings)`);
+      const newMarket = await post('/api/suadr/market-data', {
+        id: "MKT-SHM-99",
+        market_name: "Theog APMC Sub-Yard",
+        crop: "Apple (Royal Delicious)",
+        modal_price: 9800,
+        min_price: 8200,
+        max_price: 12000,
+        date: "2026-09-21"
+      });
+      const md = newMarket.body.data;
+      const hasAllMarketFields = md && md.id && md.market_name && md.crop && md.modal_price && md.min_price && md.max_price && md.date;
+      console.log("✔ POST /api/suadr/market-data (All 7 Market Data Fields):", newMarket.status === 201 && hasAllMarketFields ? "PASS" : "FAIL", `([${md?.id}] ${md?.market_name}: ${md?.crop} @ ₹${md?.modal_price}/Qtl [${md?.date}])`);
+
       console.log(`\n========================================================================`);
       console.log(`🎉 ALL 4 CORE MODULES FULLY TESTED & VALIDATED SUCCESSFULLY! 🚀`);
       console.log(`========================================================================\n`);

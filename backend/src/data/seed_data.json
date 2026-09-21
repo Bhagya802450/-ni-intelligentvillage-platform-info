@@ -13,6 +13,35 @@
       "village": "Sandhole",
       "national_farmer_id": "AGRI-HP-2026-8844",
       "status": "INACTIVE",
+      "created_at": "2026-09-21T12:23:42.803Z",
+      "updated_at": "2026-09-21T12:23:42.814Z",
+      "phone": "+91 98170 99999",
+      "tehsil": "Dharampur",
+      "agriStackId": "AGRI-HP-2026-8844",
+      "aadhaarHash": "XXXX-XXXX-8823",
+      "category": "Medium",
+      "naturalFarmingPractitioner": false,
+      "bankDetails": {
+        "accountNo": "XXXXXXXX7043",
+        "ifsc": "HPSC0000101",
+        "bankName": "HP State Cooperative Bank",
+        "dbtLinked": true
+      },
+      "landParcels": []
+    },
+    {
+      "id": "FARMER-HP-9901",
+      "farmer_id": "FARMER-HP-9901",
+      "name": "Kuldeep Singh Chandel",
+      "mobile": "+91 98170 99999",
+      "email": "kuldeep.chandel@hpfarmers.in",
+      "address": "Village Sandhole, Block Dharampur, District Mandi, HP",
+      "state": "Himachal Pradesh",
+      "district": "Mandi",
+      "block": "Dharampur",
+      "village": "Sandhole",
+      "national_farmer_id": "AGRI-HP-2026-8844",
+      "status": "INACTIVE",
       "created_at": "2026-09-21T12:15:00.911Z",
       "updated_at": "2026-09-21T12:15:00.924Z",
       "phone": "+91 98170 99999",
@@ -246,7 +275,7 @@
       "national_farmer_id": "AGRI-HP-2026-9812",
       "status": "ACTIVE",
       "created_at": "2024-03-10T10:00:00Z",
-      "updated_at": "2026-09-21T12:15:00.959Z",
+      "updated_at": "2026-09-21T12:23:42.848Z",
       "phone": "+91 98160 12345",
       "tehsil": "Kotkhai",
       "agriStackId": "AGRI-HP-2026-9812",
@@ -532,12 +561,47 @@
               "healthStatus": "Optimal",
               "estimated_yield_quintals": 25,
               "estimatedYieldQuintals": 25,
+              "actual_yield_quintals": 0,
+              "actualYieldQuintals": 0,
+              "ndvi_score": 0.89,
+              "ndviScore": 0.89,
+              "created_at": "2026-09-21T12:15:00.959Z",
+              "updated_at": "2026-09-21T12:23:42.864Z"
+            },
+            {
+              "id": "CROP-SHM-9901",
+              "land_id": "LAND-KOT-081",
+              "crop_name": "Gala Apple",
+              "crop_type": "Horticulture / Fruit",
+              "sowing_date": "2024-02-15",
+              "season": "Perennial",
+              "area": 4.5,
+              "status": "Vegetative",
+              "crop_id": "CROP-SHM-9901",
+              "cropId": "CROP-SHM-9901",
+              "parcel_id": "LAND-KOT-081",
+              "parcelId": "LAND-KOT-081",
+              "farmer_id": "FARMER-HP-1001",
+              "farmerId": "FARMER-HP-1001",
+              "cropName": "Gala Apple",
+              "cropType": "Horticulture / Fruit",
+              "sowingDate": "2024-02-15",
+              "variety": "Dark Baron Gala",
+              "harvest_date": null,
+              "area_bigha": 4.5,
+              "areaBigha": 4.5,
+              "crop_stage": "Vegetative",
+              "cropStage": "Vegetative",
+              "health_status": "Optimal",
+              "healthStatus": "Optimal",
+              "estimated_yield_quintals": 25,
+              "estimatedYieldQuintals": 25,
               "actual_yield_quintals": null,
               "actualYieldQuintals": null,
-              "ndvi_score": 0.89,
+              "ndvi_score": 0.84,
               "ndviScore": 0.84,
-              "created_at": "2026-09-21T12:15:00.959Z",
-              "updated_at": "2026-09-21T12:15:00.971Z"
+              "created_at": "2026-09-21T12:23:42.848Z",
+              "updated_at": "2026-09-21T12:23:42.848Z"
             }
           ],
           "created_at": "2026-09-21T11:49:32.070Z",
@@ -546,7 +610,7 @@
             "pestRisk": "LOW",
             "cropStatus": "Optimal vegetative stage",
             "updatedBy": "Dr. Vikram Chauhan",
-            "updatedAt": "2026-09-21T12:15:00.889Z",
+            "updatedAt": "2026-09-21T12:23:42.782Z",
             "fieldNotes": "Adequate soil organic carbon observed."
           }
         },
@@ -1661,7 +1725,7 @@
           },
           "verificationStatus": "VERIFIED_HIMBHOOMI_MATCH",
           "verifiedBy": "Ramesh Chand Sharma (PAT-HP-301)",
-          "verifiedAt": "2026-09-21T12:15:00.938Z",
+          "verifiedAt": "2026-09-21T12:23:42.830Z",
           "officerRemarks": "Field geo-coordinates verified on HimBhoomi cadastral map.",
           "crops": [
             {
@@ -1836,8 +1900,8 @@
               "healthStatus": "Optimal",
               "estimated_yield_quintals": 59.8,
               "estimatedYieldQuintals": 59.8,
-              "actual_yield_quintals": null,
-              "actualYieldQuintals": null,
+              "actual_yield_quintals": 0,
+              "actualYieldQuintals": 0,
               "ndvi_score": 0.78,
               "ndviScore": 0.78,
               "created_at": "2026-09-21T12:15:00.932Z",
@@ -1845,6 +1909,78 @@
             }
           ],
           "created_at": "2026-09-21T12:15:00.932Z"
+        },
+        {
+          "id": "LAND-SHI-8801",
+          "farmer_id": "FARMER-HP-1001",
+          "survey_number": "614/3",
+          "area": 9.2,
+          "latitude": 31.1456,
+          "longitude": 77.4921,
+          "soil_type": "Clay Loam",
+          "irrigation_type": "Micro-Drip",
+          "parcelId": "LAND-SHI-8801",
+          "parcel_id": "LAND-SHI-8801",
+          "farmerId": "FARMER-HP-1001",
+          "khasraNo": "614/3",
+          "khasra_no": "614/3",
+          "khatauniNo": "5",
+          "khatauni_no": "5",
+          "areaBigha": 9.2,
+          "area_bigha": 9.2,
+          "areaHectares": 0.74,
+          "area_hectares": 0.74,
+          "irrigationType": "Micro-Drip",
+          "primaryCrop": "Kiwi & Pears",
+          "primary_crop": "Kiwi & Pears",
+          "soilHealthId": "SHC-SHI-7869",
+          "soil_health_id": "SHC-SHI-7869",
+          "coordinates": {
+            "lat": 31.1456,
+            "lng": 77.4921
+          },
+          "verificationStatus": "PENDING_PATWARI_VERIFICATION",
+          "verifiedBy": null,
+          "verifiedAt": null,
+          "officerRemarks": null,
+          "crops": [
+            {
+              "id": "CROP-SHI-418",
+              "land_id": "LAND-SHI-8801",
+              "crop_name": "Kiwi & Pears",
+              "crop_type": "Horticulture / Fruit",
+              "sowing_date": "2026-09-21",
+              "season": "Kharif",
+              "area": 9.2,
+              "status": "Vegetative",
+              "crop_id": "CROP-SHI-418",
+              "cropId": "CROP-SHI-418",
+              "parcel_id": "LAND-SHI-8801",
+              "parcelId": "LAND-SHI-8801",
+              "farmer_id": "FARMER-HP-1001",
+              "farmerId": "FARMER-HP-1001",
+              "cropName": "Kiwi & Pears",
+              "cropType": "Horticulture / Fruit",
+              "sowingDate": "2026-09-21",
+              "variety": "Standard Cultivar",
+              "harvest_date": null,
+              "area_bigha": 9.2,
+              "areaBigha": 9.2,
+              "crop_stage": "Vegetative",
+              "cropStage": "Vegetative",
+              "health_status": "Optimal",
+              "healthStatus": "Optimal",
+              "estimated_yield_quintals": 59.8,
+              "estimatedYieldQuintals": 59.8,
+              "actual_yield_quintals": null,
+              "actualYieldQuintals": null,
+              "ndvi_score": 0.78,
+              "ndviScore": 0.78,
+              "created_at": "2026-09-21T12:23:42.824Z",
+              "updated_at": "2026-09-21T12:23:42.824Z"
+            }
+          ],
+          "created_at": "2026-09-21T12:23:42.824Z"
         }
       ]
     },
@@ -2158,6 +2294,44 @@
   ],
   "suadr": {
     "soilProfiles": [
+      {
+        "id": "SOIL-KNG-7701",
+        "location": "Kangra",
+        "soil_type": "Mountain Acidic Peat",
+        "ph": 5.5,
+        "nitrogen": 315,
+        "phosphorus": 18,
+        "potassium": 290,
+        "organic_carbon": 1.25,
+        "zinc_ppm": 0.85,
+        "boron_ppm": 0.6,
+        "recommendation": "Balanced NPK application with organic compost / Jeevamrit.",
+        "last_tested": "2026-09-21",
+        "shcId": "SOIL-KNG-7701",
+        "district": "Kangra",
+        "nitrogenKgHa": 315,
+        "phosphorusKgHa": 18,
+        "potassiumKgHa": 290
+      },
+      {
+        "shcId": "SHC-SHI-1156",
+        "district": "Shimla",
+        "tehsil": "Kotkhai",
+        "ph": 6.4,
+        "phCategory": "Neutral (Optimal)",
+        "nitrogenKgHa": 260,
+        "nitrogenRating": "Medium",
+        "phosphorusKgHa": 22,
+        "phosphorusRating": "High",
+        "potassiumKgHa": 290,
+        "potassiumRating": "High",
+        "organicCarbonPercent": 1.45,
+        "organicCarbonRating": "Very High",
+        "zincPpm": 0.85,
+        "boronPpm": 0.5,
+        "lastTested": "2026-09-21",
+        "recommendation": "Optimal soil profile for high-density Gala apple."
+      },
       {
         "shcId": "SHC-SHI-8711",
         "district": "Shimla",
@@ -2624,7 +2798,7 @@
         "rainfallTodayMm": 0,
         "soilMoisturePercent": 44,
         "frostRisk": "LOW",
-        "updatedAt": "2026-09-21T12:15:01.003Z"
+        "updatedAt": "2026-09-21T12:23:42.894Z"
       },
       "Solan": {
         "tempCelsius": 24.2,
@@ -2678,6 +2852,461 @@
         "riskLevel": "HIGH",
         "naturalRemedy": "Apply sand + wood ash in central whorls. Release Trichogramma parasitoids.",
         "chemicalAlternative": "Emamectin benzoate 5% SG @ 80g/acre."
+      }
+    ],
+    "soil_data": [
+      {
+        "id": "SOIL-KNG-7701",
+        "location": "Kangra",
+        "soil_type": "Mountain Acidic Peat",
+        "ph": 5.5,
+        "nitrogen": 315,
+        "phosphorus": 18,
+        "potassium": 290,
+        "organic_carbon": 1.25,
+        "zinc_ppm": 0.85,
+        "boron_ppm": 0.6,
+        "recommendation": "Balanced NPK application with organic compost / Jeevamrit.",
+        "last_tested": "2026-09-21",
+        "shcId": "SOIL-KNG-7701",
+        "district": "Kangra",
+        "nitrogenKgHa": 315,
+        "phosphorusKgHa": 18,
+        "potassiumKgHa": 290
+      },
+      {
+        "id": "SOIL-SHM-4019",
+        "location": "Shimla",
+        "soil_type": "Clay Loam",
+        "ph": 6.2,
+        "nitrogen": 280,
+        "phosphorus": 24,
+        "potassium": 340,
+        "organic_carbon": 1.45,
+        "zinc_ppm": 0.85,
+        "boron_ppm": 0.65,
+        "recommendation": "Apply Jeevamrit / Farmyard manure @ 15 kg/tree before bud-break.",
+        "last_tested": "2025-11-14"
+      },
+      {
+        "id": "SOIL-SOL-1044",
+        "location": "Solan",
+        "soil_type": "Sandy Loam",
+        "ph": 6.8,
+        "nitrogen": 210,
+        "phosphorus": 32,
+        "potassium": 220,
+        "organic_carbon": 0.82,
+        "zinc_ppm": 0.6,
+        "boron_ppm": 0.5,
+        "recommendation": "Incorporate Ghanjeevamrit @ 100 kg/bigha. Supplement Nitrogen with Azotobacter.",
+        "last_tested": "2026-02-10"
+      },
+      {
+        "id": "SOIL-KNG-9920",
+        "location": "Kangra",
+        "soil_type": "Mountain Acidic Peat",
+        "ph": 5.4,
+        "nitrogen": 310,
+        "phosphorus": 16,
+        "potassium": 280,
+        "organic_carbon": 1.8,
+        "zinc_ppm": 1.1,
+        "boron_ppm": 0.7,
+        "recommendation": "Apply Agricultural Lime @ 250 kg/hectare once in 3 years for tea flushing.",
+        "last_tested": "2025-10-05"
+      },
+      {
+        "id": "SOIL-KUL-3011",
+        "location": "Kullu",
+        "soil_type": "Silty Loam",
+        "ph": 6.4,
+        "nitrogen": 290,
+        "phosphorus": 26,
+        "potassium": 310,
+        "organic_carbon": 1.3,
+        "zinc_ppm": 0.9,
+        "boron_ppm": 0.55,
+        "recommendation": "Maintain balanced fertigation during flowering and spur development.",
+        "last_tested": "2026-01-18"
+      }
+    ],
+    "climate_data": [
+      {
+        "id": "CLM-SHM-8801",
+        "location": "Shimla",
+        "temperature": 20.2,
+        "humidity": 60,
+        "rainfall": 1.5,
+        "date": "2026-09-21",
+        "wind_speed": 8,
+        "frost_risk": "Low",
+        "condition": "Partly Cloudy",
+        "tempCelsius": 20.2,
+        "humidityPercent": 60,
+        "rainfallTodayMm": 1.5
+      },
+      {
+        "id": "CLM-SHM-01",
+        "location": "Shimla",
+        "temperature": 18.4,
+        "humidity": 62,
+        "rainfall": 0,
+        "date": "2026-09-21",
+        "wind_speed": 8.5,
+        "frost_risk": "Low",
+        "condition": "Partly Cloudy"
+      },
+      {
+        "id": "CLM-SOL-02",
+        "location": "Solan",
+        "temperature": 24.2,
+        "humidity": 55,
+        "rainfall": 0,
+        "date": "2026-09-21",
+        "wind_speed": 6.2,
+        "frost_risk": "None",
+        "condition": "Sunny & Mild"
+      },
+      {
+        "id": "CLM-KNG-03",
+        "location": "Kangra",
+        "temperature": 26.8,
+        "humidity": 58,
+        "rainfall": 2.5,
+        "date": "2026-09-21",
+        "wind_speed": 9,
+        "frost_risk": "None",
+        "condition": "Clear Sky"
+      },
+      {
+        "id": "CLM-KUL-04",
+        "location": "Kullu",
+        "temperature": 19.5,
+        "humidity": 50,
+        "rainfall": 0,
+        "date": "2026-09-21",
+        "wind_speed": 11.2,
+        "frost_risk": "Low",
+        "condition": "Breezy & Fair"
+      }
+    ],
+    "crop_master": [
+      {
+        "id": "CRPM-APP-01",
+        "crop_name": "Apple",
+        "crop_type": "Horticulture / Fruit",
+        "season": "Perennial",
+        "duration_days": 210,
+        "water_requirement": "Medium to High",
+        "suitable_zones": [
+          "ZONE-III",
+          "ZONE-IV"
+        ]
+      },
+      {
+        "id": "CRPM-TOM-02",
+        "crop_name": "Tomato",
+        "crop_type": "Vegetable",
+        "season": "Kharif",
+        "duration_days": 120,
+        "water_requirement": "High",
+        "suitable_zones": [
+          "ZONE-I",
+          "ZONE-II"
+        ]
+      },
+      {
+        "id": "CRPM-MAZ-03",
+        "crop_name": "Maize",
+        "crop_type": "Cereal Grain",
+        "season": "Kharif",
+        "duration_days": 100,
+        "water_requirement": "Medium",
+        "suitable_zones": [
+          "ZONE-I",
+          "ZONE-II",
+          "ZONE-III"
+        ]
+      },
+      {
+        "id": "CRPM-WHT-04",
+        "crop_name": "Wheat",
+        "crop_type": "Cereal Grain",
+        "season": "Rabi",
+        "duration_days": 150,
+        "water_requirement": "Medium",
+        "suitable_zones": [
+          "ZONE-I",
+          "ZONE-II"
+        ]
+      },
+      {
+        "id": "CRPM-TEA-05",
+        "crop_name": "Kangra Tea",
+        "crop_type": "Plantation / Cash Crop",
+        "season": "Perennial",
+        "duration_days": 365,
+        "water_requirement": "High (Acidic Soils)",
+        "suitable_zones": [
+          "ZONE-II"
+        ]
+      },
+      {
+        "id": "CRPM-PEA-06",
+        "crop_name": "Off-Season Pea",
+        "crop_type": "Pulse / Vegetable",
+        "season": "Zaid",
+        "duration_days": 75,
+        "water_requirement": "Low to Medium",
+        "suitable_zones": [
+          "ZONE-III",
+          "ZONE-IV"
+        ]
+      },
+      {
+        "id": "CRPM-KWI-07",
+        "crop_name": "Kiwi (Allison / Hayward)",
+        "crop_type": "Horticulture / Fruit",
+        "season": "Perennial",
+        "duration_days": 180,
+        "water_requirement": "Medium to High",
+        "suitable_zones": [
+          "ZONE-III",
+          "ZONE-IV"
+        ],
+        "standard_yield_quintal_per_acre": 110
+      }
+    ],
+    "agronomy_data": [
+      {
+        "id": "AGRO-APP-01",
+        "crop": "Apple",
+        "soil_type": "Clay Loam",
+        "sowing_window": "Dec - Feb (Dormancy Planting)",
+        "seed_rate": "250 - 300 rootstocks / acre",
+        "irrigation_practices": "Micro-Drip @ 15-20L/tree/week during fruit set and development",
+        "fertilizer_recommendation": "FYM 40kg + 700g N, 350g P, 700g K per mature tree",
+        "intercropping": "White clover or French beans"
+      },
+      {
+        "id": "AGRO-TOM-02",
+        "crop": "Tomato",
+        "soil_type": "Sandy Loam",
+        "sowing_window": "April - June (Mid-Hills)",
+        "seed_rate": "150g - 200g seeds / acre",
+        "irrigation_practices": "Drip fertigation every 3 days during fruiting",
+        "fertilizer_recommendation": "100:60:60 kg NPK / ha with micronutrient spray (Zinc & Boron)",
+        "intercropping": "Marigold border for nematode control"
+      },
+      {
+        "id": "AGRO-WHT-03",
+        "crop": "Wheat",
+        "soil_type": "Loam / Clay Loam",
+        "sowing_window": "Oct 15 - Nov 15",
+        "seed_rate": "40 kg / acre",
+        "irrigation_practices": "Irrigate at CRI (21 days) and flowering critical stages",
+        "fertilizer_recommendation": "80:40:40 kg NPK / ha with farmyard compost",
+        "intercropping": "Mustard intercrop (1:9 ratio)"
+      },
+      {
+        "id": "AGRO-PEA-04",
+        "crop": "Off-Season Pea",
+        "soil_type": "Loam / Sandy Loam",
+        "sowing_window": "May - June (High Hills)",
+        "seed_rate": "35 - 40 kg / acre",
+        "irrigation_practices": "Sprinkler irrigation at flowering and pod filling stages",
+        "fertilizer_recommendation": "FYM 20 tonnes/ha + 25:60:50 kg NPK/ha",
+        "intercropping": "French beans, peas or white clover"
+      }
+    ],
+    "pest_data": [
+      {
+        "id": "PEST-APP-01",
+        "pest_name": "Apple Scab (Venturia inaequalis)",
+        "crop": "Apple",
+        "symptoms": "Olive-green to black velvety spots on young leaves and developing fruit surfaces.",
+        "control_measures": "Spray Neemastra or sour buttermilk spray (5%). Chemical: Difenoconazole 25% EC.",
+        "severity": "High"
+      },
+      {
+        "id": "PEST-TOM-02",
+        "pest_name": "Early Blight & Fruit Borer",
+        "crop": "Tomato",
+        "symptoms": "Concentric target-like brown spots on foliage, pin-holes on fruit near calyx.",
+        "control_measures": "Pheromone traps @ 5/bigha. Spray Agniastra @ 3L/100L water.",
+        "severity": "Medium"
+      },
+      {
+        "id": "PEST-MAZ-03",
+        "pest_name": "Fall Armyworm (Spodoptera frugiperda)",
+        "crop": "Maize",
+        "symptoms": "Ragged feeding holes on leaf whorls with sawdust-like frass.",
+        "control_measures": "Apply wood ash + sand in whorls. Trichogramma bio-control.",
+        "severity": "High"
+      },
+      {
+        "id": "PEST-TEA-04",
+        "pest_name": "Tea Mosquito Bug (Helopeltis theivora)",
+        "crop": "Tea",
+        "symptoms": "Brown water-soaked patches on tender flush leaves resulting in curl and dieback.",
+        "control_measures": "Pruning infected shoots, spray neem-seed kernel extract 5%.",
+        "severity": "Medium"
+      },
+      {
+        "id": "PEST-KWI-05",
+        "pest_name": "Armoured Scale (Hemiberlesia rapax)",
+        "crop": "Kiwi",
+        "symptoms": "Circular greyish scales encrusting bark and premature leaf chlorosis.",
+        "control_measures": "Spray Neemastra / fermented buttermilk (5%) or contact bio-fungicide.",
+        "severity": "High",
+        "pestId": "PEST-KWI-05",
+        "pestName": "Armoured Scale (Hemiberlesia rapax)",
+        "naturalRemedy": "Spray Neemastra / fermented buttermilk (5%) or contact bio-fungicide."
+      }
+    ],
+    "market_data": [
+      {
+        "id": "MKT-SHM-99",
+        "market_name": "Theog APMC Sub-Yard",
+        "crop": "Apple (Royal Delicious)",
+        "modal_price": 9800,
+        "min_price": 8200,
+        "max_price": 12000,
+        "date": "2026-09-21",
+        "arrival_quintals": 450,
+        "trend": "Upward"
+      },
+      {
+        "id": "MKT-SHM-01",
+        "market_name": "Dhalli APMC Mandi, Shimla",
+        "crop": "Apple (Royal Delicious)",
+        "modal_price": 9400,
+        "min_price": 7800,
+        "max_price": 11500,
+        "date": "2026-09-21",
+        "arrival_quintals": 450,
+        "trend": "Upward"
+      },
+      {
+        "id": "MKT-SOL-02",
+        "market_name": "Solan APMC Mandi",
+        "crop": "Tomato (Himsona)",
+        "modal_price": 2800,
+        "min_price": 2200,
+        "max_price": 3400,
+        "date": "2026-09-21",
+        "arrival_quintals": 320,
+        "trend": "Stable"
+      },
+      {
+        "id": "MKT-KNG-03",
+        "market_name": "Kangra APMC Mandi",
+        "crop": "Wheat (Sharbati)",
+        "modal_price": 2450,
+        "min_price": 2275,
+        "max_price": 2600,
+        "date": "2026-09-21",
+        "arrival_quintals": 580,
+        "trend": "Steady"
+      },
+      {
+        "id": "MKT-KUL-04",
+        "market_name": "Kullu Subzi Mandi",
+        "crop": "Off-Season Pea (Azad P-1)",
+        "modal_price": 6200,
+        "min_price": 5400,
+        "max_price": 7000,
+        "date": "2026-09-21",
+        "arrival_quintals": 210,
+        "trend": "Upward"
+      }
+    ],
+    "crop_data": [
+      {
+        "id": "CRPM-APP-01",
+        "crop_name": "Apple",
+        "crop_type": "Horticulture / Fruit",
+        "season": "Perennial",
+        "duration_days": 210,
+        "water_requirement": "Medium to High",
+        "suitable_zones": [
+          "ZONE-III",
+          "ZONE-IV"
+        ]
+      },
+      {
+        "id": "CRPM-TOM-02",
+        "crop_name": "Tomato",
+        "crop_type": "Vegetable",
+        "season": "Kharif",
+        "duration_days": 120,
+        "water_requirement": "High",
+        "suitable_zones": [
+          "ZONE-I",
+          "ZONE-II"
+        ]
+      },
+      {
+        "id": "CRPM-MAZ-03",
+        "crop_name": "Maize",
+        "crop_type": "Cereal Grain",
+        "season": "Kharif",
+        "duration_days": 100,
+        "water_requirement": "Medium",
+        "suitable_zones": [
+          "ZONE-I",
+          "ZONE-II",
+          "ZONE-III"
+        ]
+      },
+      {
+        "id": "CRPM-WHT-04",
+        "crop_name": "Wheat",
+        "crop_type": "Cereal Grain",
+        "season": "Rabi",
+        "duration_days": 150,
+        "water_requirement": "Medium",
+        "suitable_zones": [
+          "ZONE-I",
+          "ZONE-II"
+        ]
+      },
+      {
+        "id": "CRPM-TEA-05",
+        "crop_name": "Kangra Tea",
+        "crop_type": "Plantation / Cash Crop",
+        "season": "Perennial",
+        "duration_days": 365,
+        "water_requirement": "High (Acidic Soils)",
+        "suitable_zones": [
+          "ZONE-II"
+        ]
+      },
+      {
+        "id": "CRPM-PEA-06",
+        "crop_name": "Off-Season Pea",
+        "crop_type": "Pulse / Vegetable",
+        "season": "Zaid",
+        "duration_days": 75,
+        "water_requirement": "Low to Medium",
+        "suitable_zones": [
+          "ZONE-III",
+          "ZONE-IV"
+        ]
+      },
+      {
+        "id": "CRPM-KWI-07",
+        "crop_name": "Kiwi (Allison / Hayward)",
+        "crop_type": "Horticulture / Fruit",
+        "season": "Perennial",
+        "duration_days": 180,
+        "water_requirement": "Medium to High",
+        "suitable_zones": [
+          "ZONE-III",
+          "ZONE-IV"
+        ],
+        "standard_yield_quintal_per_acre": 110
       }
     ]
   },
@@ -2770,6 +3399,20 @@
     }
   ],
   "hpasnLogs": [
+    {
+      "transactionId": "TXN-ASN-21435",
+      "sourceDept": "Agriculture Dept (HP-ASN Gateway)",
+      "targetDept": "Department of Revenue (HimBhoomi)",
+      "purpose": "Jamabandi Khasra verification for DBT",
+      "farmerId": "FARMER-HP-1001",
+      "dataScope": "Cadastral Parcels",
+      "consentGranted": true,
+      "consentMethod": "Aadhaar e-Sign / Digital Farmer Locker Consent",
+      "status": "SUCCESS_VERIFIED",
+      "responseLatencyMs": 206,
+      "hashSignature": "0xcb2e1c81e0efc12cd6279746e2cceb7f25aec5e481b3726926aed251c35ce55e",
+      "timestamp": "2026-09-21T12:23:42.690Z"
+    },
     {
       "transactionId": "TXN-ASN-14579",
       "sourceDept": "Agriculture Dept (HP-ASN Gateway)",
@@ -3470,12 +4113,47 @@
       "healthStatus": "Optimal",
       "estimated_yield_quintals": 25,
       "estimatedYieldQuintals": 25,
+      "actual_yield_quintals": 0,
+      "actualYieldQuintals": 0,
+      "ndvi_score": 0.89,
+      "ndviScore": 0.89,
+      "created_at": "2026-09-21T12:15:00.959Z",
+      "updated_at": "2026-09-21T12:23:42.864Z"
+    },
+    {
+      "id": "CROP-SHM-9901",
+      "land_id": "LAND-KOT-081",
+      "crop_name": "Gala Apple",
+      "crop_type": "Horticulture / Fruit",
+      "sowing_date": "2024-02-15",
+      "season": "Perennial",
+      "area": 4.5,
+      "status": "Vegetative",
+      "crop_id": "CROP-SHM-9901",
+      "cropId": "CROP-SHM-9901",
+      "parcel_id": "LAND-KOT-081",
+      "parcelId": "LAND-KOT-081",
+      "farmer_id": "FARMER-HP-1001",
+      "farmerId": "FARMER-HP-1001",
+      "cropName": "Gala Apple",
+      "cropType": "Horticulture / Fruit",
+      "sowingDate": "2024-02-15",
+      "variety": "Dark Baron Gala",
+      "harvest_date": null,
+      "area_bigha": 4.5,
+      "areaBigha": 4.5,
+      "crop_stage": "Vegetative",
+      "cropStage": "Vegetative",
+      "health_status": "Optimal",
+      "healthStatus": "Optimal",
+      "estimated_yield_quintals": 25,
+      "estimatedYieldQuintals": 25,
       "actual_yield_quintals": null,
       "actualYieldQuintals": null,
-      "ndvi_score": 0.89,
+      "ndvi_score": 0.84,
       "ndviScore": 0.84,
-      "created_at": "2026-09-21T12:15:00.959Z",
-      "updated_at": "2026-09-21T12:15:00.971Z"
+      "created_at": "2026-09-21T12:23:42.848Z",
+      "updated_at": "2026-09-21T12:23:42.848Z"
     },
     {
       "id": "CROP-SHI-441",
@@ -4100,12 +4778,47 @@
       "healthStatus": "Optimal",
       "estimated_yield_quintals": 59.8,
       "estimatedYieldQuintals": 59.8,
-      "actual_yield_quintals": null,
-      "actualYieldQuintals": null,
+      "actual_yield_quintals": 0,
+      "actualYieldQuintals": 0,
       "ndvi_score": 0.78,
       "ndviScore": 0.78,
       "created_at": "2026-09-21T12:15:00.932Z",
       "updated_at": "2026-09-21T12:15:00.932Z"
+    },
+    {
+      "id": "CROP-SHI-418",
+      "land_id": "LAND-SHI-8801",
+      "crop_name": "Kiwi & Pears",
+      "crop_type": "Horticulture / Fruit",
+      "sowing_date": "2026-09-21",
+      "season": "Kharif",
+      "area": 9.2,
+      "status": "Vegetative",
+      "crop_id": "CROP-SHI-418",
+      "cropId": "CROP-SHI-418",
+      "parcel_id": "LAND-SHI-8801",
+      "parcelId": "LAND-SHI-8801",
+      "farmer_id": "FARMER-HP-1001",
+      "farmerId": "FARMER-HP-1001",
+      "cropName": "Kiwi & Pears",
+      "cropType": "Horticulture / Fruit",
+      "sowingDate": "2026-09-21",
+      "variety": "Standard Cultivar",
+      "harvest_date": null,
+      "area_bigha": 9.2,
+      "areaBigha": 9.2,
+      "crop_stage": "Vegetative",
+      "cropStage": "Vegetative",
+      "health_status": "Optimal",
+      "healthStatus": "Optimal",
+      "estimated_yield_quintals": 59.8,
+      "estimatedYieldQuintals": 59.8,
+      "actual_yield_quintals": null,
+      "actualYieldQuintals": null,
+      "ndvi_score": 0.78,
+      "ndviScore": 0.78,
+      "created_at": "2026-09-21T12:23:42.824Z",
+      "updated_at": "2026-09-21T12:23:42.824Z"
     },
     {
       "id": "CROP-SOL-594",

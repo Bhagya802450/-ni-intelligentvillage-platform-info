@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
+const { SUADR, SoilData, ClimateData, CropMaster, AgronomyData, PestData, MarketData } = require('../../models/SUADR');
 
 // GET all soil profiles
 router.get('/soil', (req, res) => {
@@ -221,6 +222,319 @@ router.post('/advisory-query', (req, res) => {
     confidenceScore: 0.94,
     agroAdvisories: advice,
     pestAlerts: alerts
+  });
+});
+
+// =========================================================================
+// STATE UNIFIED DIGITAL DATABASE (SUADR)
+// Core Hierarchy:
+// SUADR
+//  │
+//  ├── Soil Data
+//  ├── Climate Data
+//  ├── Crop Data
+//  ├── Agronomy Data
+//  ├── Pest Data
+//  └── Market Data
+// =========================================================================
+
+// GET /api/suadr/hierarchy - SUADR Logical Hierarchy Tree
+router.get('/hierarchy', (req, res) => {
+  const suadrStore = db.get().suadr || {};
+  const suadrModel = new SUADR(suadrStore);
+  res.json({
+    success: true,
+    model: "State Unified Digital Database (SUADR)",
+    tree: "SUADR ├── Soil Data ├── Climate Data ├── Crop Data ├── Agronomy Data ├── Pest Data └── Market Data",
+    hierarchy: suadrModel.getHierarchy()
+  });
+});
+
+// 1. Soil Data (soil_data: id, location, soil_type, ph, nitrogen, phosphorus, potassium)
+router.get('/soil-data', (req, res) => {
+  const { location, search } = req.query;
+  let list = db.get().suadr?.soil_data || [];
+  if (location && location !== 'All') {
+    list = list.filter(s => (s.location || s.district || '').toLowerCase() === location.toLowerCase());
+  }
+  if (search) {
+    const q = search.toLowerCase();
+    list = list.filter(s => (s.location || '').toLowerCase().includes(q) || (s.soil_type || '').toLowerCase().includes(q));
+  }
+  res.json({ success: true, count: list.length, data: list });
+});
+
+router.post('/soil-data', (req, res) => {
+  const { id, location, soil_type, ph, nitrogen, phosphorus, potassium, recommendation } = req.body;
+  if (!location || ph === undefined) {
+    return res.status(400).json({ success: false, message: "Fields 'location' and 'ph' are mandatory." });
+  }
+
+  const model = new SoilData({
+    id,
+    location,
+    soil_type: soil_type || 'Clay Loam',
+    ph: Number(ph),
+    nitrogen: Number(nitrogen !== undefined ? nitrogen : 260),
+    phosphorus: Number(phosphorus !== undefined ? phosphorus : 22),
+    potassium: Number(potassium !== undefined ? potassium : 280),
+    recommendation
+  });
+
+  const soilRecord = model.toJSON();
+
+  db.update(store => {
+    store.suadr = store.suadr || {};
+    store.suadr.soil_data = store.suadr.soil_data || [];
+    store.suadr.soil_data.unshift(soilRecord);
+    store.suadr.soilProfiles = store.suadr.soilProfiles || [];
+    store.suadr.soilProfiles.unshift(soilRecord);
+    return store;
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Soil Data registered successfully in SUADR repository.",
+    model: "soil_data (id, location, soil_type, ph, nitrogen, phosphorus, potassium)",
+    data: soilRecord
+  });
+});
+
+// 2. Climate Data (climate_data: id, location, temperature, humidity, rainfall, date)
+router.get('/climate-data', (req, res) => {
+  const { location, date } = req.query;
+  let list = db.get().suadr?.climate_data || [];
+  if (location && location !== 'All') {
+    list = list.filter(c => (c.location || '').toLowerCase() === location.toLowerCase());
+  }
+  if (date) {
+    list = list.filter(c => c.date === date);
+  }
+  res.json({ success: true, count: list.length, data: list });
+});
+
+router.post('/climate-data', (req, res) => {
+  const { id, location, temperature, humidity, rainfall, date, condition, wind_speed } = req.body;
+  if (!location || temperature === undefined) {
+    return res.status(400).json({ success: false, message: "Fields 'location' and 'temperature' are mandatory." });
+  }
+
+  const model = new ClimateData({
+    id,
+    location,
+    temperature: Number(temperature),
+    humidity: Number(humidity !== undefined ? humidity : 55),
+    rainfall: Number(rainfall !== undefined ? rainfall : 0),
+    date: date || new Date().toISOString().split('T')[0],
+    condition,
+    wind_speed
+  });
+
+  const climateRecord = model.toJSON();
+
+  db.update(store => {
+    store.suadr = store.suadr || {};
+    store.suadr.climate_data = store.suadr.climate_data || [];
+    store.suadr.climate_data.unshift(climateRecord);
+    return store;
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Climate Data recorded successfully in SUADR repository.",
+    model: "climate_data (id, location, temperature, humidity, rainfall, date)",
+    data: climateRecord
+  });
+});
+
+// 3. Crop Data (crop_master: id, crop_name, crop_type, season)
+const getCropMasterHandler = (req, res) => {
+  const { crop_type, season, search } = req.query;
+  let list = db.get().suadr?.crop_master || db.get().suadr?.crop_data || [];
+  if (crop_type && crop_type !== 'All') {
+    list = list.filter(c => (c.crop_type || '').toLowerCase() === crop_type.toLowerCase());
+  }
+  if (season && season !== 'All') {
+    list = list.filter(c => (c.season || '').toLowerCase() === season.toLowerCase());
+  }
+  if (search) {
+    const q = search.toLowerCase();
+    list = list.filter(c => (c.crop_name || '').toLowerCase().includes(q));
+  }
+  res.json({ success: true, count: list.length, data: list });
+};
+
+const postCropMasterHandler = (req, res) => {
+  const { id, crop_name, crop_type, season, duration_days, water_requirement } = req.body;
+  if (!crop_name || !crop_type || !season) {
+    return res.status(400).json({ success: false, message: "Fields 'crop_name', 'crop_type', and 'season' are mandatory." });
+  }
+
+  const model = new CropMaster({
+    id,
+    crop_name,
+    crop_type,
+    season,
+    duration_days,
+    water_requirement
+  });
+
+  const cropRecord = model.toJSON();
+
+  db.update(store => {
+    store.suadr = store.suadr || {};
+    store.suadr.crop_master = store.suadr.crop_master || [];
+    store.suadr.crop_master.push(cropRecord);
+    store.suadr.crop_data = store.suadr.crop_master;
+    return store;
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Crop Master registered successfully in SUADR repository.",
+    model: "crop_master (id, crop_name, crop_type, season)",
+    data: cropRecord
+  });
+};
+
+router.get('/crop-master', getCropMasterHandler);
+router.get('/crop-data', getCropMasterHandler);
+router.post('/crop-master', postCropMasterHandler);
+router.post('/crop-data', postCropMasterHandler);
+
+// 4. Agronomy Data (agronomy_data: id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation)
+router.get('/agronomy-data', (req, res) => {
+  const { crop } = req.query;
+  let list = db.get().suadr?.agronomy_data || [];
+  if (crop && crop !== 'All') {
+    list = list.filter(a => (a.crop || '').toLowerCase().includes(crop.toLowerCase()));
+  }
+  res.json({ success: true, count: list.length, data: list });
+});
+
+router.post('/agronomy-data', (req, res) => {
+  const { id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation } = req.body;
+  if (!crop || !soil_type) {
+    return res.status(400).json({ success: false, message: "Fields 'crop' and 'soil_type' are mandatory." });
+  }
+
+  const model = new AgronomyData({
+    id,
+    crop,
+    soil_type,
+    sowing_window,
+    seed_rate,
+    irrigation_practices,
+    fertilizer_recommendation
+  });
+
+  const agroRecord = model.toJSON();
+
+  db.update(store => {
+    store.suadr = store.suadr || {};
+    store.suadr.agronomy_data = store.suadr.agronomy_data || [];
+    store.suadr.agronomy_data.push(agroRecord);
+    return store;
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Agronomy protocol registered successfully in SUADR repository.",
+    model: "agronomy_data (id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation)",
+    data: agroRecord
+  });
+});
+
+// 5. Pest Data (pest_data: id, pest_name, crop, symptoms)
+router.get('/pest-data', (req, res) => {
+  const { crop, search } = req.query;
+  let list = db.get().suadr?.pest_data || [];
+  if (crop && crop !== 'All') {
+    list = list.filter(p => (p.crop || '').toLowerCase().includes(crop.toLowerCase()));
+  }
+  if (search) {
+    const q = search.toLowerCase();
+    list = list.filter(p => (p.pest_name || '').toLowerCase().includes(q) || (p.symptoms || '').toLowerCase().includes(q));
+  }
+  res.json({ success: true, count: list.length, data: list });
+});
+
+router.post('/pest-data', (req, res) => {
+  const { id, pest_name, crop, symptoms, control_measures, severity } = req.body;
+  if (!pest_name || !crop || !symptoms) {
+    return res.status(400).json({ success: false, message: "Fields 'pest_name', 'crop', and 'symptoms' are mandatory." });
+  }
+
+  const model = new PestData({
+    id,
+    pest_name,
+    crop,
+    symptoms,
+    control_measures,
+    severity
+  });
+
+  const pestRecord = model.toJSON();
+
+  db.update(store => {
+    store.suadr = store.suadr || {};
+    store.suadr.pest_data = store.suadr.pest_data || [];
+    store.suadr.pest_data.push(pestRecord);
+    return store;
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Pest diagnostic data registered successfully in SUADR repository.",
+    model: "pest_data (id, pest_name, crop, symptoms)",
+    data: pestRecord
+  });
+});
+
+// 6. Market Data (market_data: id, market_name, crop, modal_price, min_price, max_price, date)
+router.get('/market-data', (req, res) => {
+  const { crop, market_name } = req.query;
+  let list = db.get().suadr?.market_data || [];
+  if (crop && crop !== 'All') {
+    list = list.filter(m => (m.crop || '').toLowerCase().includes(crop.toLowerCase()));
+  }
+  if (market_name && market_name !== 'All') {
+    list = list.filter(m => (m.market_name || '').toLowerCase().includes(market_name.toLowerCase()));
+  }
+  res.json({ success: true, count: list.length, data: list });
+});
+
+router.post('/market-data', (req, res) => {
+  const { id, market_name, crop, modal_price, min_price, max_price, date, arrival_quintals } = req.body;
+  if (!market_name || !crop || modal_price === undefined) {
+    return res.status(400).json({ success: false, message: "Fields 'market_name', 'crop', and 'modal_price' are mandatory." });
+  }
+
+  const model = new MarketData({
+    id,
+    market_name,
+    crop,
+    modal_price: Number(modal_price),
+    min_price: Number(min_price !== undefined ? min_price : modal_price * 0.85),
+    max_price: Number(max_price !== undefined ? max_price : modal_price * 1.20),
+    date: date || new Date().toISOString().split('T')[0],
+    arrival_quintals
+  });
+
+  const mktRecord = model.toJSON();
+
+  db.update(store => {
+    store.suadr = store.suadr || {};
+    store.suadr.market_data = store.suadr.market_data || [];
+    store.suadr.market_data.unshift(mktRecord);
+    return store;
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Market price quotation registered successfully in SUADR repository.",
+    model: "market_data (id, market_name, crop, modal_price, min_price, max_price, date)",
+    data: mktRecord
   });
 });
 

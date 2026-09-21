@@ -158,7 +158,38 @@ SELECT
     created_at
 FROM crops;
 
--- 4. State Unified Digital Database (SUADR) - Soil Profiles & Agro-Intelligence
+-- =========================================================================
+-- 4. State Unified Digital Database (SUADR)
+-- Core Hierarchy:
+-- SUADR
+--  │
+--  ├── Soil Data (soil_data)
+--  ├── Climate Data (climate_data)
+--  ├── Crop Data (crop_master)
+--  ├── Agronomy Data (agronomy_data)
+--  ├── Pest Data (pest_data)
+--  └── Market Data (market_data)
+-- =========================================================================
+
+-- 4.1 Soil Data (soil_data)
+-- Attributes: id, location, soil_type, ph, nitrogen, phosphorus, potassium
+CREATE TABLE IF NOT EXISTS soil_data (
+    id VARCHAR(64) PRIMARY KEY,
+    location VARCHAR(100) NOT NULL,
+    soil_type VARCHAR(100) NOT NULL,
+    ph NUMERIC(4, 2) NOT NULL,
+    nitrogen NUMERIC(6, 2) NOT NULL,
+    phosphorus NUMERIC(6, 2) NOT NULL,
+    potassium NUMERIC(6, 2) NOT NULL,
+    organic_carbon NUMERIC(4, 2),
+    zinc_ppm NUMERIC(5, 2),
+    boron_ppm NUMERIC(5, 2),
+    recommendation TEXT,
+    last_tested DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Backward compatibility table alias
 CREATE TABLE IF NOT EXISTS suadr_soil_profiles (
     shc_id VARCHAR(64) PRIMARY KEY,
     district VARCHAR(64) NOT NULL,
@@ -173,6 +204,76 @@ CREATE TABLE IF NOT EXISTS suadr_soil_profiles (
     last_tested DATE DEFAULT CURRENT_DATE,
     agronomy_recommendation TEXT
 );
+
+-- 4.2 Climate Data (climate_data)
+-- Attributes: id, location, temperature, humidity, rainfall, date
+CREATE TABLE IF NOT EXISTS climate_data (
+    id VARCHAR(64) PRIMARY KEY,
+    location VARCHAR(100) NOT NULL,
+    temperature NUMERIC(5, 2) NOT NULL,
+    humidity NUMERIC(5, 2) NOT NULL,
+    rainfall NUMERIC(6, 2) NOT NULL DEFAULT 0.0,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    wind_speed NUMERIC(5, 2),
+    frost_risk VARCHAR(32) DEFAULT 'Low',
+    condition VARCHAR(64) DEFAULT 'Partly Cloudy',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4.3 Crop Master Data (crop_master)
+-- Attributes: id, crop_name, crop_type, season
+CREATE TABLE IF NOT EXISTS crop_master (
+    id VARCHAR(64) PRIMARY KEY,
+    crop_name VARCHAR(100) NOT NULL,
+    crop_type VARCHAR(100) NOT NULL,
+    season VARCHAR(32) NOT NULL,
+    duration_days INT,
+    water_requirement VARCHAR(64),
+    suitable_zones TEXT[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4.4 Agronomy Data (agronomy_data)
+-- Attributes: id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation
+CREATE TABLE IF NOT EXISTS agronomy_data (
+    id VARCHAR(64) PRIMARY KEY,
+    crop VARCHAR(100) NOT NULL,
+    soil_type VARCHAR(100) NOT NULL,
+    sowing_window VARCHAR(100) NOT NULL,
+    seed_rate VARCHAR(100) NOT NULL,
+    irrigation_practices TEXT NOT NULL,
+    fertilizer_recommendation TEXT NOT NULL,
+    intercropping TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4.5 Pest Data (pest_data)
+-- Attributes: id, pest_name, crop, symptoms
+CREATE TABLE IF NOT EXISTS pest_data (
+    id VARCHAR(64) PRIMARY KEY,
+    pest_name VARCHAR(150) NOT NULL,
+    crop VARCHAR(100) NOT NULL,
+    symptoms TEXT NOT NULL,
+    control_measures TEXT,
+    severity VARCHAR(32) DEFAULT 'Medium',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 4.6 Market Data (market_data)
+-- Attributes: id, market_name, crop, modal_price, min_price, max_price, date
+CREATE TABLE IF NOT EXISTS market_data (
+    id VARCHAR(64) PRIMARY KEY,
+    market_name VARCHAR(150) NOT NULL,
+    crop VARCHAR(100) NOT NULL,
+    modal_price NUMERIC(10, 2) NOT NULL,
+    min_price NUMERIC(10, 2) NOT NULL,
+    max_price NUMERIC(10, 2) NOT NULL,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    arrival_quintals NUMERIC(10, 2),
+    trend VARCHAR(32) DEFAULT 'Stable',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- 5. DBT Schemes Catalog
 CREATE TABLE IF NOT EXISTS schemes (

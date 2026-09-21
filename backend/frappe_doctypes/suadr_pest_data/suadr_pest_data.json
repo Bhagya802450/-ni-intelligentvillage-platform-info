@@ -1,0 +1,57 @@
+{
+  "name": "SUADR Pest Data",
+  "doctype": "DocType",
+  "module": "SUADR",
+  "autoname": "format:PEST-{crop}-{#####}",
+  "is_submittable": 0,
+  "track_changes": 1,
+  "description": "Plant protection, pest diagnostic and biological control repository in SUADR",
+  "fields": [
+    {
+      "fieldname": "id",
+      "fieldtype": "Data",
+      "label": "Pest Record ID",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "pest_name",
+      "fieldtype": "Data",
+      "label": "Pest / Disease Name",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "crop",
+      "fieldtype": "Data",
+      "label": "Host Crop",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "symptoms",
+      "fieldtype": "Text",
+      "label": "Visible Symptoms & Diagnostic Signs",
+      "reqd": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "Agriculture Officer",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    },
+    {
+      "role": "Farmer",
+      "read": 1
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "name": "SUADR Market Data",
+  "doctype": "DocType",
+  "module": "SUADR",
+  "autoname": "format:MKT-{market_name}-{#####}",
+  "is_submittable": 0,
+  "track_changes": 1,
+  "description": "APMC Mandi price discovery, arrivals and commodity market intelligence in SUADR",
+  "fields": [
+    {
+      "fieldname": "id",
+      "fieldtype": "Data",
+      "label": "Market Record ID",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "market_name",
+      "fieldtype": "Data",
+      "label": "APMC Market / Mandi Name",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "crop",
+      "fieldtype": "Data",
+      "label": "Agricultural Commodity / Crop",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "modal_price",
+      "fieldtype": "Currency",
+      "label": "Modal Price (₹/Quintal)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "min_price",
+      "fieldtype": "Currency",
+      "label": "Minimum Price (₹/Quintal)",
+      "reqd": 1
+    },
+    {
+      "fieldname": "max_price",
+      "fieldtype": "Currency",
+      "label": "Maximum Price (₹/Quintal)",
+      "reqd": 1
+    },
+    {
+      "fieldname": "date",
+      "fieldtype": "Date",
+      "label": "Price Quotation Date",
+      "reqd": 1,
+      "in_list_view": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "Agriculture Officer",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    },
+    {
+      "role": "Farmer",
+      "read": 1
+    }
+  ]
+}

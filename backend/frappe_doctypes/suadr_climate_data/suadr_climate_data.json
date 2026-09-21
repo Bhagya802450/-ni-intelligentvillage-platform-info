@@ -1,0 +1,73 @@
+{
+  "name": "SUADR Climate Data",
+  "doctype": "DocType",
+  "module": "SUADR",
+  "autoname": "format:CLM-{location}-{#####}",
+  "is_submittable": 0,
+  "track_changes": 1,
+  "description": "Statewide agro-meteorological station telemetry and records in SUADR",
+  "fields": [
+    {
+      "fieldname": "id",
+      "fieldtype": "Data",
+      "label": "Climate Record ID",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "location",
+      "fieldtype": "Data",
+      "label": "Station / Location",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "temperature",
+      "fieldtype": "Float",
+      "label": "Ambient Temperature (°C)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "humidity",
+      "fieldtype": "Float",
+      "label": "Relative Humidity (%)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "rainfall",
+      "fieldtype": "Float",
+      "label": "Rainfall (mm)",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "date",
+      "fieldtype": "Date",
+      "label": "Observation Date",
+      "reqd": 1,
+      "in_list_view": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "Agriculture Officer",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    },
+    {
+      "role": "Farmer",
+      "read": 1
+    }
+  ]
+}

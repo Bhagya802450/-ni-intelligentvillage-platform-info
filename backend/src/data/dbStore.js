@@ -3,6 +3,7 @@ const path = require('path');
 const Farmer = require('../models/Farmer');
 const Land = require('../models/Land');
 const Crop = require('../models/Crop');
+const { SUADR, SoilData, ClimateData, CropMaster, AgronomyData, PestData, MarketData } = require('../models/SUADR');
 
 const DB_FILE = path.join(__dirname, 'seed_data.json');
 
@@ -267,6 +268,290 @@ const initialData = {
   ],
 
   suadr: {
+    // 1. Soil Data (soil_data: id, location, soil_type, ph, nitrogen, phosphorus, potassium)
+    soil_data: [
+      {
+        id: "SOIL-SHM-4019",
+        location: "Shimla",
+        soil_type: "Clay Loam",
+        ph: 6.2,
+        nitrogen: 280,
+        phosphorus: 24,
+        potassium: 340,
+        organic_carbon: 1.45,
+        zinc_ppm: 0.85,
+        boron_ppm: 0.65,
+        recommendation: "Apply Jeevamrit / Farmyard manure @ 15 kg/tree before bud-break.",
+        last_tested: "2025-11-14"
+      },
+      {
+        id: "SOIL-SOL-1044",
+        location: "Solan",
+        soil_type: "Sandy Loam",
+        ph: 6.8,
+        nitrogen: 210,
+        phosphorus: 32,
+        potassium: 220,
+        organic_carbon: 0.82,
+        zinc_ppm: 0.60,
+        boron_ppm: 0.50,
+        recommendation: "Incorporate Ghanjeevamrit @ 100 kg/bigha. Supplement Nitrogen with Azotobacter.",
+        last_tested: "2026-02-10"
+      },
+      {
+        id: "SOIL-KNG-9920",
+        location: "Kangra",
+        soil_type: "Mountain Acidic Peat",
+        ph: 5.4,
+        nitrogen: 310,
+        phosphorus: 16,
+        potassium: 280,
+        organic_carbon: 1.80,
+        zinc_ppm: 1.10,
+        boron_ppm: 0.70,
+        recommendation: "Apply Agricultural Lime @ 250 kg/hectare once in 3 years for tea flushing.",
+        last_tested: "2025-10-05"
+      },
+      {
+        id: "SOIL-KUL-3011",
+        location: "Kullu",
+        soil_type: "Silty Loam",
+        ph: 6.4,
+        nitrogen: 290,
+        phosphorus: 26,
+        potassium: 310,
+        organic_carbon: 1.30,
+        zinc_ppm: 0.90,
+        boron_ppm: 0.55,
+        recommendation: "Maintain balanced fertigation during flowering and spur development.",
+        last_tested: "2026-01-18"
+      }
+    ],
+
+    // 2. Climate Data (climate_data: id, location, temperature, humidity, rainfall, date)
+    climate_data: [
+      {
+        id: "CLM-SHM-01",
+        location: "Shimla",
+        temperature: 18.4,
+        humidity: 62,
+        rainfall: 0.0,
+        date: "2026-09-21",
+        wind_speed: 8.5,
+        frost_risk: "Low",
+        condition: "Partly Cloudy"
+      },
+      {
+        id: "CLM-SOL-02",
+        location: "Solan",
+        temperature: 24.2,
+        humidity: 55,
+        rainfall: 0.0,
+        date: "2026-09-21",
+        wind_speed: 6.2,
+        frost_risk: "None",
+        condition: "Sunny & Mild"
+      },
+      {
+        id: "CLM-KNG-03",
+        location: "Kangra",
+        temperature: 26.8,
+        humidity: 58,
+        rainfall: 2.5,
+        date: "2026-09-21",
+        wind_speed: 9.0,
+        frost_risk: "None",
+        condition: "Clear Sky"
+      },
+      {
+        id: "CLM-KUL-04",
+        location: "Kullu",
+        temperature: 19.5,
+        humidity: 50,
+        rainfall: 0.0,
+        date: "2026-09-21",
+        wind_speed: 11.2,
+        frost_risk: "Low",
+        condition: "Breezy & Fair"
+      }
+    ],
+
+    // 3. Crop Data (crop_master: id, crop_name, crop_type, season)
+    crop_master: [
+      {
+        id: "CRPM-APP-01",
+        crop_name: "Apple",
+        crop_type: "Horticulture / Fruit",
+        season: "Perennial",
+        duration_days: 210,
+        water_requirement: "Medium to High",
+        suitable_zones: ["ZONE-III", "ZONE-IV"]
+      },
+      {
+        id: "CRPM-TOM-02",
+        crop_name: "Tomato",
+        crop_type: "Vegetable",
+        season: "Kharif",
+        duration_days: 120,
+        water_requirement: "High",
+        suitable_zones: ["ZONE-I", "ZONE-II"]
+      },
+      {
+        id: "CRPM-MAZ-03",
+        crop_name: "Maize",
+        crop_type: "Cereal Grain",
+        season: "Kharif",
+        duration_days: 100,
+        water_requirement: "Medium",
+        suitable_zones: ["ZONE-I", "ZONE-II", "ZONE-III"]
+      },
+      {
+        id: "CRPM-WHT-04",
+        crop_name: "Wheat",
+        crop_type: "Cereal Grain",
+        season: "Rabi",
+        duration_days: 150,
+        water_requirement: "Medium",
+        suitable_zones: ["ZONE-I", "ZONE-II"]
+      },
+      {
+        id: "CRPM-TEA-05",
+        crop_name: "Kangra Tea",
+        crop_type: "Plantation / Cash Crop",
+        season: "Perennial",
+        duration_days: 365,
+        water_requirement: "High (Acidic Soils)",
+        suitable_zones: ["ZONE-II"]
+      },
+      {
+        id: "CRPM-PEA-06",
+        crop_name: "Off-Season Pea",
+        crop_type: "Pulse / Vegetable",
+        season: "Zaid",
+        duration_days: 75,
+        water_requirement: "Low to Medium",
+        suitable_zones: ["ZONE-III", "ZONE-IV"]
+      }
+    ],
+
+    // 4. Agronomy Data (agronomy_data: id, crop, soil_type, sowing_window, seed_rate, irrigation_practices, fertilizer_recommendation)
+    agronomy_data: [
+      {
+        id: "AGRO-APP-01",
+        crop: "Apple",
+        soil_type: "Clay Loam",
+        sowing_window: "Dec - Feb (Dormancy Planting)",
+        seed_rate: "250 - 300 rootstocks / acre",
+        irrigation_practices: "Micro-Drip @ 15-20L/tree/week during fruit set and development",
+        fertilizer_recommendation: "FYM 40kg + 700g N, 350g P, 700g K per mature tree",
+        intercropping: "White clover or French beans"
+      },
+      {
+        id: "AGRO-TOM-02",
+        crop: "Tomato",
+        soil_type: "Sandy Loam",
+        sowing_window: "April - June (Mid-Hills)",
+        seed_rate: "150g - 200g seeds / acre",
+        irrigation_practices: "Drip fertigation every 3 days during fruiting",
+        fertilizer_recommendation: "100:60:60 kg NPK / ha with micronutrient spray (Zinc & Boron)",
+        intercropping: "Marigold border for nematode control"
+      },
+      {
+        id: "AGRO-WHT-03",
+        crop: "Wheat",
+        soil_type: "Loam / Clay Loam",
+        sowing_window: "Oct 15 - Nov 15",
+        seed_rate: "40 kg / acre",
+        irrigation_practices: "Irrigate at CRI (21 days) and flowering critical stages",
+        fertilizer_recommendation: "80:40:40 kg NPK / ha with farmyard compost",
+        intercropping: "Mustard intercrop (1:9 ratio)"
+      }
+    ],
+
+    // 5. Pest Data (pest_data: id, pest_name, crop, symptoms)
+    pest_data: [
+      {
+        id: "PEST-APP-01",
+        pest_name: "Apple Scab (Venturia inaequalis)",
+        crop: "Apple",
+        symptoms: "Olive-green to black velvety spots on young leaves and developing fruit surfaces.",
+        control_measures: "Spray Neemastra or sour buttermilk spray (5%). Chemical: Difenoconazole 25% EC.",
+        severity: "High"
+      },
+      {
+        id: "PEST-TOM-02",
+        pest_name: "Early Blight & Fruit Borer",
+        crop: "Tomato",
+        symptoms: "Concentric target-like brown spots on foliage, pin-holes on fruit near calyx.",
+        control_measures: "Pheromone traps @ 5/bigha. Spray Agniastra @ 3L/100L water.",
+        severity: "Medium"
+      },
+      {
+        id: "PEST-MAZ-03",
+        pest_name: "Fall Armyworm (Spodoptera frugiperda)",
+        crop: "Maize",
+        symptoms: "Ragged feeding holes on leaf whorls with sawdust-like frass.",
+        control_measures: "Apply wood ash + sand in whorls. Trichogramma bio-control.",
+        severity: "High"
+      },
+      {
+        id: "PEST-TEA-04",
+        pest_name: "Tea Mosquito Bug (Helopeltis theivora)",
+        crop: "Tea",
+        symptoms: "Brown water-soaked patches on tender flush leaves resulting in curl and dieback.",
+        control_measures: "Pruning infected shoots, spray neem-seed kernel extract 5%.",
+        severity: "Medium"
+      }
+    ],
+
+    // 6. Market Data (market_data: id, market_name, crop, modal_price, min_price, max_price, date)
+    market_data: [
+      {
+        id: "MKT-SHM-01",
+        market_name: "Dhalli APMC Mandi, Shimla",
+        crop: "Apple (Royal Delicious)",
+        modal_price: 9400,
+        min_price: 7800,
+        max_price: 11500,
+        date: "2026-09-21",
+        arrival_quintals: 450,
+        trend: "Upward"
+      },
+      {
+        id: "MKT-SOL-02",
+        market_name: "Solan APMC Mandi",
+        crop: "Tomato (Himsona)",
+        modal_price: 2800,
+        min_price: 2200,
+        max_price: 3400,
+        date: "2026-09-21",
+        arrival_quintals: 320,
+        trend: "Stable"
+      },
+      {
+        id: "MKT-KNG-03",
+        market_name: "Kangra APMC Mandi",
+        crop: "Wheat (Sharbati)",
+        modal_price: 2450,
+        min_price: 2275,
+        max_price: 2600,
+        date: "2026-09-21",
+        arrival_quintals: 580,
+        trend: "Steady"
+      },
+      {
+        id: "MKT-KUL-04",
+        market_name: "Kullu Subzi Mandi",
+        crop: "Off-Season Pea (Azad P-1)",
+        modal_price: 6200,
+        min_price: 5400,
+        max_price: 7000,
+        date: "2026-09-21",
+        arrival_quintals: 210,
+        trend: "Upward"
+      }
+    ],
+
     soilProfiles: [
       {
         shcId: "SHC-SHM-4019",
@@ -806,10 +1091,26 @@ function loadData() {
       });
     }
 
+    // Ensure SUADR holds all 6 branches
+    merged.suadr = merged.suadr || {};
+    ['soil_data', 'climate_data', 'crop_master', 'agronomy_data', 'pest_data', 'market_data'].forEach(branch => {
+      if (!Array.isArray(merged.suadr[branch]) || merged.suadr[branch].length === 0) {
+        merged.suadr[branch] = initialData.suadr[branch] || [];
+      }
+    });
+    // Ensure crop_data is an alias to crop_master
+    merged.suadr.crop_data = merged.suadr.crop_master;
+
+    // Ensure legacy aliases are populated
+    if (!merged.suadr.soilProfiles) merged.suadr.soilProfiles = initialData.suadr.soilProfiles;
+    if (!merged.suadr.agroClimaticZones) merged.suadr.agroClimaticZones = initialData.suadr.agroClimaticZones;
+    if (!merged.suadr.liveTelemetry) merged.suadr.liveTelemetry = initialData.suadr.liveTelemetry;
+    if (!merged.suadr.pestDiagnostics) merged.suadr.pestDiagnostics = initialData.suadr.pestDiagnostics;
+
     // Populate top-level crops array
     merged.crops = extractAllCrops(merged.farmers);
 
-    if (!parsed.officers || !parsed.roles || !parsed.hpasnPolicies || !parsed.crops) {
+    if (!parsed.officers || !parsed.roles || !parsed.hpasnPolicies || !parsed.crops || !parsed.suadr?.soil_data) {
       saveData(merged);
     }
     return merged;
