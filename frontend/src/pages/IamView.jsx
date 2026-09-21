@@ -85,6 +85,142 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
         </div>
       </div>
 
+      {/* User Roles Hierarchy Visualizer Card */}
+      <div className="glass-card" style={{ padding: '24px', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Users size={22} color="#38bdf8" />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>
+              {isKn ? 'ಬಳಕೆದಾರ ಪಾತ್ರಗಳ ಶ್ರೇಣಿ (User Role Hierarchy)' : 'User Role Hierarchy Tree'}
+            </h2>
+          </div>
+          <span className="mono-chip" style={{ color: '#34d399', fontSize: '0.8rem' }}>
+            User ├── Farmer ├── Officer └── Admin
+          </span>
+        </div>
+
+        <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginBottom: '20px' }}>
+          {isKn 
+            ? 'ಪ್ಲಾಟ್‌ಫಾರ್ಮ್‌ನ ಎಲ್ಲಾ ಬಳಕೆದಾರರು ಈ 3-ಹಂತದ ಅಧಿಕಾರ ರಚನೆಯ ಅಡಿಯಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಾರೆ:'
+            : 'All authenticated platform principals inherit access according to this 3-tier canonical authority hierarchy:'}
+        </p>
+
+        {/* Tree Visual Flow */}
+        <div style={{
+          background: 'rgba(0,0,0,0.35)',
+          padding: '20px',
+          borderRadius: '12px',
+          border: '1px solid rgba(255,255,255,0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          {/* Root Level: User */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))',
+            border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '10px',
+            padding: '14px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '1.3rem' }}>👤</span>
+              <div>
+                <strong style={{ fontSize: '1.05rem', color: '#fff' }}>User (Root Principal)</strong>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  {isKn ? 'ಆಧಾರ್ ಮತ್ತು ಅಗ್ರಿಸ್ಟಾಕ್ ದೃಢೀಕರಿಸಿದ ಮೂಲ ಬಳಕೆದಾರ ಗುರುತು' : 'Root authenticated identity with Aadhaar / AgriStack credentials'}
+                </div>
+              </div>
+            </div>
+            <span className="badge" style={{ background: 'rgba(255,255,255,0.08)' }}>Root Scope</span>
+          </div>
+
+          {/* Child Branches: Farmer | Officer | Admin */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '16px',
+            paddingLeft: '20px',
+            borderLeft: '2px dashed rgba(56, 189, 248, 0.4)',
+            marginLeft: '20px'
+          }}>
+            {/* Branch 1: Farmer */}
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '10px',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 800, fontSize: '0.98rem', color: '#34d399' }}>
+                  ├── 👨‍🌾 Farmer
+                </span>
+                <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>FARMER</span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+                {isKn ? 'ವೈಯಕ್ತಿಕ ಭೂಮಿ ಪಾರ್ಸೆಲ್‌ಗಳು, ಮಣ್ಣು ಕಾರ್ಡ್, ಡಿಬಿಟಿ ಸಬ್ಸಿಡಿ ಅರ್ಜಿ ಮತ್ತು ಮಂಡಿ ವ್ಯಾಪಾರ.' : 'Personal landholdings, Soil Health Cards, DBT subsidy claims, and Mandi spot rate trading.'}
+              </p>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                Scope: <strong>Individual Beneficiary (Self)</strong>
+              </div>
+            </div>
+
+            {/* Branch 2: Officer */}
+            <div style={{
+              background: 'rgba(59, 130, 246, 0.08)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              borderRadius: '10px',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 800, fontSize: '0.98rem', color: '#60a5fa' }}>
+                  ├── 👮‍♂️ Officer
+                </span>
+                <span className="badge badge-info" style={{ fontSize: '0.68rem' }}>OFFICER</span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+                {isKn ? 'ಕ್ಷೇತ್ರ ಪರಿಶೀಲನೆ, ಪಟ್ವಾರಿ ಖಸ್ರಾ ದೃಢೀಕರಣ, ಡಿಬಿಟಿ ಮಂಜೂರಾತಿ ಮತ್ತು ಕೃಷಿ ಸಲಹೆಗಳ ಪ್ರಸಾರ.' : 'Field inspections, Patwari Khasra verification, DBT sanctioning (DAO/ADO), and advisory broadcasts.'}
+              </p>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                Scope: <strong>Tehsil / District Operational ERP</strong>
+              </div>
+            </div>
+
+            {/* Branch 3: Admin */}
+            <div style={{
+              background: 'rgba(168, 85, 247, 0.08)',
+              border: '1px solid rgba(168, 85, 247, 0.3)',
+              borderRadius: '10px',
+              padding: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontWeight: 800, fontSize: '0.98rem', color: '#c084fc' }}>
+                  └── 🛡️ Admin
+                </span>
+                <span className="badge badge-purple" style={{ fontSize: '0.68rem' }}>ADMIN</span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
+                {isKn ? 'HP-ASN ಇಲಾಖಾ ನೀತಿಗಳು, ಅಸ್ಥಿರ ಆಡಿಟ್ ಲೆಡ್ಜರ್, ಗೇಟ್‌ವೇ ದರ ನಿಯಂತ್ರಣ ಮತ್ತು ಸಿಸ್ಟಮ್ ಟೆಲಿಮೆಟ್ರಿ.' : 'Statewide HP-ASN data exchange governance, tamper-proof audit trail, and gateway telemetry.'}
+              </p>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '4px' }}>
+                Scope: <strong>Statewide Core Infrastructure</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Top Grid: RBAC Evaluation Sandbox & Aadhaar e-KYC Simulator */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '20px' }}>
         {/* Policy Check Sandbox */}

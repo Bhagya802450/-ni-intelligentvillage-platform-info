@@ -28,6 +28,7 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({ role, identifier })
   }),
+  getUserHierarchy: () => fetchJson('/auth/hierarchy'),
   getRoles: () => fetchJson('/auth/roles'),
   getPrincipals: () => fetchJson('/auth/principals'),
   getCurrentSession: (token) => fetchJson('/auth/me', {

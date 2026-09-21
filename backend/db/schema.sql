@@ -6,11 +6,33 @@
 -- Enable UUID extension if needed
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. Identity & Access Management (IAM)
+-- 1. Identity & Access Management (IAM) - User & Role Hierarchy
+-- Hierarchy Structure:
+-- User
+--  ├── Farmer
+--  ├── Officer
+--  └── Admin
+
+CREATE TABLE IF NOT EXISTS roles (
+    role_id VARCHAR(32) PRIMARY KEY,
+    parent_role VARCHAR(32) REFERENCES roles(role_id),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Seed User Hierarchy
+INSERT INTO roles (role_id, parent_role, name, description) VALUES
+('USER', NULL, 'User (Root)', 'Root authenticated identity principal across Himachal Pradesh platform'),
+('FARMER', 'USER', 'Farmer', 'Farmer Beneficiary: Access land parcels, Soil Health Cards, DBT subsidies, APMC Mandi, Sentinel-2 NDVI'),
+('OFFICER', 'USER', 'Officer', 'Field & Development Officer: Field inspections, Khasra land verification (Patwari), DBT approval (DAO/ADO)'),
+('ADMIN', 'USER', 'Admin', 'State Infrastructure Administrator: HP-ASN governance, tamper-proof audit trail, rate limits, IAM configuration')
+ON CONFLICT (role_id) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(64) PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    role VARCHAR(32) NOT NULL CHECK (role IN ('FARMER', 'OFFICER', 'ADMIN')),
+    role VARCHAR(32) NOT NULL REFERENCES roles(role_id),
     phone VARCHAR(20) UNIQUE NOT NULL,
     email VARCHAR(100),
     agristack_id VARCHAR(64) UNIQUE,

@@ -2,6 +2,44 @@ const express = require('express');
 const router = express.Router();
 const db = require('../../data/dbStore');
 
+// GET /api/auth/hierarchy - 3-tier User role hierarchy (User -> Farmer, Officer, Admin)
+router.get('/hierarchy', (req, res) => {
+  res.json({
+    success: true,
+    tree: "User ├── Farmer ├── Officer └── Admin",
+    hierarchy: {
+      role: "User",
+      description: "Root Platform Identity",
+      children: [
+        {
+          role: "Farmer",
+          code: "FARMER",
+          parent: "User",
+          scope: "Individual Beneficiary (Self)",
+          description: "Access personal land parcels, Soil Health Cards, DBT subsidies, APMC Mandi trading, and Sentinel-2 NDVI analytics.",
+          permissions: ["farmer:read_own", "farmer:apply_schemes", "farmer:mandi_trade", "suadr:read_advisories", "ml:view_field_ndvi"]
+        },
+        {
+          role: "Officer",
+          code: "OFFICER",
+          parent: "User",
+          scope: "Tehsil / District Operational ERP",
+          description: "Field inspections, Khasra land verification (Patwari), DBT application approval (ADO/DAO), and advisories.",
+          permissions: ["schemes:approve", "schemes:disburse_dbt", "cadastral:verify_khasra", "suadr:create_shc", "advisories:publish", "ml:run_satellite_inference"]
+        },
+        {
+          role: "Admin",
+          code: "ADMIN",
+          parent: "User",
+          scope: "Statewide Core Infrastructure",
+          description: "Statewide HP-ASN data exchange governance, tamper-proof audit trail non-repudiation, and gateway telemetry.",
+          permissions: ["iam:manage_roles", "hpasn:manage_policies", "audit:inspect_tamper_log", "system:configure_gateway", "cadastral:verify_khasra", "schemes:approve", "*"]
+        }
+      ]
+    }
+  });
+});
+
 // GET /api/auth/roles - Full RBAC Roles & Permissions Matrix
 router.get('/roles', (req, res) => {
   const store = db.get();

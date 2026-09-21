@@ -1,0 +1,72 @@
+{
+  "name": "User",
+  "doctype": "DocType",
+  "module": "HP-ASN-IAM",
+  "custom": 0,
+  "is_submittable": 0,
+  "fields": [
+    {
+      "fieldname": "user_id",
+      "label": "User Principal ID",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "full_name",
+      "label": "Full Name",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "role",
+      "label": "Assigned User Role",
+      "fieldtype": "Select",
+      "options": "FARMER\nOFFICER\nADMIN",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "email",
+      "label": "Email Address",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "mobile_phone",
+      "label": "Mobile Phone",
+      "fieldtype": "Data",
+      "reqd": 1
+    },
+    {
+      "fieldname": "agristack_id",
+      "label": "National AgriStack ID",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "district",
+      "label": "District Jurisdiction",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "is_active",
+      "label": "Account Active",
+      "fieldtype": "Check",
+      "default": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "All",
+      "read": 1
+    }
+  ]
+}

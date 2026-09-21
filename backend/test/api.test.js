@@ -86,6 +86,9 @@ async function runTests() {
       // MODULE 2: Identity & Access Management (IAM)
       // ----------------------------------------------------------------------
       console.log("\n--- [MODULE 2: Identity & Access Management (IAM)] ---");
+      const hierarchy = await get('/api/auth/hierarchy');
+      console.log("✔ GET /api/auth/hierarchy (User ├── Farmer ├── Officer └── Admin):", hierarchy.body.success ? "PASS" : "FAIL", `(${hierarchy.body.tree})`);
+
       const roles = await get('/api/auth/roles');
       console.log("✔ GET /api/auth/roles:", roles.body.success ? "PASS" : "FAIL", `(${roles.body.count} RBAC roles loaded)`);
 

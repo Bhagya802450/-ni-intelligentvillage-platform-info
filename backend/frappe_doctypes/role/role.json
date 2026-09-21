@@ -1,0 +1,63 @@
+{
+  "name": "Role",
+  "doctype": "DocType",
+  "module": "HP-ASN-IAM",
+  "custom": 0,
+  "is_submittable": 0,
+  "fields": [
+    {
+      "fieldname": "role_name",
+      "label": "Role Name",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "parent_role",
+      "label": "Parent Role in Hierarchy",
+      "fieldtype": "Select",
+      "options": "\nUser",
+      "default": "User",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "role_code",
+      "label": "Role Code",
+      "fieldtype": "Select",
+      "options": "FARMER\nOFFICER\nADMIN",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "scope",
+      "label": "Scope of Authority",
+      "fieldtype": "Data",
+      "reqd": 1
+    },
+    {
+      "fieldname": "description",
+      "label": "Description & Policy Mandate",
+      "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "is_active",
+      "label": "Is Active",
+      "fieldtype": "Check",
+      "default": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "All",
+      "read": 1
+    }
+  ]
+}
