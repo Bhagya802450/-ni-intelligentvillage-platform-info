@@ -334,22 +334,34 @@ async function runTests() {
       const farmerCropsList = await get('/api/farmers/FARMER-HP-1001/crops');
       console.log("✔ GET /api/farmers/:id/crops:", farmerCropsList.status === 200 && farmerCropsList.body.cropsCount > 0 ? "PASS" : "FAIL", `(${farmerCropsList.body.cropsCount} standing crops)`);
 
-      // Add new crop directly under parcel
-      const firstParcelId = farmerLandList.body.data?.[0]?.parcelId;
+      // Add new crop directly under parcel testing all 8 canonical Crop attributes
+      const firstParcelId = farmerLandList.body.data?.[0]?.id || farmerLandList.body.data?.[0]?.parcelId;
       const addCropRes = await post('/api/farmers/FARMER-HP-1001/crops', {
-        parcelId: firstParcelId,
+        id: "CROP-SHM-9901",
+        land_id: firstParcelId,
         crop_name: "Gala Apple",
-        variety: "Dark Baron Gala",
+        crop_type: "Horticulture / Fruit",
+        sowing_date: "2024-02-15",
         season: "Perennial",
-        area_bigha: 4.5,
-        crop_stage: "Vegetative",
-        health_status: "Optimal",
-        estimated_yield_quintals: 38.0,
+        area: 4.5,
+        status: "Vegetative",
+        variety: "Dark Baron Gala",
         ndvi_score: 0.84
       });
-      console.log("✔ POST /api/farmers/:id/crops (Link Crop to Parcel):", 
-        addCropRes.status === 201 && addCropRes.body.crop?.crop_name === "Gala Apple" ? "PASS" : "FAIL",
-        `(Crop ID: ${addCropRes.body.crop?.crop_id} on Parcel ${firstParcelId})`
+      const cropObj = addCropRes.body.crop;
+      const hasAll8CropFields = cropObj &&
+        cropObj.id &&
+        cropObj.land_id &&
+        cropObj.crop_name &&
+        cropObj.crop_type &&
+        cropObj.sowing_date &&
+        cropObj.season &&
+        cropObj.area !== undefined &&
+        cropObj.status;
+
+      console.log("✔ POST /api/farmers/:id/crops (All 8 Crop Model Attributes):", 
+        addCropRes.status === 201 && hasAll8CropFields ? "PASS" : "FAIL",
+        `([ID: ${cropObj?.id}, Land: ${cropObj?.land_id}, Name: ${cropObj?.crop_name}, Type: ${cropObj?.crop_type}, Sown: ${cropObj?.sowing_date}, Season: ${cropObj?.season}, Area: ${cropObj?.area}, Status: ${cropObj?.status}])`
       );
 
       const parcelCrops = await get(`/api/farmers/FARMER-HP-1001/parcels/${firstParcelId}/crops`);

@@ -8,7 +8,7 @@
   "track_changes": 1,
   "fields": [
     {
-      "fieldname": "crop_id",
+      "fieldname": "id",
       "label": "Crop ID",
       "fieldtype": "Data",
       "reqd": 1,
@@ -16,20 +16,13 @@
       "in_list_view": 1
     },
     {
-      "fieldname": "farmer_id",
-      "label": "Farmer Reference",
+      "fieldname": "land_id",
+      "label": "Land Parcel ID (Parent Land)",
       "fieldtype": "Link",
-      "options": "Farmer",
+      "options": "Land",
       "reqd": 1,
       "in_list_view": 1,
       "in_standard_filter": 1
-    },
-    {
-      "fieldname": "parcel_id",
-      "label": "Land Parcel Reference",
-      "fieldtype": "Data",
-      "reqd": 1,
-      "in_list_view": 1
     },
     {
       "fieldname": "crop_name",
@@ -40,9 +33,19 @@
       "in_standard_filter": 1
     },
     {
-      "fieldname": "variety",
-      "label": "Cultivar / Variety",
-      "fieldtype": "Data"
+      "fieldname": "crop_type",
+      "label": "Crop Type",
+      "fieldtype": "Select",
+      "options": "Horticulture / Fruit\nCereal Grain\nVegetable\nPulse\nPlantation / Cash Crop\nOilseed\nFodder",
+      "default": "Horticulture / Fruit",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "sowing_date",
+      "label": "Sowing / Planting Date",
+      "fieldtype": "Date",
+      "in_list_view": 1
     },
     {
       "fieldname": "season",
@@ -53,37 +56,24 @@
       "in_list_view": 1
     },
     {
-      "fieldname": "sowing_date",
-      "label": "Sowing / Planting Date",
-      "fieldtype": "Date"
-    },
-    {
-      "fieldname": "harvest_date",
-      "label": "Estimated Harvest Date",
-      "fieldtype": "Date"
-    },
-    {
-      "fieldname": "area_bigha",
+      "fieldname": "area",
       "label": "Cultivated Area (Bighas)",
       "fieldtype": "Float",
       "reqd": 1,
       "in_list_view": 1
     },
     {
-      "fieldname": "crop_stage",
-      "label": "Phenological Stage",
+      "fieldname": "status",
+      "label": "Crop Status",
       "fieldtype": "Select",
       "options": "Sowing\nVegetative\nFlowering\nFruiting\nRipening\nHarvested",
       "default": "Vegetative",
       "in_list_view": 1
     },
     {
-      "fieldname": "health_status",
-      "label": "Crop Health",
-      "fieldtype": "Select",
-      "options": "Optimal\nModerate Stress\nSevere Stress",
-      "default": "Optimal",
-      "in_list_view": 1
+      "fieldname": "variety",
+      "label": "Cultivar / Variety",
+      "fieldtype": "Data"
     },
     {
       "fieldname": "estimated_yield_quintals",
@@ -99,7 +89,7 @@
       "fieldname": "ndvi_score",
       "label": "Sentinel-2 NDVI Score",
       "fieldtype": "Float",
-      "default": "0.76"
+      "default": "0.78"
     }
   ],
   "permissions": [

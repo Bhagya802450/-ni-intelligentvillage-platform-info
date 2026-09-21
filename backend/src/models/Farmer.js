@@ -74,6 +74,7 @@ class Farmer {
           ...c,
           farmer_id: this.farmer_id,
           parcel_id: landModel.parcelId,
+          land_id: landModel.id || landModel.parcelId,
           district: this.district
         }).toJSON());
       }

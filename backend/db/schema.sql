@@ -111,26 +111,52 @@ SELECT
     created_at
 FROM land_parcels;
 
--- 4. Crop Records (Standing Crops Linked to Farmer & Land Parcel)
--- Hierarchy: Farmer ├── Land └── Crop
+-- 4. Crop Records (Standing Crops Linked to Land Parcel)
+-- Complete Relational Hierarchy:
+-- Farmer
+--    ↓
+-- Land
+--    ↓
+-- Crop
+-- Entity: Crop
+-- Attributes: id, land_id, crop_name, crop_type, sowing_date, season, area, status
 CREATE TABLE IF NOT EXISTS crops (
-    crop_id VARCHAR(64) PRIMARY KEY,
-    farmer_id VARCHAR(64) NOT NULL REFERENCES farmers(farmer_id) ON DELETE CASCADE,
-    parcel_id VARCHAR(64) NOT NULL REFERENCES land_parcels(parcel_id) ON DELETE CASCADE,
+    id VARCHAR(64) PRIMARY KEY,
+    crop_id VARCHAR(64),
+    land_id VARCHAR(64) NOT NULL REFERENCES land_parcels(id) ON DELETE CASCADE,
+    parcel_id VARCHAR(64),
+    farmer_id VARCHAR(64) REFERENCES farmers(farmer_id) ON DELETE CASCADE,
     crop_name VARCHAR(100) NOT NULL,
-    variety VARCHAR(100),
-    season VARCHAR(32) NOT NULL CHECK (season IN ('Kharif', 'Rabi', 'Zaid', 'Perennial')),
+    crop_type VARCHAR(100) DEFAULT 'Horticulture / Fruit',
     sowing_date DATE,
+    season VARCHAR(32) NOT NULL CHECK (season IN ('Kharif', 'Rabi', 'Zaid', 'Perennial')),
+    area NUMERIC(8, 2) NOT NULL,
+    status VARCHAR(32) DEFAULT 'Vegetative' CHECK (status IN ('Sowing', 'Vegetative', 'Flowering', 'Fruiting', 'Ripening', 'Harvested')),
+    variety VARCHAR(100),
     harvest_date DATE,
-    area_bigha NUMERIC(8, 2) NOT NULL,
-    crop_stage VARCHAR(32) DEFAULT 'Vegetative' CHECK (crop_stage IN ('Sowing', 'Vegetative', 'Flowering', 'Fruiting', 'Ripening', 'Harvested')),
-    health_status VARCHAR(32) DEFAULT 'Optimal' CHECK (health_status IN ('Optimal', 'Moderate Stress', 'Severe Stress')),
+    area_bigha NUMERIC(8, 2),
+    crop_stage VARCHAR(32),
+    health_status VARCHAR(32) DEFAULT 'Optimal',
     estimated_yield_quintals NUMERIC(8, 2),
     actual_yield_quintals NUMERIC(8, 2),
-    ndvi_score NUMERIC(4, 2) DEFAULT 0.76,
+    ndvi_score NUMERIC(4, 2) DEFAULT 0.78,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Canonical View exposing exact 8 Crop attributes
+CREATE OR REPLACE VIEW crops_view AS
+SELECT 
+    id,
+    land_id,
+    crop_name,
+    crop_type,
+    sowing_date,
+    season,
+    area,
+    status,
+    created_at
+FROM crops;
 
 -- 4. State Unified Digital Database (SUADR) - Soil Profiles & Agro-Intelligence
 CREATE TABLE IF NOT EXISTS suadr_soil_profiles (

@@ -1,0 +1,12 @@
+{
+  "name": "ni-intelligentvillage-platform-info",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Intelligent Village Platform - HP-ASN, SUADR & Unified Farmer Database",
+  "scripts": {
+    "hierarchy": "npm --prefix backend run hierarchy",
+    "test": "npm --prefix backend test",
+    "start": "npm --prefix backend start",
+    "build": "npm --prefix frontend run build"
+  }
+}

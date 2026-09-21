@@ -344,15 +344,26 @@ router.get('/:id/crops', (req, res) => {
 });
 
 // POST /api/farmers/:id/crops - Add a Crop to a specific Land parcel of a Farmer
+// Exact Model: Crop (id, land_id, crop_name, crop_type, sowing_date, season, area, status)
 router.post('/:id/crops', (req, res) => {
   const { id } = req.params;
-  const { parcelId, parcel_id, crop_name, cropName, variety, season, area_bigha, areaBigha, crop_stage, health_status, estimated_yield_quintals, ndvi_score } = req.body;
-  const targetParcelId = parcelId || parcel_id;
+  const { 
+    id: cropIdInput,
+    land_id, landId, parcelId, parcel_id, 
+    crop_name, cropName,
+    crop_type, cropType,
+    sowing_date, sowingDate,
+    season, 
+    area, area_bigha, areaBigha, 
+    status, crop_stage, cropStage,
+    variety, health_status, estimated_yield_quintals, ndvi_score 
+  } = req.body;
+  const targetParcelId = land_id || landId || parcelId || parcel_id;
 
   if (!targetParcelId) {
     return res.status(400).json({
       success: false,
-      message: "Field 'parcelId' is required to link Crop to Land parcel (Farmer ├── Land └── Crop)."
+      message: "Field 'land_id' is required to link Crop to Land parcel (Farmer ├── Land └── Crop)."
     });
   }
 
@@ -365,20 +376,24 @@ router.post('/:id/crops', (req, res) => {
     if (!farmer) return store;
 
     const parcel = (farmer.landParcels || []).find(
-      p => p.parcelId === targetParcelId || p.parcel_id === targetParcelId
+      p => p.id === targetParcelId || p.parcelId === targetParcelId || p.parcel_id === targetParcelId
     );
     if (!parcel) return store;
 
     const districtPrefix = (farmer.district || 'HP').substring(0, 3).toUpperCase();
+    const finalLandId = parcel.id || parcel.parcelId;
     const cropModel = new Crop({
-      crop_id: `CROP-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`,
-      farmer_id: farmer.farmer_id,
-      parcel_id: parcel.parcelId,
+      id: cropIdInput || `CROP-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`,
+      land_id: finalLandId,
+      farmer_id: farmer.farmer_id || farmer.id,
+      parcel_id: finalLandId,
       crop_name: crop_name || cropName || 'Apple',
-      variety: variety || 'High Density Cultivar',
+      crop_type: crop_type || cropType,
+      sowing_date: sowing_date || sowingDate,
       season: season || 'Kharif',
-      area_bigha: Number(area_bigha || areaBigha) || Number(parcel.areaBigha) || 4.0,
-      crop_stage: crop_stage || 'Vegetative',
+      area: Number(area !== undefined ? area : (area_bigha !== undefined ? area_bigha : (areaBigha !== undefined ? areaBigha : (parcel.area || parcel.areaBigha || 4.0)))),
+      status: status || crop_stage || cropStage || 'Vegetative',
+      variety: variety || 'High Density Cultivar',
       health_status: health_status || 'Optimal',
       estimated_yield_quintals: estimated_yield_quintals !== undefined ? Number(estimated_yield_quintals) : 25.0,
       ndvi_score: ndvi_score !== undefined ? Number(ndvi_score) : 0.81,
@@ -402,6 +417,7 @@ router.post('/:id/crops', (req, res) => {
   res.status(201).json({
     success: true,
     message: "Crop successfully registered under Land parcel in Unified Farmer Database.",
+    model: "Crop (id, land_id, crop_name, crop_type, sowing_date, season, area, status)",
     tree: "Farmer ├── Land └── Crop",
     crop: addedCrop
   });

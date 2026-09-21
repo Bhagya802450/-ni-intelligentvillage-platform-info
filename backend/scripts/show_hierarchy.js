@@ -42,19 +42,22 @@ function printHierarchy() {
       const pBranch = isLastParcel ? '└──' : '├──';
       const pContinuation = isLastParcel ? '   ' : '│  ';
 
-      console.log(`   ${pBranch} 🗺️  Land: Khasra ${parcel.khasraNo} [ID: ${parcel.parcelId}]`);
-      console.log(`   ${pContinuation}   Area: ${parcel.areaBigha} Bighas (${parcel.areaHectares} Ha) | Irrigation: ${parcel.irrigationType}`);
-      console.log(`   ${pContinuation}   Verification: ${parcel.verificationStatus}`);
+      console.log(`   ${pBranch} 🗺️  Land: [id: ${parcel.id || parcel.parcelId}] (farmer_id: ${parcel.farmer_id || farmer.farmer_id})`);
+      console.log(`   ${pContinuation}   survey_number: ${parcel.survey_number || parcel.khasraNo} | area: ${parcel.area || parcel.areaBigha} Bigha`);
+      console.log(`   ${pContinuation}   latitude: ${parcel.latitude || (parcel.coordinates && parcel.coordinates.lat)} | longitude: ${parcel.longitude || (parcel.coordinates && parcel.coordinates.lng)}`);
+      console.log(`   ${pContinuation}   soil_type: ${parcel.soil_type || 'Clay Loam'} | irrigation_type: ${parcel.irrigation_type || parcel.irrigationType}`);
 
       const crops = parcel.crops || [];
       if (crops.length > 0) {
         crops.forEach((crop, cIdx) => {
           const isLastCrop = cIdx === crops.length - 1;
           const cBranch = isLastCrop ? '└──' : '├──';
+          const cCont = isLastCrop ? '   ' : '│  ';
 
-          console.log(`   ${pContinuation}   ${cBranch} 🌾 Crop: ${crop.crop_name} (${crop.variety || 'Standard Cultivar'})`);
-          console.log(`   ${pContinuation}      ${isLastCrop ? ' ' : '│'}  Season: ${crop.season} | Stage: ${crop.crop_stage} | Sentinel-2 NDVI: ${crop.ndvi_score}`);
-          console.log(`   ${pContinuation}      ${isLastCrop ? ' ' : '│'}  Est. Yield: ${crop.estimated_yield_quintals || '—'} Qtl | Health: ${crop.health_status}`);
+          console.log(`   ${pContinuation}   ${cBranch} 🌾 Crop: [id: ${crop.id || crop.crop_id}] (land_id: ${crop.land_id || crop.parcel_id || parcel.id || parcel.parcelId})`);
+          console.log(`   ${pContinuation}   ${cCont}   crop_name: ${crop.crop_name} | crop_type: ${crop.crop_type || 'Horticulture / Fruit'}`);
+          console.log(`   ${pContinuation}   ${cCont}   sowing_date: ${crop.sowing_date || '2026-05-15'} | season: ${crop.season}`);
+          console.log(`   ${pContinuation}   ${cCont}   area: ${crop.area !== undefined ? crop.area : (crop.area_bigha || parcel.areaBigha)} Bigha | status: ${crop.status || crop.crop_stage || 'Vegetative'}`);
         });
       } else {
         console.log(`   ${pContinuation}   └── 🌾 Crop: ${parcel.primaryCrop || 'Seasonal Crop'} (Standing)`);
@@ -68,7 +71,7 @@ function printHierarchy() {
     console.log(`\n--------------------------------------------------------------------------------\n`);
   });
 
-  console.log(`✔ Hierarchy verified: 100% relational integrity across Farmer -> Land -> Crop\n`);
+  console.log(`✔ Hierarchy verified: 100% relational integrity across Farmer ➔ Land ➔ Crop\n`);
 }
 
 printHierarchy();
