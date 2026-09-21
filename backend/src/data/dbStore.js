@@ -1,0 +1,535 @@
+const fs = require('fs');
+const path = require('path');
+
+const DB_FILE = path.join(__dirname, 'seed_data.json');
+
+const initialData = {
+  farmers: [
+    {
+      id: "FARMER-HP-1001",
+      agriStackId: "AGRI-HP-2026-9812",
+      aadhaarHash: "XXXX-XXXX-4521",
+      name: "Surender Thakur",
+      fatherName: "Bishamber Thakur",
+      phone: "+91 98160 12345",
+      gender: "Male",
+      dob: "1978-04-12",
+      district: "Shimla",
+      tehsil: "Kotkhai",
+      village: "Kiari",
+      pincode: "171202",
+      category: "Small & Marginal",
+      naturalFarmingPractitioner: true,
+      bankDetails: {
+        accountNo: "XXXXXXXX9012",
+        ifsc: "HPSC0000142",
+        bankName: "HP State Cooperative Bank",
+        dbtLinked: true
+      },
+      landParcels: [
+        {
+          parcelId: "LAND-KOT-081",
+          khasraNo: "412/12",
+          khatauniNo: "18",
+          areaBigha: 14.5,
+          areaHectares: 1.16,
+          irrigationType: "Micro-Drip & Rainfed",
+          primaryCrop: "Apple (Royal Delicious)",
+          soilHealthId: "SHC-SHM-4019",
+          coordinates: { lat: 31.1215, lng: 77.5321 }
+        },
+        {
+          parcelId: "LAND-KOT-082",
+          khasraNo: "413/1",
+          khatauniNo: "18",
+          areaBigha: 6.2,
+          areaHectares: 0.50,
+          irrigationType: "Rainfed",
+          primaryCrop: "Maize & French Beans",
+          soilHealthId: "SHC-SHM-4020",
+          coordinates: { lat: 31.1230, lng: 77.5340 }
+        }
+      ],
+      createdAt: "2024-03-10T10:00:00Z"
+    },
+    {
+      id: "FARMER-HP-1002",
+      agriStackId: "AGRI-HP-2026-7734",
+      aadhaarHash: "XXXX-XXXX-8823",
+      name: "Sunita Devi Sharma",
+      fatherName: "Kewal Krishan",
+      phone: "+91 94180 67890",
+      gender: "Female",
+      dob: "1985-09-22",
+      district: "Solan",
+      tehsil: "Kandaghat",
+      village: "Siri",
+      pincode: "173215",
+      category: "Women Farmer / Marginal",
+      naturalFarmingPractitioner: true,
+      bankDetails: {
+        accountNo: "XXXXXXXX4411",
+        ifsc: "PUNB0023400",
+        bankName: "Punjab National Bank",
+        dbtLinked: true
+      },
+      landParcels: [
+        {
+          parcelId: "LAND-SOL-112",
+          khasraNo: "219/4",
+          khatauniNo: "09",
+          areaBigha: 8.0,
+          areaHectares: 0.64,
+          irrigationType: "Sprinkler / Borewell",
+          primaryCrop: "Off-Season Tomato (Himsona)",
+          soilHealthId: "SHC-SOL-1044",
+          coordinates: { lat: 30.9812, lng: 77.1082 }
+        }
+      ],
+      createdAt: "2024-06-15T11:30:00Z"
+    },
+    {
+      id: "FARMER-HP-1003",
+      agriStackId: "AGRI-HP-2026-3391",
+      aadhaarHash: "XXXX-XXXX-1904",
+      name: "Rajeshwar Singh Rana",
+      fatherName: "Dharmender Rana",
+      phone: "+91 98055 43210",
+      gender: "Male",
+      dob: "1972-11-05",
+      district: "Kangra",
+      tehsil: "Palampur",
+      village: "Bundla",
+      pincode: "176061",
+      category: "Medium",
+      naturalFarmingPractitioner: false,
+      bankDetails: {
+        accountNo: "XXXXXXXX7823",
+        ifsc: "SBIN0001234",
+        bankName: "State Bank of India",
+        dbtLinked: true
+      },
+      landParcels: [
+        {
+          parcelId: "LAND-KNG-502",
+          khasraNo: "88/1",
+          khatauniNo: "33",
+          areaBigha: 22.0,
+          areaHectares: 1.76,
+          irrigationType: "Canal / Kuhl Irrigation",
+          primaryCrop: "Organic Kangra Tea & Wheat",
+          soilHealthId: "SHC-KNG-9920",
+          coordinates: { lat: 32.1109, lng: 76.5363 }
+        }
+      ],
+      createdAt: "2024-01-20T09:15:00Z"
+    }
+  ],
+
+  officers: [
+    {
+      id: "OFF-HP-801",
+      name: "Dr. Vikram Chauhan",
+      designation: "District Agriculture Officer (DAO)",
+      district: "Shimla",
+      jurisdiction: ["Kotkhai", "Jubbal", "Rohru", "Theog"],
+      email: "dao.shimla@hpagriculture.gov.in",
+      phone: "+91 98160 99999",
+      role: "OFFICER"
+    },
+    {
+      id: "OFF-HP-802",
+      name: "Meenakshi Verma",
+      designation: "Block Technology Manager (ATMA / BTM)",
+      district: "Solan",
+      jurisdiction: ["Kandaghat", "Dharampur", "Nalagarh"],
+      email: "btm.solan@hpagriculture.gov.in",
+      phone: "+91 94180 88888",
+      role: "OFFICER"
+    }
+  ],
+
+  suadr: {
+    soilProfiles: [
+      {
+        shcId: "SHC-SHM-4019",
+        district: "Shimla",
+        tehsil: "Kotkhai",
+        ph: 6.2,
+        phCategory: "Slightly Acidic (Ideal for Apples)",
+        nitrogenKgHa: 280,
+        nitrogenRating: "Medium",
+        phosphorusKgHa: 24,
+        phosphorusRating: "Medium",
+        potassiumKgHa: 340,
+        potassiumRating: "High",
+        organicCarbonPercent: 1.45,
+        organicCarbonRating: "High",
+        zincPpm: 0.85,
+        boronPpm: 0.65,
+        lastTested: "2025-11-14",
+        recommendation: "Apply Jeevamrit / Farmyard manure @ 15 kg/tree before bud-break. Spray 0.2% Solubor at pink-bud stage."
+      },
+      {
+        shcId: "SHC-SOL-1044",
+        district: "Solan",
+        tehsil: "Kandaghat",
+        ph: 6.8,
+        phCategory: "Neutral / Optimal",
+        nitrogenKgHa: 210,
+        nitrogenRating: "Low",
+        phosphorusKgHa: 32,
+        phosphorusRating: "High",
+        potassiumKgHa: 220,
+        potassiumRating: "Medium",
+        organicCarbonPercent: 0.82,
+        organicCarbonRating: "Medium",
+        zincPpm: 0.60,
+        boronPpm: 0.50,
+        lastTested: "2026-02-10",
+        recommendation: "Incorporate Ghanjeevamrit @ 100 kg/bigha. Supplement Nitrogen with Azotobacter biofertilizer. Mulch with pine needles."
+      },
+      {
+        shcId: "SHC-KNG-9920",
+        district: "Kangra",
+        tehsil: "Palampur",
+        ph: 5.4,
+        phCategory: "Acidic (Typical Tea Soil)",
+        nitrogenKgHa: 310,
+        nitrogenRating: "Good",
+        phosphorusKgHa: 16,
+        phosphorusRating: "Low",
+        potassiumKgHa: 280,
+        potassiumRating: "Medium",
+        organicCarbonPercent: 1.80,
+        organicCarbonRating: "Very High",
+        zincPpm: 1.10,
+        boronPpm: 0.70,
+        lastTested: "2025-10-05",
+        recommendation: "Apply Agricultural Lime @ 250 kg/hectare once in 3 years to maintain optimum pH balance for tea flushing."
+      }
+    ],
+
+    agroClimaticZones: [
+      {
+        zoneId: "ZONE-I",
+        name: "Sub-Montane and Low Hills Sub-Tropical Zone",
+        altitudeRangeMeters: "300 - 650m",
+        districtsCovered: ["Una", "Bilaspur", "Hamirpur", "Lower Kangra", "Sirmaur (Paonta Valley)"],
+        majorCrops: ["Wheat", "Maize", "Sugarcane", "Ginger", "Citrus", "Mango"],
+        annualRainfallMm: "1100mm"
+      },
+      {
+        zoneId: "ZONE-II",
+        name: "Mid Hills Sub-Humid Zone",
+        altitudeRangeMeters: "651 - 1800m",
+        districtsCovered: ["Solan", "Sirmaur", "Mandi", "Upper Kangra", "Chamba"],
+        majorCrops: ["Off-Season Vegetables (Tomato, Capsicum)", "Stone Fruits (Peach, Plum)", "Maize", "Wheat"],
+        annualRainfallMm: "1500mm - 3000mm"
+      },
+      {
+        zoneId: "ZONE-III",
+        name: "High Hills Temperate Wet Zone",
+        altitudeRangeMeters: "1801 - 2200m",
+        districtsCovered: ["Shimla", "Kullu", "Parts of Mandi & Chamba"],
+        majorCrops: ["Apple", "Pear", "Off-season Peas", "Potato", "Cherry"],
+        annualRainfallMm: "1000mm"
+      },
+      {
+        zoneId: "ZONE-IV",
+        name: "High Hills Temperate Dry & Cold Desert Zone",
+        altitudeRangeMeters: "> 2200m",
+        districtsCovered: ["Kinnaur", "Lahaul & Spiti", "Pangi Tehsil"],
+        majorCrops: ["Kinnauri Apple", "Hops", "Kuth", "Barley", "Dry Fruits (Walnut, Almond)"],
+        annualRainfallMm: "< 400mm (Heavy Snowfall)"
+      }
+    ],
+
+    liveTelemetry: {
+      "Shimla": {
+        tempCelsius: 18.4,
+        humidityPercent: 62,
+        rainfallProbPercent: 20,
+        frostRisk: "Low",
+        condition: "Partly Cloudy",
+        windSpeedKmh: 8.5
+      },
+      "Solan": {
+        tempCelsius: 24.2,
+        humidityPercent: 55,
+        rainfallProbPercent: 10,
+        frostRisk: "None",
+        condition: "Sunny & Mild",
+        windSpeedKmh: 6.2
+      },
+      "Kangra": {
+        tempCelsius: 26.8,
+        humidityPercent: 58,
+        rainfallProbPercent: 15,
+        frostRisk: "None",
+        condition: "Clear Sky",
+        windSpeedKmh: 9.0
+      },
+      "Kullu": {
+        tempCelsius: 19.5,
+        humidityPercent: 50,
+        rainfallProbPercent: 25,
+        frostRisk: "Low",
+        condition: "Breezy & Fair",
+        windSpeedKmh: 11.2
+      }
+    },
+
+    pestDiagnostics: [
+      {
+        pestId: "PEST-APP-01",
+        crop: "Apple",
+        pestName: "Apple Scab (Venturia inaequalis)",
+        symptoms: "Olive-green to black velvety spots on young leaves and developing fruit surfaces.",
+        riskLevel: "HIGH (Pre-monsoon humidity)",
+        naturalRemedy: "Spray Cow Urine + Neem leaf extract (Neemastra) or Sour Buttermilk spray (5%). Prune infected twig canopies.",
+        chemicalAlternative: "Difenoconazole 25% EC @ 30ml/100L water at petal fall."
+      },
+      {
+        pestId: "PEST-TOM-02",
+        crop: "Tomato (Himsona)",
+        pestName: "Early Blight & Fruit Borer",
+        symptoms: "Concentric target-like brown spots on foliage, pin-holes on fruit near calyx.",
+        riskLevel: "MEDIUM",
+        naturalRemedy: "Install yellow sticky traps + Pheromone traps @ 5/bigha. Spray Agniastra @ 3L in 100L water.",
+        chemicalAlternative: "Chlorantraniliprole 18.5% SC @ 30ml/acre."
+      },
+      {
+        pestId: "PEST-MAZ-03",
+        crop: "Maize",
+        pestName: "Fall Armyworm (Spodoptera frugiperda)",
+        symptoms: "Ragged feeding holes on leaf whorls with sawdust-like frass.",
+        riskLevel: "HIGH",
+        naturalRemedy: "Apply sand + wood ash in central whorls. Release Trichogramma parasitoids.",
+        chemicalAlternative: "Emamectin benzoate 5% SG @ 80g/acre."
+      }
+    ]
+  },
+
+  schemes: [
+    {
+      schemeId: "SCHEME-HP-01",
+      name: "HP Mukhyamantri Kisaan Sahayata Yojana (HP-MKSY)",
+      department: "Directorate of Agriculture, HP",
+      annualBenefitAmount: 6000,
+      disbursementType: "DBT Direct Bank Credit (3 Tranches of ₹2,000)",
+      description: "Direct income support to registered small and marginal farmers with verified land records in HimBhoomi.",
+      eligibility: "Farmers with operational landholdings up to 2 Hectares in HP.",
+      requiredDocs: ["Aadhaar Card", "HimBhoomi Land Jamabandi", "Active Bank Passbook with DBT"]
+    },
+    {
+      schemeId: "SCHEME-HP-02",
+      name: "Prakritik Kheti Khushhal Kisaan Yojana (PK3Y - SPNF)",
+      department: "State Project Implementing Unit (Natural Farming)",
+      annualBenefitAmount: 25000,
+      disbursementType: "Subsidy for Indigenous Cow, Drum & Goshala Setup",
+      description: "Comprehensive financial assistance to transition towards chemical-free Subhash Palekar Natural Farming.",
+      eligibility: "Farmers committed to zero-chemical natural farming on at least 1 bigha.",
+      requiredDocs: ["Farmer ID", "Indigenous Desi Cow Certificate / Undertaking", "Training Certificate"]
+    },
+    {
+      schemeId: "SCHEME-HP-03",
+      name: "HP Saur Sinchayee Yojana (Solar Pump Subsidy)",
+      department: "HIMURJA & Dept of Agriculture",
+      annualBenefitAmount: 185000,
+      disbursementType: "Capital Subsidy (Up to 85% for small/marginal)",
+      description: "Financial subsidy for installation of Solar Powered Photovoltaic Surface / Submersible Water Pumps.",
+      eligibility: "Agricultural land having an assured water source (borewell, spring, rivulet).",
+      requiredDocs: ["HimBhoomi Khasra Map", "Water Source NOC", "Electricity Bill / No-connection cert"]
+    }
+  ],
+
+  applications: [
+    {
+      applicationId: "APP-2026-0089",
+      schemeId: "SCHEME-HP-01",
+      farmerId: "FARMER-HP-1001",
+      farmerName: "Surender Thakur",
+      district: "Shimla",
+      appliedAmount: 6000,
+      appliedAt: "2026-01-15T14:20:00Z",
+      status: "DBT_DISBURSED",
+      officerRemarks: "Field inspection completed by ADO Kotkhai. Land titles verified on HimBhoomi.",
+      verifiedBy: "Dr. Vikram Chauhan (OFF-HP-801)",
+      disbursementDate: "2026-02-01",
+      utrReference: "HPSC202602019948210"
+    },
+    {
+      applicationId: "APP-2026-0104",
+      schemeId: "SCHEME-HP-02",
+      farmerId: "FARMER-HP-1002",
+      farmerName: "Sunita Devi Sharma",
+      district: "Solan",
+      appliedAmount: 25000,
+      appliedAt: "2026-02-18T10:15:00Z",
+      status: "APPROVED_BY_OFFICER",
+      officerRemarks: "Goshala inspection verified. Indigenous Pahari cow geo-tagged.",
+      verifiedBy: "Meenakshi Verma (OFF-HP-802)",
+      disbursementDate: "Scheduled next DBT cycle (March 25)",
+      utrReference: null
+    },
+    {
+      applicationId: "APP-2026-0122",
+      schemeId: "SCHEME-HP-03",
+      farmerId: "FARMER-HP-1003",
+      farmerName: "Rajeshwar Singh Rana",
+      district: "Kangra",
+      appliedAmount: 185000,
+      appliedAt: "2026-03-02T16:45:00Z",
+      status: "FIELD_VERIFICATION_PENDING",
+      officerRemarks: "Kuhl water discharge measurement pending site visit by Palampur field officer.",
+      verifiedBy: null,
+      disbursementDate: null,
+      utrReference: null
+    }
+  ],
+
+  hpasnLogs: [
+    {
+      transactionId: "TXN-ASN-89021",
+      sourceDept: "Agriculture Dept (HP-ASN Gateway)",
+      targetDept: "Revenue Dept (HimBhoomi Land Records)",
+      purpose: "Khasra Parcel 412/12 Ownership Verification",
+      farmerId: "FARMER-HP-1001",
+      consentGranted: true,
+      consentMethod: "Aadhaar e-Sign / OTP",
+      status: "SUCCESS_VERIFIED",
+      responseLatencyMs: 240,
+      hashSignature: "0x8f2b7a9c812d40902c114f089acde45b91a27e90",
+      timestamp: "2026-03-20T08:14:22Z"
+    },
+    {
+      transactionId: "TXN-ASN-89022",
+      sourceDept: "HP State Cooperative Bank (DBT Switch)",
+      targetDept: "Agriculture Dept (HP-ASN Gateway)",
+      purpose: "DBT Tranche ₹2,000 Disbursement Credit Confirmation",
+      farmerId: "FARMER-HP-1001",
+      consentGranted: true,
+      consentMethod: "NPCI Aadhaar Payment Bridge (APB)",
+      status: "SUCCESS_SETTLED",
+      responseLatencyMs: 185,
+      hashSignature: "0x12a99c43b0189deca219803bfeda1100234acb67",
+      timestamp: "2026-03-20T09:30:10Z"
+    },
+    {
+      transactionId: "TXN-ASN-89023",
+      sourceDept: "Agriculture Dept (HP-ASN Gateway)",
+      targetDept: "Horticulture Dept (HPMC & Nursery Registry)",
+      purpose: "Rootstock Certification & Cold Store Allotment Check",
+      farmerId: "FARMER-HP-1002",
+      consentGranted: true,
+      consentMethod: "Digital Farmer Locker Consent",
+      status: "SUCCESS_VERIFIED",
+      responseLatencyMs: 310,
+      hashSignature: "0x54e7f809a416bcde981240bca80812ef1144ccba",
+      timestamp: "2026-03-21T06:45:00Z"
+    }
+  ],
+
+  mandiPrices: [
+    {
+      mandiId: "MANDI-SHM-01",
+      marketName: "Shimla APMC (Dhalli Mandi)",
+      district: "Shimla",
+      commodity: "Apple (Royal Delicious Grade A)",
+      variety: "High Color / Export",
+      arrivalDate: "2026-03-21",
+      minPricePerQuintal: 8500,
+      maxPricePerQuintal: 14500,
+      modalPricePerQuintal: 11800,
+      trend: "UP (+4.2%)"
+    },
+    {
+      mandiId: "MANDI-SOL-02",
+      marketName: "Solan Sabzi Mandi (APMC Solan)",
+      district: "Solan",
+      commodity: "Tomato (Himsona)",
+      variety: "Grade 1 Hybrid",
+      arrivalDate: "2026-03-21",
+      minPricePerQuintal: 2800,
+      maxPricePerQuintal: 3600,
+      modalPricePerQuintal: 3250,
+      trend: "STABLE (0.0%)"
+    },
+    {
+      mandiId: "MANDI-SOL-03",
+      marketName: "Solan Sabzi Mandi (APMC Solan)",
+      district: "Solan",
+      commodity: "Capsicum (Green Bell)",
+      variety: "Polyhouse Grown",
+      arrivalDate: "2026-03-21",
+      minPricePerQuintal: 4200,
+      maxPricePerQuintal: 5800,
+      modalPricePerQuintal: 5100,
+      trend: "UP (+6.1%)"
+    },
+    {
+      mandiId: "MANDI-KLU-04",
+      marketName: "Bhuntar Mandi (APMC Kullu)",
+      district: "Kullu",
+      commodity: "Garlic (Pahari)",
+      variety: "White Big Clove",
+      arrivalDate: "2026-03-21",
+      minPricePerQuintal: 9200,
+      maxPricePerQuintal: 13500,
+      modalPricePerQuintal: 11500,
+      trend: "UP (+2.8%)"
+    },
+    {
+      mandiId: "MANDI-KNG-05",
+      marketName: "Kangra APMC Market",
+      district: "Kangra",
+      commodity: "Wheat (Sharbati HP-W)",
+      variety: "Certified Organic",
+      arrivalDate: "2026-03-21",
+      minPricePerQuintal: 2475,
+      maxPricePerQuintal: 3100,
+      modalPricePerQuintal: 2850,
+      trend: "STABLE (+0.5%)"
+    }
+  ]
+};
+
+// Initialize file if not present
+function loadData() {
+  try {
+    if (!fs.existsSync(DB_FILE)) {
+      fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2), 'utf-8');
+      return initialData;
+    }
+    const raw = fs.readFileSync(DB_FILE, 'utf-8');
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('Error reading db file, using memory initialData:', err);
+    return initialData;
+  }
+}
+
+function saveData(data) {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error saving db file:', err);
+  }
+}
+
+let cache = loadData();
+
+module.exports = {
+  get: () => cache,
+  update: (updaterFn) => {
+    cache = updaterFn(cache);
+    saveData(cache);
+    return cache;
+  },
+  reset: () => {
+    cache = JSON.parse(JSON.stringify(initialData));
+    saveData(cache);
+    return cache;
+  }
+};
