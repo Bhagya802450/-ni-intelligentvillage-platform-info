@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Network, ShieldCheck, Lock, Activity, Send, CheckCircle2, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 
-export default function HpasnExchange({ farmers }) {
+export default function HpasnExchange({ farmers, lang = 'en' }) {
   const [departments, setDepartments] = useState([]);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const isKn = lang === 'kn';
 
   // New exchange form
   const [targetDept, setTargetDept] = useState('Revenue Dept (HimBhoomi / Jamabandi Land Records)');
@@ -52,21 +54,23 @@ export default function HpasnExchange({ farmers }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <span className="badge badge-success">HP-ASN Protocol</span>
-              <span className="badge badge-info">Inter-Department Data Exchange</span>
+              <span className="badge badge-success">{isKn ? 'HP-ASN ಪ್ರೋಟೋಕಾಲ್' : 'HP-ASN Protocol'}</span>
+              <span className="badge badge-info">{isKn ? 'ಇಲಾಖಾ ನಡುವಿನ ಡೇಟಾ ವಿನಿಮಯ' : 'Inter-Department Data Exchange'}</span>
             </div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>
-              HP Agriculture Service Network (HP-ASN)
+              {isKn ? 'ಹಿಮಾಚಲ ಪ್ರದೇಶ ಕೃಷಿ ಸೇವಾ ನೆಟ್‌ವರ್ಕ್ (HP-ASN)' : 'HP Agriculture Service Network (HP-ASN)'}
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-              Secure data backbone connecting Revenue, Horticulture, Banking, and Met departments with farmer consent and immutable audit logging.
+              {isKn 
+                ? 'ಕಂದಾಯ, ತೋಟಗಾರಿಕೆ, ಬ್ಯಾಂಕಿಂಗ್ ಮತ್ತು ಹವಾಮಾನ ಇಲಾಖೆಗಳನ್ನು ರೈತರ ಸಮ್ಮತಿ ಮತ್ತು ಅಸ್ಥಿರ ಆಡಿಟ್ ಲಾಗಿಂಗ್‌ನೊಂದಿಗೆ ಸಂಪರ್ಕಿಸುವ ಸುರಕ್ಷಿತ ಡೇಟಾ ಬೆನ್ನೆಲುಬು.'
+                : 'Secure data backbone connecting Revenue, Horticulture, Banking, and Met departments with farmer consent and immutable audit logging.'}
             </p>
           </div>
 
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <div className="glass-card" style={{ padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Lock size={16} color="#34d399" />
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Security: </span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{isKn ? 'ಭದ್ರತೆ: ' : 'Security: '}</span>
               <span style={{ fontSize: '0.8rem', color: '#34d399', fontWeight: 600 }}>HMAC-SHA256 Signed</span>
             </div>
           </div>

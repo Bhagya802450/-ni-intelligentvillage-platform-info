@@ -104,6 +104,7 @@ export default function App() {
               <RegistryView
                 farmers={farmers}
                 onRefreshData={loadAllData}
+                lang={lang}
               />
             )}
 
@@ -114,7 +115,7 @@ export default function App() {
 
             {/* SUADR Soil & Climate Tab */}
             {activeTab === 'suadr' && (
-              <SuadrExplorer />
+              <SuadrExplorer lang={lang} />
             )}
 
             {/* Schemes & DBT Engine */}
@@ -122,6 +123,7 @@ export default function App() {
               <SchemesView
                 farmer={activeFarmer}
                 onRefreshData={loadAllData}
+                lang={lang}
               />
             )}
 
@@ -129,6 +131,7 @@ export default function App() {
             {activeTab === 'hpasn' && (
               <HpasnExchange
                 farmers={farmers}
+                lang={lang}
               />
             )}
 

@@ -12,13 +12,15 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 
-export default function SuadrExplorer() {
+export default function SuadrExplorer({ lang = 'en' }) {
   const [activeSubTab, setActiveSubTab] = useState('soil');
   const [soilProfiles, setSoilProfiles] = useState([]);
   const [agroZones, setAgroZones] = useState([]);
   const [telemetry, setTelemetry] = useState({});
   const [pests, setPests] = useState([]);
   const [selectedSoil, setSelectedSoil] = useState(null);
+
+  const isKn = lang === 'kn';
 
   // Dynamic Query Form
   const [queryData, setQueryData] = useState({
@@ -50,9 +52,19 @@ export default function SuadrExplorer() {
   const handleRunAdvisory = async (e) => {
     e.preventDefault();
     setRunningQuery(true);
-    const res = await api.queryAdvisory(queryData);
+    setAdvisoryResult(null);
+
+    const res = await api.queryAdvisory({
+      district: queryData.district,
+      crop: queryData.crop,
+      soilPh: queryData.soilPh,
+      nitrogenLevel: queryData.nitrogenLevel
+    });
+
     setRunningQuery(false);
-    if (res.success) setAdvisoryResult(res);
+    if (res.success) {
+      setAdvisoryResult(res);
+    }
   };
 
   return (
@@ -62,14 +74,16 @@ export default function SuadrExplorer() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <span className="badge badge-success">SUADR Engine</span>
-              <span className="badge badge-purple">State Unified Digital Database</span>
+              <span className="badge badge-success">{isKn ? 'SUADR ಎಂಜಿನ್' : 'SUADR Engine'}</span>
+              <span className="badge badge-purple">{isKn ? 'ರಾಜ್ಯ ಏಕೀಕೃತ ಡಿಜಿಟಲ್ ಡೇಟಾಬೇಸ್' : 'State Unified Digital Database'}</span>
             </div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>
-              State Unified Agriculture Digital Database (SUADR)
+              {isKn ? 'ರಾಜ್ಯ ಏಕೀಕೃತ ಕೃಷಿ ಡಿಜಿಟಲ್ ಡೇಟಾಬೇಸ್ (SUADR)' : 'State Unified Agriculture Digital Database (SUADR)'}
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-              State-wide data backbone storing soil profiles, micro-climate weather telemetry, agro-climatic zones, and pest diagnostics.
+              {isKn 
+                ? 'ಮಣ್ಣಿನ ಪ್ರೊಫೈಲ್‌ಗಳು, ಸೂಕ್ಷ್ಮ ಹವಾಮಾನ ಟೆಲಿಮೆಟ್ರಿ, ಕೃಷಿ-ಹವಾಮಾನ ವಲಯಗಳು ಮತ್ತು ಕೀಟ ರೋಗನಿರ್ಣಯವನ್ನು ಸಂಗ್ರಹಿಸುವ ರಾಜ್ಯ-ವ್ಯಾಪಿ ಬೆನ್ನೆಲುಬು.'
+                : 'State-wide data backbone storing soil profiles, micro-climate weather telemetry, agro-climatic zones, and pest diagnostics.'}
             </p>
           </div>
 
@@ -79,25 +93,25 @@ export default function SuadrExplorer() {
               onClick={() => setActiveSubTab('soil')}
               className={`nav-pill ${activeSubTab === 'soil' ? 'active' : ''}`}
             >
-              <FlaskConical size={14} /> Soil Profiles
+              <FlaskConical size={14} /> {isKn ? 'ಮಣ್ಣಿನ ಕಾರ್ಡ್‌ಗಳು' : 'Soil Profiles'}
             </button>
             <button
               onClick={() => setActiveSubTab('zones')}
               className={`nav-pill ${activeSubTab === 'zones' ? 'active' : ''}`}
             >
-              <CloudSun size={14} /> Climate & Zones
+              <CloudSun size={14} /> {isKn ? 'ಹವಾಮಾನ ಮತ್ತು ವಲಯಗಳು' : 'Climate & Zones'}
             </button>
             <button
               onClick={() => setActiveSubTab('pests')}
               className={`nav-pill ${activeSubTab === 'pests' ? 'active' : ''}`}
             >
-              <Bug size={14} /> Pest Diagnostic
+              <Bug size={14} /> {isKn ? 'ಕೀಟ ರೋಗನಿರ್ಣಯ' : 'Pest Diagnostic'}
             </button>
             <button
               onClick={() => setActiveSubTab('ai')}
               className={`nav-pill ${activeSubTab === 'ai' ? 'active' : ''}`}
             >
-              <Sparkles size={14} /> AI Advisory Engine
+              <Sparkles size={14} /> {isKn ? 'AI ಕೃಷಿ ಸಲಹೆಗಾರ' : 'AI Advisory Engine'}
             </button>
           </div>
         </div>
