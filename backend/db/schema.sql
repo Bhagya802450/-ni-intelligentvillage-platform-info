@@ -74,20 +74,42 @@ CREATE TABLE IF NOT EXISTS farmers (
 );
 
 -- 3. Cadastral Land Parcel Records (HimBhoomi Linked)
+-- Entity: Land
+-- Attributes: id, farmer_id, survey_number, area, latitude, longitude, soil_type, irrigation_type
 CREATE TABLE IF NOT EXISTS land_parcels (
-    parcel_id VARCHAR(64) PRIMARY KEY,
-    farmer_id VARCHAR(64) REFERENCES farmers(farmer_id) ON DELETE CASCADE,
-    khasra_no VARCHAR(64) NOT NULL,
-    khatauni_no VARCHAR(64) NOT NULL,
-    area_bigha NUMERIC(8, 2) NOT NULL,
-    area_hectares NUMERIC(8, 2) NOT NULL,
-    irrigation_type VARCHAR(64),
-    primary_crop VARCHAR(100),
-    soil_health_id VARCHAR(64),
+    id VARCHAR(64) PRIMARY KEY,
+    parcel_id VARCHAR(64),
+    farmer_id VARCHAR(64) NOT NULL REFERENCES farmers(farmer_id) ON DELETE CASCADE,
+    survey_number VARCHAR(64) NOT NULL,
+    khasra_no VARCHAR(64),
+    khatauni_no VARCHAR(64),
+    area NUMERIC(8, 2) NOT NULL,
+    area_bigha NUMERIC(8, 2),
+    area_hectares NUMERIC(8, 2),
+    latitude NUMERIC(9, 6),
+    longitude NUMERIC(9, 6),
     lat NUMERIC(9, 6),
     lng NUMERIC(9, 6),
+    soil_type VARCHAR(64) DEFAULT 'Clay Loam',
+    irrigation_type VARCHAR(64) DEFAULT 'Rainfed',
+    primary_crop VARCHAR(100),
+    soil_health_id VARCHAR(64),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- View representing canonical Land entity
+CREATE OR REPLACE VIEW lands AS
+SELECT 
+    id,
+    farmer_id,
+    survey_number,
+    area,
+    latitude,
+    longitude,
+    soil_type,
+    irrigation_type,
+    created_at
+FROM land_parcels;
 
 -- 4. Crop Records (Standing Crops Linked to Farmer & Land Parcel)
 -- Hierarchy: Farmer ├── Land └── Crop

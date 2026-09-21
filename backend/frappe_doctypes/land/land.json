@@ -1,0 +1,87 @@
+{
+  "doctype": "DocType",
+  "name": "Land",
+  "module": "HP Agriculture",
+  "autoname": "format:LAND-{#####}",
+  "is_submittable": 0,
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "id",
+      "label": "Land ID",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "farmer_id",
+      "label": "Farmer Reference",
+      "fieldtype": "Link",
+      "options": "Farmer",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "survey_number",
+      "label": "Cadastral Survey Number (Khasra)",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "area",
+      "label": "Land Area (Bighas / Standard Unit)",
+      "fieldtype": "Float",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "latitude",
+      "label": "Centroid Latitude",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "longitude",
+      "label": "Centroid Longitude",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "soil_type",
+      "label": "Soil Type",
+      "fieldtype": "Select",
+      "options": "Clay Loam\nSandy Loam\nLoam\nSilty Clay\nMountain Acidic Peat\nAlluvial",
+      "default": "Clay Loam",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "irrigation_type",
+      "label": "Irrigation Type",
+      "fieldtype": "Select",
+      "options": "Micro-Drip\nSprinkler\nCanal / Kuhl\nRainfed\nBorewell",
+      "default": "Rainfed",
+      "in_list_view": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Village Revenue Officer (Patwari)",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    },
+    {
+      "role": "Agriculture Officer",
+      "read": 1,
+      "write": 1
+    },
+    {
+      "role": "Farmer",
+      "read": 1
+    }
+  ]
+}

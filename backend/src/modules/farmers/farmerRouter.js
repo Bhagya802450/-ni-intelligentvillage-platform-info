@@ -229,12 +229,24 @@ router.get('/:id/land', (req, res) => {
   });
 });
 
-// Add Land Parcel to existing farmer
+// Add Land Parcel to existing farmer (Land: id, farmer_id, survey_number, area, latitude, longitude, soil_type, irrigation_type)
 router.post('/:id/land', (req, res) => {
   const { id } = req.params;
-  const { khasraNo, khatauniNo, areaBigha, irrigationType, primaryCrop } = req.body;
+  const { 
+    survey_number, khasraNo, 
+    khatauniNo, 
+    area, areaBigha, 
+    latitude, longitude, lat, lng,
+    soil_type, soilType,
+    irrigation_type, irrigationType, 
+    primaryCrop 
+  } = req.body;
+
+  const surveyNum = survey_number || khasraNo || "200/1";
+  const landArea = Number(area !== undefined ? area : (areaBigha !== undefined ? areaBigha : 4.0));
 
   let updatedFarmer = null;
+  let addedLand = null;
 
   db.update(store => {
     const farmer = (store.farmers || []).find(
@@ -243,8 +255,7 @@ router.post('/:id/land', (req, res) => {
     if (!farmer) return store;
 
     const districtPrefix = (farmer.district || 'SHI').substring(0, 3).toUpperCase();
-    const parcelId = `LAND-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`;
-    const bigha = Number(areaBigha) || 4.0;
+    const parcelId = req.body.id || `LAND-${districtPrefix}-${Math.floor(100 + Math.random() * 900)}`;
     const cropName = (primaryCrop || 'Seasonal Crop').split('(')[0].trim();
 
     const initialCrop = new Crop({
@@ -254,25 +265,30 @@ router.post('/:id/land', (req, res) => {
       crop_name: cropName,
       variety: primaryCrop && primaryCrop.includes('(') ? primaryCrop.split('(')[1].replace(')', '') : 'Standard Cultivar',
       season: cropName.toLowerCase().includes('apple') || cropName.toLowerCase().includes('tea') ? 'Perennial' : 'Kharif',
-      area_bigha: bigha,
+      area_bigha: landArea,
       crop_stage: 'Vegetative',
       health_status: 'Optimal',
-      estimated_yield_quintals: (bigha * 6.5).toFixed(1),
+      estimated_yield_quintals: (landArea * 6.5).toFixed(1),
       ndvi_score: 0.78,
       district: farmer.district
     }).toJSON();
 
     const newParcel = new Land({
+      id: parcelId,
       parcelId,
       farmer_id: farmer.farmer_id,
-      khasraNo: khasraNo || "200/1",
+      survey_number: surveyNum,
+      khasraNo: surveyNum,
       khatauniNo: khatauniNo || "5",
-      areaBigha: bigha,
-      irrigationType: irrigationType || "Rainfed",
+      area: landArea,
+      areaBigha: landArea,
+      latitude: Number(latitude !== undefined ? latitude : (lat !== undefined ? lat : (31.1 + Math.random() * 0.5))),
+      longitude: Number(longitude !== undefined ? longitude : (lng !== undefined ? lng : (77.1 + Math.random() * 0.5))),
+      soil_type: soil_type || soilType || 'Clay Loam',
+      irrigation_type: irrigation_type || irrigationType || 'Rainfed',
       primaryCrop: primaryCrop || "Seasonal Crop",
       soilHealthId: `SHC-${districtPrefix}-${Math.floor(1000 + Math.random() * 9000)}`,
       verificationStatus: "PENDING_PATWARI_VERIFICATION",
-      coordinates: { lat: 31.1 + Math.random() * 0.5, lng: 77.1 + Math.random() * 0.5 },
       crops: [initialCrop],
       district: farmer.district
     }).toJSON();
@@ -281,6 +297,7 @@ router.post('/:id/land', (req, res) => {
     farmer.landParcels.push(newParcel);
     farmer.updated_at = new Date().toISOString();
     updatedFarmer = farmer;
+    addedLand = newParcel;
     return store;
   });
 
@@ -290,8 +307,10 @@ router.post('/:id/land', (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: "Cadastral land parcel added successfully with linked initial Crop.",
+    message: "Land parcel created successfully with all 8 model attributes.",
+    model: "Land (id, farmer_id, survey_number, area, latitude, longitude, soil_type, irrigation_type)",
     tree: "Farmer ├── Land └── Crop",
+    land: addedLand,
     data: updatedFarmer
   });
 });

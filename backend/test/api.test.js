@@ -282,15 +282,32 @@ async function runTests() {
       console.log("✔ GET /api/farmers/:id:", farmerDetail.body.success ? "PASS" : "FAIL", `(${farmerDetail.body.data?.name} - ${farmerDetail.body.data?.landParcels?.length} parcels)`);
 
       const addLand = await post('/api/farmers/FARMER-HP-1001/land', {
-        khasraNo: "505/2",
-        khatauniNo: "22",
-        areaBigha: 8.5,
-        irrigationType: "Drip Irrigation",
+        id: "LAND-SHI-8801",
+        farmer_id: "FARMER-HP-1001",
+        survey_number: "614/3",
+        area: 9.2,
+        latitude: 31.1456,
+        longitude: 77.4921,
+        soil_type: "Clay Loam",
+        irrigation_type: "Micro-Drip",
         primaryCrop: "Kiwi & Pears"
       });
-      console.log("✔ POST /api/farmers/:id/land:", addLand.body.success ? "PASS" : "FAIL", `(New parcel added)`);
+      const landObj = addLand.body.land;
+      const hasAll8LandFields = landObj &&
+        landObj.id &&
+        landObj.farmer_id &&
+        landObj.survey_number &&
+        landObj.area &&
+        landObj.latitude &&
+        landObj.longitude &&
+        landObj.soil_type &&
+        landObj.irrigation_type;
 
-      const newParcelId = addLand.body.data?.landParcels?.slice(-1)[0]?.parcelId;
+      console.log("✔ POST /api/farmers/:id/land (All 8 Land Model Attributes):", hasAll8LandFields ? "PASS" : "FAIL", 
+        `([ID: ${landObj?.id}, Farmer: ${landObj?.farmer_id}, Survey: ${landObj?.survey_number}, Area: ${landObj?.area}, Lat: ${landObj?.latitude}, Lng: ${landObj?.longitude}, Soil: ${landObj?.soil_type}, Irrig: ${landObj?.irrigation_type}])`
+      );
+
+      const newParcelId = landObj?.id || addLand.body.data?.landParcels?.slice(-1)[0]?.parcelId;
       const verifyParcel = await patch(`/api/farmers/FARMER-HP-1001/parcels/${newParcelId}/verify`, {
         verifiedBy: "Ramesh Chand Sharma (PAT-HP-301)",
         officerRemarks: "Field geo-coordinates verified on HimBhoomi cadastral map."
