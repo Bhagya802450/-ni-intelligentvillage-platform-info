@@ -1,0 +1,57 @@
+{
+  "doctype": "DocType",
+  "name": "SUADR Soil Profile",
+  "module": "HP Agriculture",
+  "custom": 0,
+  "autoname": "format:SHC-{district}-{#####}",
+  "fields": [
+    {
+      "fieldname": "shc_id",
+      "label": "Soil Health Card ID",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "district",
+      "label": "District",
+      "fieldtype": "Select",
+      "options": "Shimla\nSolan\nKangra\nKullu\nMandi\nKinnaur\nChamba\nBilaspur\nUna\nHamirpur\nSirmaur\nLahaul and Spiti",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "ph",
+      "label": "Soil pH",
+      "fieldtype": "Float",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "nitrogen_kg_ha",
+      "label": "Nitrogen (kg/ha)",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "phosphorus_kg_ha",
+      "label": "Phosphorus (kg/ha)",
+      "fieldtype": "Float"
+    },
+    {
+      "fieldname": "potassium_kg_ha",
+      "label": "Potassium (kg/ha)",
+      "fieldtype": "Float"
+    },
+    {
+      "fieldname": "organic_carbon_percent",
+      "label": "Organic Carbon (%)",
+      "fieldtype": "Float"
+    },
+    {
+      "fieldname": "recommendation",
+      "label": "Agronomy Recommendation",
+      "fieldtype": "Small Text"
+    }
+  ]
+}

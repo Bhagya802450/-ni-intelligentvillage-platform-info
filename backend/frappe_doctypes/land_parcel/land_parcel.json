@@ -1,0 +1,58 @@
+{
+  "doctype": "DocType",
+  "name": "Land Parcel",
+  "module": "HP Agriculture",
+  "istable": 1,
+  "fields": [
+    {
+      "fieldname": "parcel_id",
+      "label": "Parcel ID",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "khasra_no",
+      "label": "Khasra Number",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "khatauni_no",
+      "label": "Khatauni Number",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "area_bigha",
+      "label": "Area (Bighas)",
+      "fieldtype": "Float",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "area_hectares",
+      "label": "Area (Hectares)",
+      "fieldtype": "Float"
+    },
+    {
+      "fieldname": "irrigation_type",
+      "label": "Irrigation Type",
+      "fieldtype": "Select",
+      "options": "Micro-Drip\nSprinkler\nCanal / Kuhl\nRainfed"
+    },
+    {
+      "fieldname": "primary_crop",
+      "label": "Primary Crop",
+      "fieldtype": "Data",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "soil_health_id",
+      "label": "Soil Health Card Reference",
+      "fieldtype": "Data"
+    }
+  ]
+}

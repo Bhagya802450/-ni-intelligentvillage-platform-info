@@ -1,0 +1,56 @@
+{
+  "doctype": "DocType",
+  "name": "Scheme Application",
+  "module": "HP Agriculture",
+  "custom": 0,
+  "autoname": "format:APP-.YYYY.-{#####}",
+  "is_submittable": 1,
+  "fields": [
+    {
+      "fieldname": "scheme_id",
+      "label": "Scheme ID",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "farmer_id",
+      "label": "Farmer ID",
+      "fieldtype": "Link",
+      "options": "Farmer",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "applied_amount",
+      "label": "Grant Benefit Amount (INR)",
+      "fieldtype": "Currency",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "status",
+      "label": "Application Status",
+      "fieldtype": "Select",
+      "options": "SUBMITTED\nFIELD_VERIFICATION_PENDING\nAPPROVED_BY_OFFICER\nREJECTED\nDBT_DISBURSED",
+      "default": "FIELD_VERIFICATION_PENDING",
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "officer_remarks",
+      "label": "Field Inspection Remarks",
+      "fieldtype": "Small Text"
+    },
+    {
+      "fieldname": "verified_by",
+      "label": "Inspecting Officer",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "utr_reference",
+      "label": "DBT Banking UTR Reference",
+      "fieldtype": "Data"
+    }
+  ]
+}

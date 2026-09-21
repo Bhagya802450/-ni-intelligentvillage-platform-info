@@ -1,0 +1,54 @@
+{
+  "doctype": "DocType",
+  "name": "HPASN Consent Log",
+  "module": "HP Agriculture",
+  "custom": 0,
+  "autoname": "format:TXN-ASN-{#####}",
+  "read_only": 1,
+  "fields": [
+    {
+      "fieldname": "transaction_id",
+      "label": "Transaction ID",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "source_dept",
+      "label": "Source Department",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "target_dept",
+      "label": "Target Department",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "purpose",
+      "label": "Exchange Purpose / Scope",
+      "fieldtype": "Data",
+      "reqd": 1
+    },
+    {
+      "fieldname": "farmer_id",
+      "label": "Farmer Reference",
+      "fieldtype": "Link",
+      "options": "Farmer"
+    },
+    {
+      "fieldname": "consent_method",
+      "label": "Consent Method",
+      "fieldtype": "Data"
+    },
+    {
+      "fieldname": "hash_signature",
+      "label": "Cryptographic Hash (HMAC-SHA256)",
+      "fieldtype": "Data",
+      "reqd": 1
+    }
+  ]
+}
