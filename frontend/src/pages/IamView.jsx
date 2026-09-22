@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 
-export default function IamView({ lang = 'en', onSwitchUser }) {
+export default function IamView({ lang = 'en', onSwitchUser, onOpenLogin }) {
   const [roles, setRoles] = useState([]);
   const [principals, setPrincipals] = useState([]);
   const [selectedRole, setSelectedRole] = useState('VILLAGE_REVENUE_OFFICER');
@@ -312,6 +312,10 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
     }
   };
 
+  useEffect(() => {
+    handleRunSecurityPipeline();
+  }, [pipelineCaller, pipelineRoleReq, pipelinePermReq]);
+
   const isKn = lang === 'kn';
 
   return (
@@ -496,17 +500,29 @@ export default function IamView({ lang = 'en', onSwitchUser }) {
               </div>
             </div>
           </div>
-          <button
-            onClick={handleRunSecurityPipeline}
-            disabled={pipelineRunning}
-            className="btn btn-primary"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', fontWeight: 700 }}
-          >
-            <Play size={16} fill="currentColor" />
-            {pipelineRunning
-              ? (isKn ? 'ಪೈಪ್‌ಲೈನ್ ಚಾಲನೆಯಲ್ಲಿದೆ...' : 'Executing Pipeline...')
-              : (isKn ? 'ಪೈಪ್‌ಲೈನ್ ಚಾಲನೆ ಮಾಡಿ (Live API)' : 'Execute Pipeline (Live API)')}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {onOpenLogin && (
+              <button
+                onClick={onOpenLogin}
+                className="btn btn-secondary"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontWeight: 700, borderColor: 'rgba(16, 185, 129, 0.5)', color: '#34d399' }}
+              >
+                <Key size={16} />
+                {isKn ? 'ಖಾತೆ ಲಾಗಿನ್ ತೆರೆಯಿರಿ' : 'Open Login Dialog'}
+              </button>
+            )}
+            <button
+              onClick={handleRunSecurityPipeline}
+              disabled={pipelineRunning}
+              className="btn btn-primary"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', fontWeight: 700 }}
+            >
+              <Play size={16} fill="currentColor" />
+              {pipelineRunning
+                ? (isKn ? 'ಪೈಪ್‌ಲೈನ್ ಚಾಲನೆಯಲ್ಲಿದೆ...' : 'Executing Pipeline...')
+                : (isKn ? 'ಪೈಪ್‌ಲೈನ್ ಚಾಲನೆ ಮಾಡಿ (Live API)' : 'Execute Pipeline (Live API)')}
+            </button>
+          </div>
         </div>
 
         <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '18px' }}>

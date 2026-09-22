@@ -11,6 +11,7 @@ import ArchitectureView from './pages/ArchitectureView';
 import AiServicePipeline from './pages/AiServicePipeline';
 import IamView from './pages/IamView';
 import AdminPortal from './pages/AdminPortal';
+import LoginModal from './components/LoginModal';
 import { api } from './services/api';
 
 export default function App() {
@@ -18,7 +19,53 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [lang, setLang] = useState('en'); // 'en' | 'kn'
   
-  // App Data
+  // User Authentication & Session State
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('hp_auth_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [authToken, setAuthToken] = useState(() => {
+    return localStorage.getItem('hp_auth_token') || null;
+  });
+
+  const handleLoginSuccess = (user, token) => {
+    setCurrentUser(user);
+    setAuthToken(token);
+    if (user.role && (user.role.includes('OFFICER') || user.role === 'VILLAGE_REVENUE_OFFICER' || user.role === 'AGRICULTURE_OFFICER' || user.role === 'BANK_NODAL_OFFICER')) {
+      setCurrentRole('OFFICER');
+      setOfficer(prev => ({
+        ...prev,
+        id: user.id || prev.id,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        designation: user.role
+      }));
+    } else if (user.role && (user.role.includes('ADMIN') || user.role === 'STATE_ADMIN')) {
+      setCurrentRole('ADMIN');
+      setAdminUser(prev => ({
+        ...prev,
+        id: user.id || prev.id,
+        name: user.name || prev.name,
+        email: user.email || prev.email
+      }));
+    } else {
+      setCurrentRole('FARMER');
+    }
+    setActiveTab('dashboard');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('hp_auth_token');
+    localStorage.removeItem('hp_auth_user');
+    setCurrentUser(null);
+    setAuthToken(null);
+  };
+
   const [farmers, setFarmers] = useState([]);
   const [officer, setOfficer] = useState({
     id: "OFF-HP-801",
@@ -80,6 +127,9 @@ export default function App() {
         gatewayStatus={gatewayStatus}
         lang={lang}
         setLang={setLang}
+        currentUser={currentUser}
+        onOpenLogin={() => setIsLoginOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area */}
@@ -131,7 +181,7 @@ export default function App() {
 
             {/* IAM Identity & Access Management */}
             {activeTab === 'iam' && (
-              <IamView lang={lang} />
+              <IamView lang={lang} onOpenLogin={() => setIsLoginOpen(true)} />
             )}
 
             {/* SUADR Soil & Climate Tab */}
@@ -194,6 +244,14 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Global Interactive Login / Account Switch Modal */}
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+        lang={lang}
+      />
     </div>
   );
 }
