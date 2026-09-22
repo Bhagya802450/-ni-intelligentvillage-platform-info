@@ -37,6 +37,15 @@ router.get('/', (req, res) => {
     );
   }
 
+  // Prioritize Karnataka farmers at the top
+  list.sort((a, b) => {
+    const isKaA = (a.state || '').toLowerCase() === 'karnataka' || (a.id || '').includes('KA') || a.district === 'Mandya';
+    const isKaB = (b.state || '').toLowerCase() === 'karnataka' || (b.id || '').includes('KA') || b.district === 'Mandya';
+    if (isKaA && !isKaB) return -1;
+    if (!isKaA && isKaB) return 1;
+    return 0;
+  });
+
   res.json({
     success: true,
     model: "Unified Farmer Database (AgriStack Aligned)",

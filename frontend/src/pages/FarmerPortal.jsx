@@ -36,8 +36,8 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
     setMsg('');
     const res = await api.queryAdvisory({
       district: farmer.district,
-      crop: farmer.landParcels[0]?.primaryCrop || 'Apple',
-      soilPh: 6.2,
+      crop: farmer.landParcels?.[0]?.primaryCrop || 'Sugarcane',
+      soilPh: 6.8,
       nitrogenLevel: 'Medium'
     });
     setLoadingAdvisory(false);
@@ -158,14 +158,14 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                   <span style={{ fontWeight: 700, color: '#34d399', fontSize: '0.92rem' }}>
-                    Khasra No: {parcel.khasraNo}
+                    Bhoomi RTC Survey No: {parcel.khasraNo}
                   </span>
                   <span className="badge badge-info" style={{ fontSize: '0.7rem' }}>
                     Khatauni #{parcel.khatauniNo}
                   </span>
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                  Total Area: <strong style={{ color: '#fff' }}>{parcel.areaBigha} Bighas</strong> ({parcel.areaHectares} Ha)
+                  Total Area: <strong style={{ color: '#fff' }}>{parcel.areaBigha} Acres</strong> ({parcel.areaHectares} Ha)
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                   Primary Crop: <strong style={{ color: '#fcd34d' }}>{parcel.primaryCrop}</strong>
@@ -189,7 +189,7 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
             justifyContent: 'space-between',
             fontSize: '0.82rem'
           }}>
-            <span>HimBhoomi Land Title Verified</span>
+            <span>Bhoomi RTC Cadastral Title Verified</span>
             <button 
               className="btn btn-secondary" 
               style={{ fontSize: '0.75rem', padding: '4px 10px' }}
@@ -210,7 +210,7 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
           </div>
 
           <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-            Dynamic agronomy inferences tailored to {farmer.district} weather, soil pH (6.2) & apple blossom stage.
+            Dynamic agronomy inferences tailored to {farmer.district} weather, soil pH (6.8), and crop canopy stage ({farmer.landParcels?.[0]?.primaryCrop || 'Sugarcane'}).
           </p>
 
           <button 

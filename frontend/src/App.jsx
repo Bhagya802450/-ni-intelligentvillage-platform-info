@@ -114,7 +114,7 @@ export default function App() {
     loadAllData();
   }, []);
 
-  const activeFarmer = farmers[0] || null;
+  const activeFarmer = farmers.find(f => (f.state && f.state.toLowerCase() === 'karnataka') || f.district === 'Mandya' || f.id === 'FARMER-KA-1001') || farmers[0] || null;
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

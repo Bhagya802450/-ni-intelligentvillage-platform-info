@@ -10,13 +10,13 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
   const [newFarmerData, setNewFarmerData] = useState({
     name: '',
     phone: '',
-    district: 'Shimla',
-    tehsil: 'Theog',
-    village: '',
+    district: 'Mandya',
+    tehsil: 'Pandavapura',
+    village: 'Hulivana',
     aadhaarNumber: '',
-    areaBigha: '6.5',
-    primaryCrop: 'Apple & Peas',
-    khasraNo: '310/2'
+    areaBigha: '4.25',
+    primaryCrop: 'Sugarcane (Co 86032)',
+    khasraNo: '142/2A'
   });
   const [registering, setRegistering] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
@@ -29,10 +29,10 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
   const [showAddCropModal, setShowAddCropModal] = useState(false);
   const [selectedParcelForCrop, setSelectedParcelForCrop] = useState('');
   const [cropFormData, setCropFormData] = useState({
-    crop_name: 'Apple',
-    variety: 'Royal Delicious',
+    crop_name: 'Sugarcane',
+    variety: 'Co 86032',
     season: 'Perennial',
-    area_bigha: '5.0',
+    area_bigha: '4.25',
     crop_stage: 'Vegetative',
     health_status: 'Optimal',
     estimated_yield_quintals: '35.0',
@@ -241,11 +241,21 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
                 fontSize: '0.85rem'
               }}
             >
-              <option value="All">{isKn ? 'ಎಲ್ಲಾ ಜಿಲ್ಲೆಗಳು' : 'All Districts'}</option>
-              <option value="Shimla">Shimla</option>
-              <option value="Solan">Solan</option>
-              <option value="Kangra">Kangra</option>
-              <option value="Kullu">Kullu</option>
+              <option value="All">{isKn ? 'ಎಲ್ಲಾ ಕರ್ನಾಟಕ ಜಿಲ್ಲೆಗಳು (31)' : 'All Karnataka Districts (31)'}</option>
+              <option value="Mandya">Mandya (ಮಂಡ್ಯ)</option>
+              <option value="Belagavi">Belagavi (ಬೆಳಗಾವಿ)</option>
+              <option value="Kalaburagi">Kalaburagi (ಕಲಬುರಗಿ)</option>
+              <option value="Mysuru">Mysuru (ಮೈಸೂರು)</option>
+              <option value="Shivamogga">Shivamogga (ಶಿವಮೊಗ್ಗ)</option>
+              <option value="Vijayapura">Vijayapura (ವಿಜಯಪುರ)</option>
+              <option value="Kolar">Kolar (ಕೋಲಾರ)</option>
+              <option value="Davanagere">Davanagere (ದಾವಣಗೆರೆ)</option>
+              <option value="Tumakuru">Tumakuru (ತುಮಕೂರು)</option>
+              <option value="Ballari">Ballari (ಬಳ್ಳಾರಿ)</option>
+              <option value="Kodagu">Kodagu (ಕೊಡಗು)</option>
+              <option value="Udupi">Udupi (ಉಡುಪಿ)</option>
+              <option value="Hassan">Hassan (ಹಾಸನ)</option>
+              <option value="Raichur">Raichur (ರಾಯಚೂರು)</option>
             </select>
           </div>
 
