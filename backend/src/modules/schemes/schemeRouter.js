@@ -148,9 +148,10 @@ router.get('/analytics', (req, res) => {
       readyForDisbursementCount: approvedApps.length
     },
     districtBreakdown: [
-      { district: "Shimla", farmers: 1, disbursedINR: 6000, pending: 0 },
-      { district: "Solan", farmers: 1, disbursedINR: 0, pending: 1 },
-      { district: "Kangra", farmers: 1, disbursedINR: 0, pending: 1 }
+      { district: "Mandya", farmers: 1, disbursedINR: 10000, pending: 0 },
+      { district: "Belagavi", farmers: 1, disbursedINR: 0, pending: 1 },
+      { district: "Kalaburagi", farmers: 1, disbursedINR: 0, pending: 1 },
+      { district: "Shivamogga", farmers: 1, disbursedINR: 15000, pending: 0 }
     ]
   });
 });

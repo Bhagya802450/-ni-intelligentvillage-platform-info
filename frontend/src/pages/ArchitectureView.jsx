@@ -74,7 +74,7 @@ export default function ArchitectureView() {
     { num: 6, name: "Queue", tech: "Redis Queues", resp: "Background DBT banking disbursement & SMS jobs", color: "#c084fc", status: "ONLINE" },
     { num: 7, name: "Reverse Proxy", tech: "Nginx", resp: "HTTPS TLS termination, routing, load balancing", color: "#10b981", status: "ONLINE" },
     { num: 8, name: "AI / ML Service", tech: "Python (FastAPI)", resp: "Sentinel-2 Satellite NDVI analysis, disease predictions", color: "#e879f9", status: "ACTIVE" },
-    { num: 9, name: "Object Storage", tech: "S3 / MinIO", resp: "HimBhoomi Jamabandi PDFs, satellite geotiffs, crop photos", color: "#fb923c", status: "CONNECTED" },
+    { num: 9, name: "Object Storage", tech: "S3 / MinIO", resp: "Bhoomi RTC Pahani PDFs, satellite geotiffs, crop photos", color: "#fb923c", status: "CONNECTED" },
     { num: 10, name: "Monitoring", tech: "Prometheus / Grafana", resp: "System monitoring, latency & queue depth metrics", color: "#2dd4bf", status: "EXPOSING" }
   ];
 
@@ -210,7 +210,7 @@ export default function ArchitectureView() {
           </div>
 
           <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-            High-performance object storage for farmer KYC deeds, HimBhoomi cadastral maps, and GeoTIFF imagery.
+            High-performance object storage for farmer KYC deeds, Bhoomi RTC cadastral maps, and GeoTIFF imagery.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

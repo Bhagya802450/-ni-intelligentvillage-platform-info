@@ -11,28 +11,28 @@ router.get('/departments', (req, res) => {
     success: true,
     data: [
       {
-        deptCode: "REV-HP",
-        name: "Department of Revenue (HimBhoomi / Jamabandi Land Records)",
+        deptCode: "REV-BHOOMI",
+        name: "Department of Revenue (Bhoomi RTC Land Records Karnataka)",
         apiProtocol: "REST / HTTPS HMAC-SHA256",
         systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.98%",
         latency: "142ms",
-        dataShared: ["Khasra Land Parcel Details", "Ownership Title & Encumbrance", "Cadastral Geo-Boundaries (RoR)"]
+        dataShared: ["Bhoomi RTC Survey Numbers", "Ownership Title & Encumbrance", "Cadastral Geo-Boundaries (Pahani)"]
       },
       {
-        deptCode: "HORT-HP",
-        name: "Department of Horticulture & HPMC",
+        deptCode: "HORT-KA",
+        name: "Department of Horticulture & HOPCOMS Karnataka",
         apiProtocol: "REST / OAuth 2.0 Mutual-TLS",
         systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.95%",
         latency: "180ms",
-        dataShared: ["Apple Orchard Certification", "Cold Chain Registry (CA Stores)", "Subsidized Rootstock Allotment"]
+        dataShared: ["Horticulture Crop Certification", "Cold Storage Quota", "Drip Irrigation Subsidy"]
       },
       {
-        deptCode: "BANK-HPSC",
-        name: "HP State Cooperative Bank & NPCI DBT Gateway",
+        deptCode: "BANK-KGB",
+        name: "Karnataka Gramin Bank, Canara Bank & NPCI DBT Gateway",
         apiProtocol: "ISO-20022 / NACH APBS (Aadhaar Payment Bridge)",
         systemType: "PARTNER",
         status: "ONLINE / HEALTHY",
@@ -41,18 +41,18 @@ router.get('/departments', (req, res) => {
         dataShared: ["Aadhaar Payment Bridge Account Status", "Direct Credit Settlement Tracing", "KCC Loan Status"]
       },
       {
-        deptCode: "IMD-HP",
-        name: "India Meteorological Department (HP Agro-Met)",
+        deptCode: "KSNDMC-KA",
+        name: "Karnataka State Natural Disaster Monitoring Centre (KSNDMC)",
         apiProtocol: "MQTT / WSS GeoJSON Stream",
         systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",
         uptime: "99.92%",
         latency: "65ms",
-        dataShared: ["Automatic Weather Station (AWS) Telemetry", "Frost & Hailstorm Early Warnings", "Soil Moisture Index"]
+        dataShared: ["Automatic Weather Station (AWS) Telemetry", "Drought & Heavy Rainfall Advisories", "Soil Moisture Index"]
       },
       {
-        deptCode: "FCS-HP",
-        name: "Department of Food, Civil Supplies & Consumer Affairs",
+        deptCode: "FCS-KA",
+        name: "Department of Food, Civil Supplies & Consumer Affairs (Ahara Karnataka)",
         apiProtocol: "REST / JWT Authenticated",
         systemType: "GOVERNMENT",
         status: "ONLINE / HEALTHY",

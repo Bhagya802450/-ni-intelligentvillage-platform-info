@@ -66,7 +66,7 @@ export default function IamView({ lang = 'en', onSwitchUser, onOpenLogin }) {
             farmerId: "FARMER-HP-1001",
             parcelId: "LAND-SHI-101",
             verificationStatus: "VERIFIED_HIMBHOOMI_MATCH",
-            remarks: "Cadastral field survey matches HimBhoomi revenue record."
+            remarks: "Cadastral field survey matches Bhoomi RTC revenue record."
           });
           break;
         case 'officer_field':
@@ -1006,7 +1006,7 @@ export default function IamView({ lang = 'en', onSwitchUser, onOpenLogin }) {
                   fontSize: '0.85rem'
                 }}
               >
-                <option value="FARMER">FARMER (Registered HimBhoomi Farmer)</option>
+                <option value="FARMER">FARMER (Registered Bhoomi RTC Farmer)</option>
                 <option value="VILLAGE_REVENUE_OFFICER">VILLAGE_REVENUE_OFFICER (Halqua Patwari)</option>
                 <option value="AGRICULTURE_OFFICER">AGRICULTURE_OFFICER (ADO / DAO)</option>
                 <option value="BANK_NODAL_OFFICER">BANK_NODAL_OFFICER (DBT & NPCI Switch)</option>
@@ -1092,7 +1092,7 @@ export default function IamView({ lang = 'en', onSwitchUser, onOpenLogin }) {
           <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
             {isKn
               ? 'ಯುಐಡಿಎಐ ಮತ್ತು ಅಗ್ರಿಸ್ಟಾಕ್ ಪ್ರೋಟೋಕಾಲ್ ಮೂಲಕ ರೈತರ ಡಿಜಿಟಲ್ ಗುರುತಿನ ಪರಿಶೀಲನೆ.'
-              : 'Federated identity minting linking 12-digit Aadhaar e-KYC to unique Himachal AgriStack ID.'}
+              : 'Federated identity minting linking 12-digit Aadhaar e-KYC to unique Karnataka AgriStack ID.'}
           </p>
 
           <form onSubmit={handleVerifyKyc} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -1167,7 +1167,7 @@ export default function IamView({ lang = 'en', onSwitchUser, onOpenLogin }) {
                 </div>
                 <div style={{ marginTop: '4px', fontSize: '0.82rem', display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Status:</span>
-                  <span style={{ color: '#34d399', fontWeight: 600 }}>{kycResult.verifiedStatus} (Himachal Pradesh)</span>
+                  <span style={{ color: '#34d399', fontWeight: 600 }}>{kycResult.verifiedStatus} (Karnataka)</span>
                 </div>
               </div>
             )}

@@ -333,7 +333,7 @@ app.post('/api/ml/crop-classification', (req, res) => {
     pipeline: "React -> Frappe API -> Redis Queue -> Python AI Service",
     queue_job_id: `job_redis_ai_${Date.now()}`,
     feature: "Crop Classification",
-    district: district || "Shimla",
+    district: district || "Mandya",
     altitude_meters: alt,
     agro_climatic_zone: agroZone,
     recommended_primary_crop: primaryCrop,

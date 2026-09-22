@@ -741,10 +741,14 @@ export default function SuadrExplorer({ lang = 'en' }) {
                 onChange={(e) => setQueryData({ ...queryData, district: e.target.value })}
                 style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
               >
-                <option value="Shimla">Shimla (High Hills Wet)</option>
-                <option value="Solan">Solan (Mid Hills Sub-Humid)</option>
-                <option value="Kangra">Kangra (Sub-Montane)</option>
-                <option value="Kullu">Kullu (High Hills)</option>
+                <option value="Mandya">Mandya (Southern Dry Zone)</option>
+                <option value="Belagavi">Belagavi (Northern Transition Zone)</option>
+                <option value="Kalaburagi">Kalaburagi (Northern Dry Zone)</option>
+                <option value="Shivamogga">Shivamogga (Southern Transition / Malnad)</option>
+                <option value="Mysuru">Mysuru (Southern Dry Zone)</option>
+                <option value="Vijayapura">Vijayapura (Northern Dry Zone)</option>
+                <option value="Kolar">Kolar (Eastern Dry Zone)</option>
+                <option value="Hassan">Hassan (Central Dry / Hilly)</option>
               </select>
             </div>
 

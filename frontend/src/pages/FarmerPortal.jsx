@@ -139,7 +139,7 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
       {/* Grid: 3 Key Action Columns */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
         
-        {/* Column 1: Cadastral Land & Soil Card (HimBhoomi / SUADR) */}
+        {/* Column 1: Cadastral Land & Soil Card (Bhoomi RTC / SUADR) */}
         <div className="glass-card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>

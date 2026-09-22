@@ -34,19 +34,19 @@ const Crop = require('./Crop');
 class Farmer {
   constructor(data = {}) {
     // Generate IDs if missing
-    const generatedFarmerId = data.farmer_id || data.id || `FARMER-HP-${Math.floor(1000 + Math.random() * 9000)}`;
-    const generatedNationalId = data.national_farmer_id || data.agriStackId || `AGRI-HP-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const generatedFarmerId = data.farmer_id || data.id || `FARMER-KA-${Math.floor(1000 + Math.random() * 9000)}`;
+    const generatedNationalId = data.national_farmer_id || data.agriStackId || `AGRI-KA-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     this.id = data.id || generatedFarmerId;
     this.farmer_id = generatedFarmerId;
     this.name = (data.name || data.farmer_name || '').trim();
     this.mobile = (data.mobile || data.phone || '').trim();
-    this.email = (data.email || `${this.name.toLowerCase().replace(/[^a-z0-9]/g, '.')}@hpfarmers.in`).trim();
-    this.address = data.address || `Village ${data.village || 'Rural'}, Block ${data.block || data.tehsil || 'Sadar'}, District ${data.district || 'Shimla'}, HP`;
-    this.state = data.state || 'Himachal Pradesh';
-    this.district = (data.district || 'Shimla').trim();
-    this.block = (data.block || data.tehsil || 'Sadar').trim();
-    this.village = (data.village || 'Rural').trim();
+    this.email = (data.email || `${this.name.toLowerCase().replace(/[^a-z0-9]/g, '.')}@kafarmers.in`).trim();
+    this.address = data.address || `Village ${data.village || 'Hulivana'}, Taluk ${data.block || data.tehsil || 'Pandavapura'}, District ${data.district || 'Mandya'}, Karnataka`;
+    this.state = data.state || 'Karnataka';
+    this.district = (data.district || 'Mandya').trim();
+    this.block = (data.block || data.tehsil || 'Pandavapura').trim();
+    this.village = (data.village || 'Hulivana').trim();
     this.national_farmer_id = generatedNationalId;
     this.status = (data.status || 'ACTIVE').toUpperCase();
     this.created_at = data.created_at || data.createdAt || new Date().toISOString();

@@ -185,15 +185,18 @@ router.post('/advisory-query', (req, res) => {
   let advice = [];
   let alerts = [];
 
-  // Zone specific insights
-  if (district === 'Shimla' || district === 'Kullu') {
-    alerts.push("Moderate humidity expected in temperate valleys. Monitor orchard canopy for early fungal signs.");
-    advice.push("Foliar boron spray at 0.15% recommended before petal fall to improve fruit set.");
-  } else if (district === 'Solan') {
-    advice.push("Polyhouse ventilation check recommended between 11 AM - 3 PM to avoid humidity spike.");
-    advice.push("Maintain drip fertigation schedule: 19:19:19 @ 3kg/acre alternating with calcium nitrate.");
-  } else if (district === 'Kangra') {
-    advice.push("Drain standing water from lower tea terraces following precipitation.");
+  // Zone specific insights (Karnataka Agro-Climatic Zones)
+  if (district === 'Mandya' || district === 'Mysuru') {
+    alerts.push("Southern Dry Zone: Favorable temperature for Sugarcane tillering & Ragi vegetative growth.");
+    advice.push("Maintain alternate furrow irrigation in sugarcane plots; apply DAP @ 50 kg/acre as basal dose.");
+  } else if (district === 'Belagavi' || district === 'Dharwad') {
+    advice.push("Northern Transition Zone: Inspect soybean fields for stem fly; install yellow sticky traps.");
+    advice.push("Apply 19:19:19 foliar spray @ 5g/L during early vegetative stage in cotton.");
+  } else if (district === 'Kalaburagi' || district === 'Vijayapura') {
+    advice.push("Northern Dry Zone: Monitor Red Gram (Tur Dal) for pod borer (Helicoverpa) using pheromone traps.");
+    advice.push("Ensure soil moisture conservation through dust mulching in rainfed black cotton soils.");
+  } else if (district === 'Shivamogga' || district === 'Chikkamagaluru') {
+    advice.push("Hilly / Malnad Zone: Apply 1% Bordeaux mixture spray to arecanut bunches against Koleroga (Mahali).");
   }
 
   // Soil specific rule

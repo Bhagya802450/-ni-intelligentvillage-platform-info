@@ -66,7 +66,7 @@ async function runTests() {
         sourceDept: "Agriculture Dept (HP-ASN Gateway)",
         targetDept: "Department of Revenue (HimBhoomi)",
         purpose: "Jamabandi Khasra verification for DBT",
-        farmerId: "FARMER-HP-1001",
+        farmerId: "FARMER-KA-1001",
         dataScope: "Cadastral Parcels"
       });
       console.log("✔ POST /api/hpasn/request-consent:", consent.body.success ? "PASS" : "FAIL", `(Txn: ${consent.body.transaction?.transactionId})`);
@@ -195,7 +195,7 @@ async function runTests() {
 
       // Verify farmer
       const officerVerify = await post('/api/officer/verify-farmer', {
-        farmerId: "FARMER-HP-1001",
+        farmerId: "FARMER-KA-1001",
         parcelId: "LAND-SHI-101",
         verificationStatus: "VERIFIED_HIMBHOOMI_MATCH",
         remarks: "Cadastral field survey matches HimBhoomi revenue record."
@@ -204,7 +204,7 @@ async function runTests() {
 
       // Update field information
       const officerFieldUpdate = await post('/api/officer/update-field-info', {
-        farmerId: "FARMER-HP-1001",
+        farmerId: "FARMER-KA-1001",
         soilMoisture: 48,
         pestRisk: "LOW",
         cropStatus: "Optimal vegetative stage",
@@ -251,7 +251,7 @@ async function runTests() {
 
       // Test Farmer Model Creation with all 14 fields
       const newFarmerReq = await post('/api/farmers', {
-        farmer_id: "FARMER-HP-9901",
+        farmer_id: "FARMER-KA-9901",
         name: "Kuldeep Singh Chandel",
         mobile: "+91 98170 54321",
         email: "kuldeep.chandel@hpfarmers.in",
@@ -270,22 +270,22 @@ async function runTests() {
       console.log("✔ GET /api/farmers/:national_farmer_id (AgriStack lookup):", lookupByNationalId.status === 200 && lookupByNationalId.body.data?.name === "Kuldeep Singh Chandel" ? "PASS" : "FAIL");
 
       // Test Farmer Profile Update (PATCH)
-      const updateFarmer = await patch('/api/farmers/FARMER-HP-9901', {
+      const updateFarmer = await patch('/api/farmers/FARMER-KA-9901', {
         mobile: "+91 98170 99999",
         category: "Medium"
       });
       console.log("✔ PATCH /api/farmers/:id (Update mobile & category):", updateFarmer.status === 200 && updateFarmer.body.data?.mobile === "+91 98170 99999" ? "PASS" : "FAIL");
 
       // Test Farmer Deactivation (DELETE / soft-delete)
-      const deactivateFarmer = await del('/api/farmers/FARMER-HP-9901');
+      const deactivateFarmer = await del('/api/farmers/FARMER-KA-9901');
       console.log("✔ DELETE /api/farmers/:id (Deactivate account):", deactivateFarmer.status === 200 ? "PASS" : "FAIL");
 
-      const farmerDetail = await get('/api/farmers/FARMER-HP-1001');
+      const farmerDetail = await get('/api/farmers/FARMER-KA-1001');
       console.log("✔ GET /api/farmers/:id:", farmerDetail.body.success ? "PASS" : "FAIL", `(${farmerDetail.body.data?.name} - ${farmerDetail.body.data?.landParcels?.length} parcels)`);
 
-      const addLand = await post('/api/farmers/FARMER-HP-1001/land', {
-        id: "LAND-SHI-8801",
-        farmer_id: "FARMER-HP-1001",
+      const addLand = await post('/api/farmers/FARMER-KA-1001/land', {
+        id: "LAND-MND-8801",
+        farmer_id: "FARMER-KA-1001",
         survey_number: "614/3",
         area: 9.2,
         latitude: 31.1456,
@@ -310,35 +310,35 @@ async function runTests() {
       );
 
       const newParcelId = landObj?.id || addLand.body.data?.landParcels?.slice(-1)[0]?.parcelId;
-      const verifyParcel = await patch(`/api/farmers/FARMER-HP-1001/parcels/${newParcelId}/verify`, {
+      const verifyParcel = await patch(`/api/farmers/FARMER-KA-1001/parcels/${newParcelId}/verify`, {
         verifiedBy: "Ramesh Chand Sharma (PAT-HP-301)",
         officerRemarks: "Field geo-coordinates verified on HimBhoomi cadastral map."
       });
       console.log("✔ PATCH /api/farmers/:id/parcels/:parcelId/verify (Patwari Sign-off):", verifyParcel.body.success ? "PASS" : "FAIL", `(${verifyParcel.body.parcel?.verificationStatus})`);
 
-      const geojson = await get('/api/farmers/FARMER-HP-1001/cadastral-geojson');
+      const geojson = await get('/api/farmers/FARMER-KA-1001/cadastral-geojson');
       console.log("✔ GET /api/farmers/:id/cadastral-geojson:", geojson.body.type === "FeatureCollection" ? "PASS" : "FAIL", `(${geojson.body.features?.length} polygon features)`);
 
       // ----------------------------------------------------------------------
       // HIERARCHICAL DATA MODEL: Farmer ├── Land └── Crop
       // ----------------------------------------------------------------------
       console.log("\n--- [RELATIONAL HIERARCHY: Farmer ├── Land └── Crop] ---");
-      const farmerHierarchy = await get('/api/farmers/FARMER-HP-1001/hierarchy');
+      const farmerHierarchy = await get('/api/farmers/FARMER-KA-1001/hierarchy');
       const hData = farmerHierarchy.body.hierarchy;
       console.log("✔ GET /api/farmers/:id/hierarchy (Tree structure verified):", 
         farmerHierarchy.status === 200 && hData?.tree_structure === "Farmer ├── Land └── Crop" && Array.isArray(hData?.land) ? "PASS" : "FAIL",
         `(${hData?.total_parcels} parcels, ${hData?.total_crops} crops)`
       );
 
-      const farmerLandList = await get('/api/farmers/FARMER-HP-1001/land');
+      const farmerLandList = await get('/api/farmers/FARMER-KA-1001/land');
       console.log("✔ GET /api/farmers/:id/land:", farmerLandList.status === 200 && farmerLandList.body.parcelsCount > 0 ? "PASS" : "FAIL", `(${farmerLandList.body.parcelsCount} parcels)`);
 
-      const farmerCropsList = await get('/api/farmers/FARMER-HP-1001/crops');
+      const farmerCropsList = await get('/api/farmers/FARMER-KA-1001/crops');
       console.log("✔ GET /api/farmers/:id/crops:", farmerCropsList.status === 200 && farmerCropsList.body.cropsCount > 0 ? "PASS" : "FAIL", `(${farmerCropsList.body.cropsCount} standing crops)`);
 
       // Add new crop directly under parcel testing all 8 canonical Crop attributes
       const firstParcelId = farmerLandList.body.data?.[0]?.id || farmerLandList.body.data?.[0]?.parcelId;
-      const addCropRes = await post('/api/farmers/FARMER-HP-1001/crops', {
+      const addCropRes = await post('/api/farmers/FARMER-KA-1001/crops', {
         id: "CROP-SHM-9901",
         land_id: firstParcelId,
         crop_name: "Gala Apple",
@@ -366,11 +366,11 @@ async function runTests() {
         `([ID: ${cropObj?.id}, Land: ${cropObj?.land_id}, Name: ${cropObj?.crop_name}, Type: ${cropObj?.crop_type}, Sown: ${cropObj?.sowing_date}, Season: ${cropObj?.season}, Area: ${cropObj?.area}, Status: ${cropObj?.status}])`
       );
 
-      const parcelCrops = await get(`/api/farmers/FARMER-HP-1001/parcels/${firstParcelId}/crops`);
+      const parcelCrops = await get(`/api/farmers/FARMER-KA-1001/parcels/${firstParcelId}/crops`);
       console.log("✔ GET /api/farmers/:id/parcels/:parcelId/crops:", parcelCrops.status === 200 && parcelCrops.body.crops?.length > 0 ? "PASS" : "FAIL", `(${parcelCrops.body.crops?.length} crops on parcel)`);
 
       const cropToUpdate = addCropRes.body.crop?.crop_id;
-      const updateCropRes = await patch(`/api/farmers/FARMER-HP-1001/crops/${cropToUpdate}`, {
+      const updateCropRes = await patch(`/api/farmers/FARMER-KA-1001/crops/${cropToUpdate}`, {
         crop_stage: "Flowering",
         ndvi_score: 0.89
       });
@@ -386,7 +386,7 @@ async function runTests() {
       const soils = await get('/api/suadr/soil');
       console.log("✔ GET /api/suadr/soil:", soils.body.success ? "PASS" : "FAIL", `(${soils.body.count} Soil Health Cards)`);
 
-      const singleSoil = await get('/api/suadr/soil/SHC-SHM-4019');
+      const singleSoil = await get('/api/suadr/soil/SHC-MND-1001');
       console.log("✔ GET /api/suadr/soil/:shcId:", singleSoil.body.success ? "PASS" : "FAIL", `(pH: ${singleSoil.body.data?.ph})`);
 
       const newSoil = await post('/api/suadr/soil', {
@@ -404,7 +404,7 @@ async function runTests() {
       const zones = await get('/api/suadr/zones');
       console.log("✔ GET /api/suadr/zones:", zones.body.success ? "PASS" : "FAIL", `(${zones.body.data?.length} agro-climatic zones)`);
 
-      const zoneCrops = await get('/api/suadr/zones/ZONE-III/crops');
+      const zoneCrops = await get('/api/suadr/zones/ZONE-KA-06/crops');
       console.log("✔ GET /api/suadr/zones/:zoneId/crops:", zoneCrops.body.success ? "PASS" : "FAIL", `(${zoneCrops.body.suitability?.length} suitable crops)`);
 
       const telemetry = await get('/api/suadr/telemetry');
@@ -544,7 +544,7 @@ async function runTests() {
         was_consent_required: true,
         was_access_allowed: true,
         system_type: "GOVERNMENT",
-        query_key: "LAND-SHI-8801"
+        query_key: "LAND-MND-8801"
       });
       const ge = govExchange.body.exchange;
       const govHas6Fields = ge && ge.who_requested && ge.what_data && ge.when && ge.why && ge.was_consent_required !== undefined && ge.was_access_allowed !== undefined;
@@ -558,7 +558,7 @@ async function runTests() {
         was_consent_required: true,
         was_access_allowed: true,
         system_type: "PARTNER",
-        query_key: "FARMER-HP-1001"
+        query_key: "FARMER-KA-1001"
       });
       const pe = partnerExchange.body.exchange;
       const partnerHas6Fields = pe && pe.who_requested && pe.what_data && pe.when && pe.why && pe.was_consent_required !== undefined && pe.was_access_allowed !== undefined;
@@ -594,7 +594,7 @@ async function runTests() {
 
       // 3. POST /api/farmers
       const step6NewFarmer = await post('/api/farmers', {
-        name: "Devi Ram Sharma",
+        name: "Basavaraj Patil",
         mobile: "98160 55443",
         email: "devi.sharma@hpfarmers.in",
         district: "Solan",
@@ -602,7 +602,7 @@ async function runTests() {
         village: "Sadhupul"
       });
       console.log("✔ 3. POST /api/farmers:", step6NewFarmer.status === 201 ? "PASS" : "FAIL", `(Created: ${step6NewFarmer.body.data?.farmer_id})`);
-      const createdFarmerId = step6NewFarmer.body.data?.farmer_id || "FARMER-HP-1001";
+      const createdFarmerId = step6NewFarmer.body.data?.farmer_id || "FARMER-KA-1001";
 
       // 4. GET /api/farmers/{id}
       const step6FarmerDetail = await get(`/api/farmers/${createdFarmerId}`);
@@ -610,18 +610,18 @@ async function runTests() {
 
       // 5. PUT /api/farmers/{id}
       const step6FarmerPut = await put(`/api/farmers/${createdFarmerId}`, {
-        name: "Devi Ram Sharma (Updated via PUT)",
+        name: "Basavaraj Patil (Updated via PUT)",
         category: "Small & Marginal",
         mobile: "98160 55443"
       });
       console.log("✔ 5. PUT /api/farmers/{id}:", step6FarmerPut.status === 200 && step6FarmerPut.body.data?.name.includes("Updated via PUT") ? "PASS" : "FAIL", `(Updated Name: ${step6FarmerPut.body.data?.name})`);
 
       // 6. GET /api/farmers/{id}/land
-      const step6FarmerLand = await get(`/api/farmers/FARMER-HP-1001/land`);
+      const step6FarmerLand = await get(`/api/farmers/FARMER-KA-1001/land`);
       console.log("✔ 6. GET /api/farmers/{id}/land:", step6FarmerLand.status === 200 ? "PASS" : "FAIL", `(${step6FarmerLand.body.parcelsCount} parcels)`);
 
       // 7. POST /api/farmers/{id}/land
-      const step6AddLand = await post(`/api/farmers/FARMER-HP-1001/land`, {
+      const step6AddLand = await post(`/api/farmers/FARMER-KA-1001/land`, {
         survey_number: "712/9",
         area: 6.5,
         latitude: 31.1480,
@@ -629,7 +629,7 @@ async function runTests() {
         soil_type: "Loam",
         irrigation_type: "Sprinkler"
       });
-      const addedLandId = step6AddLand.body.land?.id || "LAND-SHI-8801";
+      const addedLandId = step6AddLand.body.land?.id || "LAND-MND-8801";
       console.log("✔ 7. POST /api/farmers/{id}/land:", step6AddLand.status === 201 ? "PASS" : "FAIL", `(Land ID: ${addedLandId})`);
 
 

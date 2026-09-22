@@ -32,10 +32,10 @@ export default function MandiMarketplace() {
               <span className="badge badge-info">e-NAM Connected</span>
             </div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>
-              Himachal Pradesh APMC Mandi Spot Rates
+              Karnataka APMC Mandi Spot Rates
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-              Real-time daily modal prices from major fruit and vegetable mandis across HP districts.
+              Real-time daily modal prices from major APMC markets and agricultural trade hubs across Karnataka districts.
             </p>
           </div>
 
@@ -47,11 +47,15 @@ export default function MandiMarketplace() {
               onChange={(e) => setSelectedDistrict(e.target.value)}
               style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
             >
-              <option value="All">All Mandis</option>
-              <option value="Shimla">Shimla (Dhalli APMC)</option>
-              <option value="Solan">Solan (Sabzi Mandi)</option>
-              <option value="Kullu">Kullu (Bhuntar APMC)</option>
-              <option value="Kangra">Kangra APMC</option>
+              <option value="All">All Karnataka Mandis (ಎಲ್ಲಾ ಮಾರುಕಟ್ಟೆಗಳು)</option>
+              <option value="Mandya">Mandya APMC (Jaggery & Sugarcane)</option>
+              <option value="Mysuru">Mysuru Bandipalya APMC (Paddy)</option>
+              <option value="Haveri">Byadgi APMC (Red Chilli GI Hub)</option>
+              <option value="Shivamogga">Shivamogga APMC (Arecanut Rashi)</option>
+              <option value="Kalaburagi">Kalaburagi Nehru Gunj (Tur Dal GI)</option>
+              <option value="Vijayapura">Vijayapura APMC (Raisins / Bedana)</option>
+              <option value="Kolar">Kolar APMC (Tomato Hub)</option>
+              <option value="Belagavi">Belagavi APMC Central Yard (Maize & Veg)</option>
             </select>
           </div>
         </div>
@@ -77,7 +81,7 @@ export default function MandiMarketplace() {
           <div className="glass-card" style={{ padding: '18px' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>REPORTING MARKETS</div>
             <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#38bdf8', marginTop: '4px' }}>
-              {stats.totalMarketsReporting} Major HP Mandis
+              {stats.totalMarketsReporting} Major Karnataka APMC Mandis
             </div>
           </div>
         </div>

@@ -30,9 +30,9 @@
  */
 class SoilData {
   constructor(data = {}) {
-    const locPrefix = (data.location || data.district || 'HP').substring(0, 3).toUpperCase();
+    const locPrefix = (data.location || data.district || 'KA').substring(0, 3).toUpperCase();
     this.id = data.id || data.shcId || `SOIL-${locPrefix}-${Math.floor(100 + Math.random() * 900)}`;
-    this.location = data.location || data.district || 'Shimla';
+    this.location = data.location || data.district || 'Mandya';
     this.soil_type = data.soil_type || data.soilType || 'Clay Loam';
     this.ph = Number(data.ph !== undefined ? data.ph : 6.5);
     this.nitrogen = Number(data.nitrogen !== undefined ? data.nitrogen : (data.nitrogenKgHa !== undefined ? data.nitrogenKgHa : 260));
@@ -88,9 +88,9 @@ class SoilData {
  */
 class ClimateData {
   constructor(data = {}) {
-    const locPrefix = (data.location || data.station || data.district || 'HP').substring(0, 3).toUpperCase();
+    const locPrefix = (data.location || data.station || data.district || 'KA').substring(0, 3).toUpperCase();
     this.id = data.id || `CLM-${locPrefix}-${Math.floor(100 + Math.random() * 900)}`;
-    this.location = data.location || data.station || data.district || 'Shimla';
+    this.location = data.location || data.station || data.district || 'Mandya';
     this.temperature = Number(data.temperature !== undefined ? data.temperature : (data.tempCelsius !== undefined ? data.tempCelsius : 21.5));
     this.humidity = Number(data.humidity !== undefined ? data.humidity : (data.humidityPercent !== undefined ? data.humidityPercent : 58));
     this.rainfall = Number(data.rainfall !== undefined ? data.rainfall : (data.rainfallTodayMm !== undefined ? data.rainfallTodayMm : 0.0));
@@ -256,8 +256,8 @@ class MarketData {
   constructor(data = {}) {
     const mktPrefix = (data.market_name || data.mandi || 'MKT').substring(0, 3).toUpperCase();
     this.id = data.id || `MKT-${mktPrefix}-${Math.floor(100 + Math.random() * 900)}`;
-    this.market_name = data.market_name || data.mandi || data.market || 'Dhalli APMC Mandi, Shimla';
-    this.crop = data.crop || data.commodity || 'Apple (Royal Delicious)';
+    this.market_name = data.market_name || data.mandi || data.market || 'Mandya APMC Market Yard';
+    this.crop = data.crop || data.commodity || 'Sugarcane (Co 86032)';
     this.modal_price = Number(data.modal_price !== undefined ? data.modal_price : (data.modal_price_per_qtl !== undefined ? data.modal_price_per_qtl : 9400));
     this.min_price = Number(data.min_price !== undefined ? data.min_price : (data.min_price_per_qtl !== undefined ? data.min_price_per_qtl : 7800));
     this.max_price = Number(data.max_price !== undefined ? data.max_price : (data.max_price_per_qtl !== undefined ? data.max_price_per_qtl : 11500));

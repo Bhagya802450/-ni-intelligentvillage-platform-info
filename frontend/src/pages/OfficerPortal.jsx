@@ -69,7 +69,7 @@ export default function OfficerPortal({
                 Official Government ERP Access
               </span>
               <span className="badge badge-success">
-                HimBhoomi / HP-ASN Connected
+                Bhoomi RTC / HP-ASN Connected
               </span>
             </div>
             <h1 style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '4px' }}>
@@ -182,10 +182,13 @@ export default function OfficerPortal({
                 fontSize: '0.85rem'
               }}
             >
-              <option value="All">All Districts</option>
-              <option value="Shimla">Shimla</option>
-              <option value="Solan">Solan</option>
-              <option value="Kangra">Kangra</option>
+              <option value="All">All Districts (ಎಲ್ಲಾ ಜಿಲ್ಲೆಗಳು)</option>
+              <option value="Mandya">Mandya (ಮಂಡ್ಯ)</option>
+              <option value="Belagavi">Belagavi (ಬೆಳಗಾವಿ)</option>
+              <option value="Kalaburagi">Kalaburagi (ಕಲಬುರಗಿ)</option>
+              <option value="Shivamogga">Shivamogga (ಶಿವಮೊಗ್ಗ)</option>
+              <option value="Mysuru">Mysuru (ಮೈಸೂರು)</option>
+              <option value="Vijayapura">Vijayapura (ವಿಜಯಪುರ)</option>
             </select>
 
             <select
@@ -322,7 +325,7 @@ export default function OfficerPortal({
                   rows="3"
                   value={officerNotes}
                   onChange={(e) => setOfficerNotes(e.target.value)}
-                  placeholder="e.g. Cadastral parcel verified on HimBhoomi. Geo-tagged borewell and crop status confirmed in field."
+                  placeholder="e.g. Cadastral parcel verified on Bhoomi RTC. Geo-tagged borewell and crop status confirmed in field."
                   style={{
                     width: '100%',
                     background: 'rgba(0,0,0,0.3)',

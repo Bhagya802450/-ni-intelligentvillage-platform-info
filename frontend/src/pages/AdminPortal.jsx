@@ -74,16 +74,16 @@ export default function AdminPortal({ adminUser, gatewayStatus, farmers, applica
                 {isKn ? 'ಶ್ರೇಣಿ 3: ರಾಜ್ಯ ನಿರ್ವಾಹಕ' : 'Tier 3: State Administrator'}
               </span>
               <span className="badge badge-success" style={{ fontSize: '0.75rem' }}>
-                HP-ASN Governance Active
+                KA-ASN Governance Active
               </span>
             </div>
             <h1 style={{ fontSize: '1.6rem', fontWeight: 800 }}>
-              {isKn ? 'ರಾಜ್ಯ ಕೃಷಿ ಮೂಲಸೌಕರ್ಯ ಮತ್ತು HP-ASN ಕಮಾಂಡ್ ಸೆಂಟರ್' : 'State Infrastructure & HP-ASN Admin Command Center'}
+              {isKn ? 'ರಾಜ್ಯ ಕೃಷಿ ಮೂಲಸೌಕರ್ಯ ಮತ್ತು KA-ASN ಕಮಾಂಡ್ ಸೆಂಟರ್' : 'State Infrastructure & KA-ASN Admin Command Center'}
             </h1>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>
               {isKn 
-                ? 'ನಿರ್ವಾಹಕರು: ರಾಜೀವ್ ಕುಮಾರ್ ವರ್ಮಾ (ADM-HP-001) • ಐಟಿ ಮತ್ತು ಡಿಜಿಟಲ್ ಆಡಳಿತ ನಿರ್ದೇಶನಾಲಯ, ಶಿಮ್ಲಾ' 
-                : 'Principal Administrator: Rajiv Kumar Verma (ADM-HP-001) • Directorate of IT & Agricultural Governance, Shimla'}
+                ? 'ಮುಖ್ಯ ನಿರ್ವಾಹಕರು: ಶ್ರೀಮತಿ ರೇಖಾ ರಾವ್ (ADM-KA-001) • ಇ-ಆಡಳಿತ ಮತ್ತು ಕೃಷಿ ಮಾಹಿತಿ ನಿರ್ದೇಶನಾಲಯ, ಬೆಂಗಳೂರು (MS ಕಟ್ಟಡ)' 
+                : 'Principal Administrator: Smt. Rekha Rao (ADM-KA-001) • Directorate of E-Governance & Agricultural Informatics, Bengaluru (MS Building)'}
             </p>
           </div>
 
@@ -109,7 +109,7 @@ export default function AdminPortal({ adminUser, gatewayStatus, farmers, applica
             {farmers?.length || 3}
           </div>
           <div style={{ fontSize: '0.75rem', color: '#34d399', marginTop: '4px' }}>
-            ✔ HimBhoomi Synced (100%)
+            ✔ Bhoomi RTC Synced (100%)
           </div>
         </div>
 

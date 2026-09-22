@@ -143,7 +143,7 @@ export default function SchemesView({ farmer, onRefreshData }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
                   {selectedScheme.requiredDocs?.map((doc, idx) => (
                     <div key={idx} style={{ fontSize: '0.8rem', color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      ✔ {doc} (Verified via HimBhoomi)
+                      ✔ {doc} (Verified via Bhoomi RTC)
                     </div>
                   ))}
                 </div>

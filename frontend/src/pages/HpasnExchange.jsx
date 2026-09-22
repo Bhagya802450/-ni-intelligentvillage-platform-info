@@ -242,7 +242,7 @@ export default function HpasnExchange({ farmers, lang = 'en' }) {
                   setWhatData('Standing Apple Crop Area & Soil Health Card');
                   setWhy('Kisan Credit Card (KCC) Limit Appraisal');
                 } else {
-                  setWhoRequested('Department of Revenue (HimBhoomi Land Records)');
+                  setWhoRequested('Department of Revenue (Bhoomi RTC Land Records)');
                   setWhatData('Farmer Land Cadastral Registry & Khasra Survey #614/3');
                   setWhy('Subsidized Micro-Drip Irrigation Entitlement Check');
                 }

@@ -28,9 +28,9 @@ router.get('/stats', (req, res) => {
   const rates = db.get().mandiPrices;
   res.json({
     success: true,
-    totalMarketsReporting: 5,
-    topGainer: "Capsicum (Green Bell) +6.1%",
-    highestModalPriceCommodity: "Apple (Royal Delicious Grade A) - ₹11,800/Qtl",
+    totalMarketsReporting: rates.length,
+    topGainer: "Byadgi Chilli (ಬ್ಯಾಡಗಿ ಮೆಣಸಿನಕಾಯಿ) +8.4%",
+    highestModalPriceCommodity: "Byadgi Chilli (GI Grade A) - ₹48,500/Qtl",
     commoditiesTracked: rates.map(r => r.commodity)
   });
 });

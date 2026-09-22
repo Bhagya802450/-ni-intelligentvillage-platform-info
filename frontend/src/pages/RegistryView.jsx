@@ -91,7 +91,7 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
     try {
       const res = await api.verifyLandParcel(activeFarmer.id, parcelId, {
         verifiedBy: "Ramesh Chand Sharma (PAT-HP-301)",
-        officerRemarks: "Cadastral boundaries cross-referenced with HimBhoomi Jamabandi."
+        officerRemarks: "Cadastral boundaries cross-referenced with Bhoomi RTC Pahani."
       });
       if (res.success) {
         // Update local activeFarmer state
@@ -181,7 +181,7 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
             </span>
           </div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 800 }}>
-            {isKn ? 'ಏಕೀಕೃತ ರೈತ ಡೇಟಾಬೇಸ್ ಮತ್ತು ಭೂಮಿ ನೋಂದಣಿ (ಹಿಂಭೂಮಿ)' : 'Unified Farmer Database & Land Registry (HimBhoomi)'}
+            {isKn ? 'ಏಕೀಕೃತ ರೈತ ಡೇಟಾಬೇಸ್ ಮತ್ತು ಭೂಮಿ ನೋಂದಣಿ (ಭೂಮಿ RTC)' : 'Unified Farmer Database & Land Registry (Bhoomi RTC)'}
           </h2>
           <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
             {isKn 
@@ -307,7 +307,7 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
               <div>
                 <span className="badge badge-success">
-                  {isKn ? 'ಹಿಂಭೂಮಿ ಕ್ಯಾಡಸ್ಟ್ರಲ್ ದಾಖಲೆ' : 'HimBhoomi Cadastral Record'}
+                  {isKn ? 'ಭೂಮಿ RTC ಕ್ಯಾಡಸ್ಟ್ರಲ್ ದಾಖಲೆ' : 'Bhoomi RTC Cadastral Record'}
                 </span>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginTop: '4px' }}>
                   {activeFarmer.name}
@@ -592,7 +592,7 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
                   }}>
                     <span>{isKn ? 'ಕ್ಯಾಡಸ್ಟ್ರಲ್ ಕೇಂದ್ರ:' : 'Cadastral Centroid:'} Lat {parcel.coordinates?.lat}, Lng {parcel.coordinates?.lng}</span>
                     <span style={{ color: '#34d399' }}>
-                      ✔ {parcel.officerRemarks || (isKn ? 'ಹಿಂಭೂಮಿ ಪರಿಶೀಲಿತ' : 'HimBhoomi Verified')}
+                      ✔ {parcel.officerRemarks || (isKn ? 'ಭೂಮಿ RTC ಪರಿಶೀಲಿತ' : 'Bhoomi RTC Verified')}
                     </span>
                   </div>
                 </div>
@@ -615,8 +615,8 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
             </h3>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
               {isKn 
-                ? 'ಅಗ್ರಿಸ್ಟಾಕ್ ಐಡಿ ರಚಿಸುತ್ತದೆ ಮತ್ತು ಹಿಂಭೂಮಿ ಕಂದಾಯ ಕ್ಯಾಡಸ್ಟ್ರಲ್ ದಾಖಲೆಗಳಿಗೆ ಸಂಪರ್ಕಿಸುತ್ತದೆ.' 
-                : 'Generates AgriStack ID and links to HimBhoomi revenue cadastral records.'}
+                ? 'ಅಗ್ರಿಸ್ಟಾಕ್ ಐಡಿ ರಚಿಸುತ್ತದೆ ಮತ್ತು ಭೂಮಿ RTC ಕಂದಾಯ ಕ್ಯಾಡಸ್ಟ್ರಲ್ ದಾಖಲೆಗಳಿಗೆ ಸಂಪರ್ಕಿಸುತ್ತದೆ.' 
+                : 'Generates AgriStack ID and links to Bhoomi RTC revenue cadastral records.'}
             </p>
 
             <form onSubmit={handleRegisterFarmer} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -659,22 +659,30 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
                     onChange={(e) => setNewFarmerData({ ...newFarmerData, district: e.target.value })}
                     style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                   >
-                    <option value="Shimla">Shimla</option>
-                    <option value="Solan">Solan</option>
-                    <option value="Kangra">Kangra</option>
-                    <option value="Kullu">Kullu</option>
+                    <option value="Mandya">Mandya (ಮಂಡ್ಯ)</option>
+                    <option value="Belagavi">Belagavi (ಬೆಳಗಾವಿ)</option>
+                    <option value="Kalaburagi">Kalaburagi (ಕಲಬುರಗಿ)</option>
+                    <option value="Shivamogga">Shivamogga (ಶಿವಮೊಗ್ಗ)</option>
+                    <option value="Mysuru">Mysuru (ಮೈಸೂರು)</option>
+                    <option value="Vijayapura">Vijayapura (ವಿಜಯಪುರ)</option>
+                    <option value="Kolar">Kolar (ಕೋಲಾರ)</option>
+                    <option value="Tumakuru">Tumakuru (ತುಮಕೂರು)</option>
+                    <option value="Hassan">Hassan (ಹಾಸನ)</option>
+                    <option value="Ballari">Ballari (ಬಳ್ಳಾರಿ)</option>
+                    <option value="Davanagere">Davanagere (ದಾವಣಗೆರೆ)</option>
+                    <option value="Dharwad">Dharwad (ಧಾರವಾಡ)</option>
                   </select>
                 </div>
                 <div>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    {isKn ? 'ತಹಸಿಲ್' : 'Tehsil'}
+                    {isKn ? 'ತಾಲ್ಲೂಕು' : 'Taluk / Tehsil'}
                   </label>
                   <input
                     required
                     type="text"
                     value={newFarmerData.tehsil}
                     onChange={(e) => setNewFarmerData({ ...newFarmerData, tehsil: e.target.value })}
-                    placeholder="e.g. Theog"
+                    placeholder="e.g. Pandavapura"
                     style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                   />
                 </div>
@@ -690,7 +698,7 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
                     type="text"
                     value={newFarmerData.village}
                     onChange={(e) => setNewFarmerData({ ...newFarmerData, village: e.target.value })}
-                    placeholder="e.g. Fagu"
+                    placeholder="e.g. Hulivana"
                     style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                   />
                 </div>
@@ -711,20 +719,20 @@ export default function RegistryView({ farmers, onRefreshData, lang = 'en' }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
                 <div>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    {isKn ? 'ಖಸ್ರಾ ಸಂಖ್ಯೆ' : 'Khasra No.'}
+                    {isKn ? 'ಸರ್ವೆ ಸಂಖ್ಯೆ (ಭೂಮಿ RTC)' : 'Survey No. (Bhoomi RTC)'}
                   </label>
                   <input
                     required
                     type="text"
                     value={newFarmerData.khasraNo}
                     onChange={(e) => setNewFarmerData({ ...newFarmerData, khasraNo: e.target.value })}
-                    placeholder="310/2"
+                    placeholder="142/2A"
                     style={{ width: '100%', padding: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-subtle)', borderRadius: '4px', color: '#fff' }}
                   />
                 </div>
                 <div>
                   <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    {isKn ? 'ವಿಸ್ತೀರ್ಣ (ವಿಘಾ)' : 'Area (Bighas)'}
+                    {isKn ? 'ವಿಸ್ತೀರ್ಣ (ಎಕರೆ / ಗುಂಟೆ)' : 'Area (Acres)'}
                   </label>
                   <input
                     required

@@ -304,12 +304,12 @@ router.post('/admin/users', authenticate, requireRole('ADMIN'), requirePermissio
   }
 
   const newUser = {
-    id: `USR-HP-${Math.floor(1000 + Math.random() * 9000)}`,
+    id: `USR-KA-${Math.floor(1000 + Math.random() * 9000)}`,
     name,
     role,
-    email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@hp.gov.in`,
-    department: department || "HP Agriculture / Revenue",
-    district: district || "Shimla",
+    email: email || `${name.toLowerCase().replace(/\s+/g, '.')}@karnataka.gov.in`,
+    department: department || "Karnataka Agriculture / Revenue",
+    district: district || "Mandya",
     status: "ACTIVE",
     createdAt: new Date().toISOString()
   };
