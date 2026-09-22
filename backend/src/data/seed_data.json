@@ -1,8 +1,8 @@
 {
   "farmers": [
     {
-      "id": "FARMER-HP-4552",
-      "farmer_id": "FARMER-HP-4552",
+      "id": "FARMER-HP-7520",
+      "farmer_id": "FARMER-HP-7520",
       "name": "Devi Ram Sharma (Updated via PUT)",
       "mobile": "98160 55443",
       "email": "devi.sharma@hpfarmers.in",
@@ -11,18 +11,18 @@
       "district": "Solan",
       "block": "Kandaghat",
       "village": "Sadhupul",
-      "national_farmer_id": "AGRI-HP-2026-6030",
+      "national_farmer_id": "AGRI-HP-2026-4102",
       "status": "ACTIVE",
-      "created_at": "2026-09-22T06:10:51.916Z",
-      "updated_at": "2026-09-22T06:10:51.924Z",
+      "created_at": "2026-09-22T06:26:50.635Z",
+      "updated_at": "2026-09-22T06:26:50.647Z",
       "phone": "98160 55443",
       "tehsil": "Kandaghat",
-      "agriStackId": "AGRI-HP-2026-6030",
+      "agriStackId": "AGRI-HP-2026-4102",
       "aadhaarHash": "XXXX-XXXX-8823",
       "category": "Small & Marginal",
       "naturalFarmingPractitioner": false,
       "bankDetails": {
-        "accountNo": "XXXXXXXX4891",
+        "accountNo": "XXXXXXXX2036",
         "ifsc": "HPSC0000101",
         "bankName": "HP State Cooperative Bank",
         "dbtLinked": true
@@ -42,8 +42,8 @@
       "village": "Sandhole",
       "national_farmer_id": "AGRI-HP-2026-8844",
       "status": "INACTIVE",
-      "created_at": "2026-09-22T06:10:51.665Z",
-      "updated_at": "2026-09-22T06:10:51.682Z",
+      "created_at": "2026-09-22T06:26:50.369Z",
+      "updated_at": "2026-09-22T06:26:50.390Z",
       "phone": "+91 98170 99999",
       "tehsil": "Dharampur",
       "agriStackId": "AGRI-HP-2026-8844",
@@ -51,7 +51,7 @@
       "category": "Medium",
       "naturalFarmingPractitioner": false,
       "bankDetails": {
-        "accountNo": "XXXXXXXX3198",
+        "accountNo": "XXXXXXXX7568",
         "ifsc": "HPSC0000101",
         "bankName": "HP State Cooperative Bank",
         "dbtLinked": true
@@ -681,7 +681,7 @@
       "national_farmer_id": "AGRI-HP-2026-9812",
       "status": "ACTIVE",
       "created_at": "2024-03-10T10:00:00Z",
-      "updated_at": "2026-09-22T06:10:51.935Z",
+      "updated_at": "2026-09-22T06:26:50.659Z",
       "phone": "+91 98160 12345",
       "tehsil": "Kotkhai",
       "agriStackId": "AGRI-HP-2026-9812",
@@ -972,7 +972,7 @@
               "ndvi_score": 0.89,
               "ndviScore": 0.89,
               "created_at": "2026-09-21T12:15:00.959Z",
-              "updated_at": "2026-09-22T06:10:51.774Z"
+              "updated_at": "2026-09-22T06:26:50.468Z"
             },
             {
               "id": "CROP-SHM-9901",
@@ -1286,8 +1286,8 @@
               "actualYieldQuintals": null,
               "ndvi_score": 0.84,
               "ndviScore": 0.84,
-              "created_at": "2026-09-22T06:10:51.766Z",
-              "updated_at": "2026-09-22T06:10:51.766Z"
+              "created_at": "2026-09-22T06:26:50.459Z",
+              "updated_at": "2026-09-22T06:26:50.459Z"
             }
           ],
           "created_at": "2026-09-21T11:49:32.070Z",
@@ -1296,7 +1296,7 @@
             "pestRisk": "LOW",
             "cropStatus": "Optimal vegetative stage",
             "updatedBy": "Dr. Vikram Chauhan",
-            "updatedAt": "2026-09-22T06:10:51.637Z",
+            "updatedAt": "2026-09-22T06:26:50.329Z",
             "fieldNotes": "Adequate soil organic carbon observed."
           }
         },
@@ -2411,7 +2411,7 @@
           },
           "verificationStatus": "VERIFIED_HIMBHOOMI_MATCH",
           "verifiedBy": "Ramesh Chand Sharma (PAT-HP-301)",
-          "verifiedAt": "2026-09-22T06:10:51.724Z",
+          "verifiedAt": "2026-09-22T06:26:50.414Z",
           "officerRemarks": "Field geo-coordinates verified on HimBhoomi cadastral map.",
           "crops": [
             {
@@ -3695,8 +3695,8 @@
           "irrigationType": "Micro-Drip",
           "primaryCrop": "Kiwi & Pears",
           "primary_crop": "Kiwi & Pears",
-          "soilHealthId": "SHC-SHI-1319",
-          "soil_health_id": "SHC-SHI-1319",
+          "soilHealthId": "SHC-SHI-1564",
+          "soil_health_id": "SHC-SHI-1564",
           "coordinates": {
             "lat": 31.1456,
             "lng": 77.4921
@@ -3707,7 +3707,7 @@
           "officerRemarks": null,
           "crops": [
             {
-              "id": "CROP-SHI-179",
+              "id": "CROP-SHI-847",
               "land_id": "LAND-SHI-8801",
               "crop_name": "Kiwi & Pears",
               "crop_type": "Horticulture / Fruit",
@@ -3715,8 +3715,8 @@
               "season": "Kharif",
               "area": 9.2,
               "status": "Vegetative",
-              "crop_id": "CROP-SHI-179",
-              "cropId": "CROP-SHI-179",
+              "crop_id": "CROP-SHI-847",
+              "cropId": "CROP-SHI-847",
               "parcel_id": "LAND-SHI-8801",
               "parcelId": "LAND-SHI-8801",
               "farmer_id": "FARMER-HP-1001",
@@ -3738,14 +3738,14 @@
               "actualYieldQuintals": null,
               "ndvi_score": 0.78,
               "ndviScore": 0.78,
-              "created_at": "2026-09-22T06:10:51.716Z",
-              "updated_at": "2026-09-22T06:10:51.716Z"
+              "created_at": "2026-09-22T06:26:50.402Z",
+              "updated_at": "2026-09-22T06:26:50.402Z"
             }
           ],
-          "created_at": "2026-09-22T06:10:51.716Z"
+          "created_at": "2026-09-22T06:26:50.403Z"
         },
         {
-          "id": "LAND-SHI-825",
+          "id": "LAND-SHI-200",
           "farmer_id": "FARMER-HP-1001",
           "survey_number": "712/9",
           "area": 6.5,
@@ -3753,8 +3753,8 @@
           "longitude": 77.495,
           "soil_type": "Loam",
           "irrigation_type": "Sprinkler",
-          "parcelId": "LAND-SHI-825",
-          "parcel_id": "LAND-SHI-825",
+          "parcelId": "LAND-SHI-200",
+          "parcel_id": "LAND-SHI-200",
           "farmerId": "FARMER-HP-1001",
           "khasraNo": "712/9",
           "khasra_no": "712/9",
@@ -3767,8 +3767,8 @@
           "irrigationType": "Sprinkler",
           "primaryCrop": "Seasonal Crop",
           "primary_crop": "Seasonal Crop",
-          "soilHealthId": "SHC-SHI-8885",
-          "soil_health_id": "SHC-SHI-8885",
+          "soilHealthId": "SHC-SHI-4800",
+          "soil_health_id": "SHC-SHI-4800",
           "coordinates": {
             "lat": 31.148,
             "lng": 77.495
@@ -3779,18 +3779,18 @@
           "officerRemarks": null,
           "crops": [
             {
-              "id": "CROP-SHI-450",
-              "land_id": "LAND-SHI-825",
+              "id": "CROP-SHI-720",
+              "land_id": "LAND-SHI-200",
               "crop_name": "Seasonal Crop",
               "crop_type": "Field Crop",
               "sowing_date": "2026-09-22",
               "season": "Kharif",
               "area": 6.5,
               "status": "Vegetative",
-              "crop_id": "CROP-SHI-450",
-              "cropId": "CROP-SHI-450",
-              "parcel_id": "LAND-SHI-825",
-              "parcelId": "LAND-SHI-825",
+              "crop_id": "CROP-SHI-720",
+              "cropId": "CROP-SHI-720",
+              "parcel_id": "LAND-SHI-200",
+              "parcelId": "LAND-SHI-200",
               "farmer_id": "FARMER-HP-1001",
               "farmerId": "FARMER-HP-1001",
               "cropName": "Seasonal Crop",
@@ -3810,22 +3810,22 @@
               "actualYieldQuintals": null,
               "ndvi_score": 0.78,
               "ndviScore": 0.78,
-              "created_at": "2026-09-22T06:10:51.935Z",
-              "updated_at": "2026-09-22T06:10:51.935Z"
+              "created_at": "2026-09-22T06:26:50.659Z",
+              "updated_at": "2026-09-22T06:26:50.659Z"
             },
             {
-              "id": "CROP-HP-888",
-              "land_id": "LAND-SHI-825",
+              "id": "CROP-HP-424",
+              "land_id": "LAND-SHI-200",
               "crop_name": "Red Golden Apple",
               "crop_type": "Horticulture / Fruit",
               "sowing_date": "2024-03-01",
               "season": "Perennial",
               "area": 3.2,
               "status": "Fruiting",
-              "crop_id": "CROP-HP-888",
-              "cropId": "CROP-HP-888",
-              "parcel_id": "LAND-SHI-825",
-              "parcelId": "LAND-SHI-825",
+              "crop_id": "CROP-HP-424",
+              "cropId": "CROP-HP-424",
+              "parcel_id": "LAND-SHI-200",
+              "parcelId": "LAND-SHI-200",
               "farmer_id": null,
               "farmerId": null,
               "cropName": "Red Golden Apple",
@@ -3845,11 +3845,11 @@
               "actualYieldQuintals": null,
               "ndvi_score": 0.78,
               "ndviScore": 0.78,
-              "created_at": "2026-09-22T06:10:51.947Z",
-              "updated_at": "2026-09-22T06:10:51.947Z"
+              "created_at": "2026-09-22T06:26:50.673Z",
+              "updated_at": "2026-09-22T06:26:50.673Z"
             }
           ],
-          "created_at": "2026-09-22T06:10:51.935Z"
+          "created_at": "2026-09-22T06:26:50.659Z"
         }
       ]
     },
@@ -4183,7 +4183,7 @@
         "potassiumKgHa": 290
       },
       {
-        "shcId": "SHC-SHI-6013",
+        "shcId": "SHC-SHI-3315",
         "district": "Shimla",
         "tehsil": "Kotkhai",
         "ph": 6.4,
@@ -4971,7 +4971,7 @@
         "rainfallTodayMm": 0,
         "soilMoisturePercent": 44,
         "frostRisk": "LOW",
-        "updatedAt": "2026-09-22T06:10:51.803Z"
+        "updatedAt": "2026-09-22T06:26:50.504Z"
       },
       "Solan": {
         "tempCelsius": 24.2,
@@ -6278,11 +6278,11 @@
       "district": "Solan",
       "appliedAmount": 25000,
       "appliedAt": "2026-02-18T10:15:00Z",
-      "status": "APPROVED_BY_OFFICER",
-      "officerRemarks": "Goshala inspection verified. Indigenous Pahari cow geo-tagged.",
-      "verifiedBy": "Meenakshi Verma (OFF-HP-802)",
-      "disbursementDate": "Scheduled next DBT cycle (March 25)",
-      "utrReference": null
+      "status": "DBT_DISBURSED",
+      "officerRemarks": "Actioned by Dr. H. M. Mallikarjun (AGRICULTURE_OFFICER)",
+      "verifiedBy": "Dr. H. M. Mallikarjun",
+      "disbursementDate": "2026-09-22",
+      "utrReference": "HPSC1790057669479520"
     },
     {
       "applicationId": "APP-2026-0122",
@@ -6303,98 +6303,98 @@
     {
       "who_requested": "HDFC Rural Lending Partner",
       "what_data": "Standing Gala Apple Crop Area & Soil Health Card",
-      "when": "2026-09-22T06:10:51.887Z",
+      "when": "2026-09-22T06:26:50.604Z",
       "why": "Kisan Credit Card (KCC) Limit Appraisal",
       "was_consent_required": true,
       "was_access_allowed": true,
-      "transaction_id": "TXN-ASN-72283",
+      "transaction_id": "TXN-ASN-80344",
       "system_type": "PARTNER",
       "target_system": "Frappe Backend (PostgreSQL & Redis)",
       "farmer_id": "FARMER-HP-1001",
       "consent_method": "Aadhaar e-Sign / Digital Farmer Consent",
       "status": "SUCCESS_AUTHORIZED",
-      "response_latency_ms": 77,
-      "hash_signature": "0xfb24e1689c428c7ed561c9c4388622c46a08e98b42cf82732c66a72a1bbe0324",
-      "transactionId": "TXN-ASN-72283",
+      "response_latency_ms": 162,
+      "hash_signature": "0x4336e52744739d3b5600be64a7e1819e48034a92b2796f90b0345220f59801f1",
+      "transactionId": "TXN-ASN-80344",
       "sourceDept": "HDFC Rural Lending Partner",
       "targetDept": "Frappe Backend (PostgreSQL & Redis)",
       "purpose": "Kisan Credit Card (KCC) Limit Appraisal",
       "dataScope": "Standing Gala Apple Crop Area & Soil Health Card",
       "consentGranted": true,
-      "hashSignature": "0xfb24e1689c428c7ed561c9c4388622c46a08e98b42cf82732c66a72a1bbe0324",
-      "timestamp": "2026-09-22T06:10:51.887Z"
+      "hashSignature": "0x4336e52744739d3b5600be64a7e1819e48034a92b2796f90b0345220f59801f1",
+      "timestamp": "2026-09-22T06:26:50.604Z"
     },
     {
       "who_requested": "Department of Revenue (HimBhoomi)",
       "what_data": "Farmer Land Cadastral Registry & Khasra Survey #614/3",
-      "when": "2026-09-22T06:10:51.881Z",
+      "when": "2026-09-22T06:26:50.594Z",
       "why": "Subsidized Micro-Drip Irrigation Entitlement Check",
       "was_consent_required": true,
       "was_access_allowed": true,
-      "transaction_id": "TXN-ASN-49663",
+      "transaction_id": "TXN-ASN-15292",
       "system_type": "GOVERNMENT",
       "target_system": "Frappe Backend (PostgreSQL & Redis)",
       "farmer_id": "LAND-SHI-8801",
       "consent_method": "Aadhaar e-Sign / Digital Farmer Consent",
       "status": "SUCCESS_AUTHORIZED",
-      "response_latency_ms": 161,
-      "hash_signature": "0xc4c62f0991f5a2a2b5017a301bc79f0a6095ae42e7a9545539314d80092db349",
-      "transactionId": "TXN-ASN-49663",
+      "response_latency_ms": 142,
+      "hash_signature": "0xf0c4137b9427c460ac0919c224e038f8fb055fae8f136b7a3a5839992f4fa046",
+      "transactionId": "TXN-ASN-15292",
       "sourceDept": "Department of Revenue (HimBhoomi)",
       "targetDept": "Frappe Backend (PostgreSQL & Redis)",
       "purpose": "Subsidized Micro-Drip Irrigation Entitlement Check",
       "dataScope": "Farmer Land Cadastral Registry & Khasra Survey #614/3",
       "consentGranted": true,
-      "hashSignature": "0xc4c62f0991f5a2a2b5017a301bc79f0a6095ae42e7a9545539314d80092db349",
-      "timestamp": "2026-09-22T06:10:51.881Z"
+      "hashSignature": "0xf0c4137b9427c460ac0919c224e038f8fb055fae8f136b7a3a5839992f4fa046",
+      "timestamp": "2026-09-22T06:26:50.594Z"
     },
     {
       "who_requested": "Agriculture Dept",
       "what_data": "KHASRA_LOOKUP",
-      "when": "2026-09-22T06:10:51.555Z",
+      "when": "2026-09-22T06:26:50.223Z",
       "why": "Inter-system verification for scheme entitlement",
       "was_consent_required": true,
       "was_access_allowed": true,
-      "transaction_id": "TXN-ASN-82851",
+      "transaction_id": "TXN-ASN-66469",
       "system_type": "GOVERNMENT",
       "target_system": "Department of Revenue",
       "farmer_id": "412/12",
       "consent_method": "Aadhaar e-Sign / Digital Farmer Consent",
       "status": "SUCCESS_AUTHORIZED",
-      "response_latency_ms": 90,
-      "hash_signature": "0x75c80a12ec214c16a6be6963b998160e9ebbcedbfc8b65a849b97c67477f84ea",
-      "transactionId": "TXN-ASN-82851",
+      "response_latency_ms": 114,
+      "hash_signature": "0x38dda03b1c7680169aa8f5ebf319516ae73b30ea00303c42f84df84746c6bbab",
+      "transactionId": "TXN-ASN-66469",
       "sourceDept": "Agriculture Dept",
       "targetDept": "Department of Revenue",
       "purpose": "Inter-system verification for scheme entitlement",
       "dataScope": "KHASRA_LOOKUP",
       "consentGranted": true,
-      "hashSignature": "0x75c80a12ec214c16a6be6963b998160e9ebbcedbfc8b65a849b97c67477f84ea",
-      "timestamp": "2026-09-22T06:10:51.555Z"
+      "hashSignature": "0x38dda03b1c7680169aa8f5ebf319516ae73b30ea00303c42f84df84746c6bbab",
+      "timestamp": "2026-09-22T06:26:50.223Z"
     },
     {
       "who_requested": "Agriculture Dept (HP-ASN Gateway)",
       "what_data": "Cadastral Parcels",
-      "when": "2026-09-22T06:10:51.546Z",
+      "when": "2026-09-22T06:26:50.208Z",
       "why": "Jamabandi Khasra verification for DBT",
       "was_consent_required": true,
       "was_access_allowed": true,
-      "transaction_id": "TXN-ASN-42013",
+      "transaction_id": "TXN-ASN-63530",
       "system_type": "GOVERNMENT",
       "target_system": "Department of Revenue (HimBhoomi)",
       "farmer_id": "FARMER-HP-1001",
       "consent_method": "Aadhaar e-Sign / Digital Farmer Consent",
       "status": "SUCCESS_AUTHORIZED",
-      "response_latency_ms": 82,
-      "hash_signature": "0xc78705a47fa1ae491b01697d28a03ac1c29a3ae45888e6a8d11074ff928296ff",
-      "transactionId": "TXN-ASN-42013",
+      "response_latency_ms": 126,
+      "hash_signature": "0x42c577f7caac7f21e7ac89757f014181fd3bc5e041b184981deadc408b6e394d",
+      "transactionId": "TXN-ASN-63530",
       "sourceDept": "Agriculture Dept (HP-ASN Gateway)",
       "targetDept": "Department of Revenue (HimBhoomi)",
       "purpose": "Jamabandi Khasra verification for DBT",
       "dataScope": "Cadastral Parcels",
       "consentGranted": true,
-      "hashSignature": "0xc78705a47fa1ae491b01697d28a03ac1c29a3ae45888e6a8d11074ff928296ff",
-      "timestamp": "2026-09-22T06:10:51.546Z"
+      "hashSignature": "0x42c577f7caac7f21e7ac89757f014181fd3bc5e041b184981deadc408b6e394d",
+      "timestamp": "2026-09-22T06:26:50.208Z"
     },
     {
       "who_requested": "HDFC Rural Lending Partner",
@@ -7623,7 +7623,7 @@
       "ndvi_score": 0.89,
       "ndviScore": 0.89,
       "created_at": "2026-09-21T12:15:00.959Z",
-      "updated_at": "2026-09-22T06:10:51.774Z"
+      "updated_at": "2026-09-22T06:26:50.468Z"
     },
     {
       "id": "CROP-SHM-9901",
@@ -7937,8 +7937,8 @@
       "actualYieldQuintals": null,
       "ndvi_score": 0.84,
       "ndviScore": 0.84,
-      "created_at": "2026-09-22T06:10:51.766Z",
-      "updated_at": "2026-09-22T06:10:51.766Z"
+      "created_at": "2026-09-22T06:26:50.459Z",
+      "updated_at": "2026-09-22T06:26:50.459Z"
     },
     {
       "id": "CROP-SHI-441",
@@ -9166,7 +9166,7 @@
       "updated_at": "2026-09-22T04:50:17.110Z"
     },
     {
-      "id": "CROP-SHI-179",
+      "id": "CROP-SHI-847",
       "land_id": "LAND-SHI-8801",
       "crop_name": "Kiwi & Pears",
       "crop_type": "Horticulture / Fruit",
@@ -9174,8 +9174,8 @@
       "season": "Kharif",
       "area": 9.2,
       "status": "Vegetative",
-      "crop_id": "CROP-SHI-179",
-      "cropId": "CROP-SHI-179",
+      "crop_id": "CROP-SHI-847",
+      "cropId": "CROP-SHI-847",
       "parcel_id": "LAND-SHI-8801",
       "parcelId": "LAND-SHI-8801",
       "farmer_id": "FARMER-HP-1001",
@@ -9197,22 +9197,22 @@
       "actualYieldQuintals": null,
       "ndvi_score": 0.78,
       "ndviScore": 0.78,
-      "created_at": "2026-09-22T06:10:51.716Z",
-      "updated_at": "2026-09-22T06:10:51.716Z"
+      "created_at": "2026-09-22T06:26:50.402Z",
+      "updated_at": "2026-09-22T06:26:50.402Z"
     },
     {
-      "id": "CROP-SHI-450",
-      "land_id": "LAND-SHI-825",
+      "id": "CROP-SHI-720",
+      "land_id": "LAND-SHI-200",
       "crop_name": "Seasonal Crop",
       "crop_type": "Field Crop",
       "sowing_date": "2026-09-22",
       "season": "Kharif",
       "area": 6.5,
       "status": "Vegetative",
-      "crop_id": "CROP-SHI-450",
-      "cropId": "CROP-SHI-450",
-      "parcel_id": "LAND-SHI-825",
-      "parcelId": "LAND-SHI-825",
+      "crop_id": "CROP-SHI-720",
+      "cropId": "CROP-SHI-720",
+      "parcel_id": "LAND-SHI-200",
+      "parcelId": "LAND-SHI-200",
       "farmer_id": "FARMER-HP-1001",
       "farmerId": "FARMER-HP-1001",
       "cropName": "Seasonal Crop",
@@ -9232,22 +9232,22 @@
       "actualYieldQuintals": null,
       "ndvi_score": 0.78,
       "ndviScore": 0.78,
-      "created_at": "2026-09-22T06:10:51.935Z",
-      "updated_at": "2026-09-22T06:10:51.935Z"
+      "created_at": "2026-09-22T06:26:50.659Z",
+      "updated_at": "2026-09-22T06:26:50.659Z"
     },
     {
-      "id": "CROP-HP-888",
-      "land_id": "LAND-SHI-825",
+      "id": "CROP-HP-424",
+      "land_id": "LAND-SHI-200",
       "crop_name": "Red Golden Apple",
       "crop_type": "Horticulture / Fruit",
       "sowing_date": "2024-03-01",
       "season": "Perennial",
       "area": 3.2,
       "status": "Fruiting",
-      "crop_id": "CROP-HP-888",
-      "cropId": "CROP-HP-888",
-      "parcel_id": "LAND-SHI-825",
-      "parcelId": "LAND-SHI-825",
+      "crop_id": "CROP-HP-424",
+      "cropId": "CROP-HP-424",
+      "parcel_id": "LAND-SHI-200",
+      "parcelId": "LAND-SHI-200",
       "farmer_id": null,
       "farmerId": null,
       "cropName": "Red Golden Apple",
@@ -9267,8 +9267,8 @@
       "actualYieldQuintals": null,
       "ndvi_score": 0.78,
       "ndviScore": 0.78,
-      "created_at": "2026-09-22T06:10:51.947Z",
-      "updated_at": "2026-09-22T06:10:51.947Z"
+      "created_at": "2026-09-22T06:26:50.673Z",
+      "updated_at": "2026-09-22T06:26:50.673Z"
     },
     {
       "id": "CROP-SOL-594",

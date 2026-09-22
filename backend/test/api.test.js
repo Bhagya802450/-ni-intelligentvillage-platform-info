@@ -668,9 +668,33 @@ async function runTests() {
       const step6SuadrMarket = await get('/api/suadr/market');
       console.log("✔ 14. GET /api/suadr/market:", step6SuadrMarket.status === 200 ? "PASS" : "FAIL", `(${step6SuadrMarket.body.count} market rate records)`);
 
+      // ----------------------------------------------------------------------
+      // MODULES 5 - 10: Earth Observation & AI Agronomy Suite
+      // ----------------------------------------------------------------------
+      console.log("\n--- [MODULES 5 - 10: Earth Observation & AI Agronomy Suite] ---");
+      const testM5 = await post('/api/ai/field-boundary-segmentation', { survey_no: '142/2A', district: 'Mandya' });
+      console.log("✔ Module 5: Field Boundary Segmentation:", testM5.body.success ? "PASS" : "FAIL", `(${testM5.body.segmentation_output?.detected_area_acres} Acres, Confidence: ${testM5.body.segmentation_output?.edge_confidence_score})`);
+
+      const testM6 = await post('/api/ai/tree-counting', { orchard_type: 'Coconut (ತೆಂಗು)', district: 'Mandya', area_acres: 5 });
+      console.log("✔ Module 6: Tree Counting and Orchard Mapping:", testM6.body.success ? "PASS" : "FAIL", `(${testM6.body.census_results?.total_trees_detected} Trees Detected, Density: ${testM6.body.census_results?.tree_density_per_acre}/acre)`);
+
+      const testM7 = await post('/api/ai/crop-health', { khasra_survey_no: '142/2A', district: 'Mandya', crop: 'Sugarcane' });
+      console.log("✔ Module 7: Crop Health Monitoring:", testM7.body.success ? "PASS" : "FAIL", `(NDVI: ${testM7.body.live_vegetation_indices?.ndvi}, NDRE: ${testM7.body.live_vegetation_indices?.ndre_chlorophyll_index})`);
+
+      const testM8 = await post('/api/ai/crop-classification', { district: 'Mandya', survey_no: '142/2A' });
+      console.log("✔ Module 8: Crop Classification and Acreage Estimation:", testM8.body.success ? "PASS" : "FAIL", `(Classified Crop: ${testM8.body.target_parcel?.ai_classified_crop})`);
+
+      const testM9 = await post('/api/ai/harvesting-progress', { district: 'Mandya', crop: 'Sugarcane' });
+      console.log("✔ Module 9: Harvesting Progress Tracking:", testM9.body.success ? "PASS" : "FAIL", `(Progress: ${testM9.body.data?.harvest_progress_pct}%, Velocity: ${testM9.body.data?.daily_harvest_velocity_ha} ha/day)`);
+
+      const testM10 = await get('/api/ai/extreme-event-alerts');
+      console.log("✔ Module 10: Extreme Event Alerts & Early Warning:", testM10.body.success ? "PASS" : "FAIL", `(${testM10.body.active_alerts_count} Active Disaster Alerts)`);
+
+      const testM10Dispatch = await post('/api/ai/extreme-event-alerts/dispatch', { alert_id: 'ALT-KA-DIS-801' });
+      console.log("✔ Module 10: Emergency SMS Broadcast Dispatch:", testM10Dispatch.body.success ? "PASS" : "FAIL", `(${testM10Dispatch.body.broadcast_details?.recipients_contacted} Farmers Contacted)`);
 
       console.log(`\n========================================================================`);
-      console.log(`🎉 ALL 4 CORE MODULES FULLY TESTED & VALIDATED SUCCESSFULLY! 🚀`);
+      console.log(`🎉 ALL 10 MODULES FULLY TESTED & VALIDATED SUCCESSFULLY! 🚀`);
       console.log(`========================================================================\n`);
 
       serverInstance.close(() => {

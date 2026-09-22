@@ -15,6 +15,7 @@ const hpasnRouter = require('./modules/hpasn/hpasnRouter');
 const marketplaceRouter = require('./modules/marketplace/marketplaceRouter');
 const storageRouter = require('./modules/storage/storageRouter');
 const accessRouter = require('./modules/access/accessRouter');
+const aiEoRouter = require('./modules/ai_eo/aiEoRouter');
 const redisService = require('./services/redisService');
 const { metricsMiddleware, getPrometheusMetrics } = require('./middleware/metrics');
 
@@ -402,6 +403,7 @@ app.use('/api/schemes', schemeRouter);
 app.use('/api/hpasn', hpasnRouter);
 app.use('/api/marketplace', marketplaceRouter);
 app.use('/api/storage', storageRouter);
+app.use('/api/ai', aiEoRouter);
 app.use('/api', accessRouter);
 
 // Redis Infrastructure Status & Inspection Endpoints

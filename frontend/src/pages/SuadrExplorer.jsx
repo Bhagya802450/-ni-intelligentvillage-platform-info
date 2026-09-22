@@ -137,7 +137,7 @@ export default function SuadrExplorer({ lang = 'en' }) {
                 color: activeSubTab === 'karnataka' ? '#fde047' : undefined
               }}
             >
-              <MapPin size={14} color="#eab308" /> {isKn ? 'ಜಿಲ್ಲಾ ಡೈರೆಕ್ಟರಿ (ಕರ್ನಾಟಕ 31, ಮಹಾರಾಷ್ಟ್ರ 36, ಆಂಧ್ರ 26)' : 'Multi-State Districts (KA 31, MH 36, AP 26)'}
+              <MapPin size={14} color="#eab308" /> {isKn ? 'ಕರ್ನಾಟಕ 31 ಜಿಲ್ಲೆಗಳು' : 'Karnataka 31 Districts'}
             </button>
             <button
               onClick={() => setActiveSubTab('soil')}
@@ -167,192 +167,94 @@ export default function SuadrExplorer({ lang = 'en' }) {
         </div>
       </div>
 
-      {/* Subtab 0: Multi-State Districts Directory (Karnataka 31, Maharashtra 36, Andhra Pradesh 26, & Trade Corridors) */}
+      {/* Subtab 0: Karnataka 31 Districts Directory */}
       {activeSubTab === 'karnataka' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* State Switcher Top Banner */}
+          {/* Karnataka Header & Division Filters */}
           <div className="glass-card" style={{ padding: '20px 24px', background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(20, 83, 45, 0.3))', border: '1px solid rgba(234, 179, 8, 0.3)' }}>
-            {/* 1. Primary State Selector Pills */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '14px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="badge badge-warning" style={{ background: 'rgba(234, 179, 8, 0.25)', color: '#facc15', border: '1px solid #eab308' }}>
-                  {isKn ? 'ಅಂತರ-ರಾಜ್ಯ ಕೃಷಿ ಜಾಲ' : 'Inter-State Agri Network'}
-                </span>
-                <span style={{ fontSize: '0.85rem', color: '#cbd5e1', fontWeight: 700 }}>
-                  {isKn ? 'ರಾಜ್ಯ ಆಯ್ಕೆಮಾಡಿ:' : 'Select Target State:'}
-                </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '16px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                  <span className="badge badge-warning" style={{ background: 'rgba(234, 179, 8, 0.25)', color: '#facc15', border: '1px solid #eab308' }}>
+                    🌾 {isKn ? 'ಕರ್ನಾಟಕ ಕೃಷಿ ನಿರ್ದೇಶನಾಲಯ' : 'Karnataka Agriculture Directorate'}
+                  </span>
+                  <span className="badge badge-success">31 {isKn ? 'ಜಿಲ್ಲೆಗಳು' : 'Districts'}</span>
+                  <span className="badge badge-purple">10 {isKn ? 'ಕೃಷಿ-ಹವಾಮಾನ ವಲಯಗಳು' : 'Agro Zones'}</span>
+                </div>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, margin: '0 0 4px 0', color: '#f8fafc' }}>
+                  {isKn ? 'ಕರ್ನಾಟಕ ರಾಜ್ಯದ 31 ಜಿಲ್ಲೆಗಳ ಸಮಗ್ರ ಕೃಷಿ & ಮಣ್ಣಿನ ಡೈರೆಕ್ಟರಿ' : 'Karnataka State 31 Districts Agricultural & Soil Directory'}
+                </h3>
+                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: 0 }}>
+                  {isKn 
+                    ? '4 ಕಂದಾಯ ವಿಭಾಗಗಳು (ಬೆಂಗಳೂರು, ಮೈಸೂರು, ಬೆಳಗಾವಿ, ಕಲಬುರಗಿ), 10 ಕೃಷಿ-ಹವಾಮಾನ ವಲಯಗಳು, ಮಣ್ಣಿನ ವರ್ಗೀಕರಣ, ಪ್ರಮುಖ ಬೆಳೆಗಳು ಮತ್ತು ಎಪಿಎಂಸಿ ಮಾರುಕಟ್ಟೆಗಳು.' 
+                    : '4 Revenue Divisions (Bengaluru, Mysuru, Belagavi, Kalaburagi), 10 Agro-Climatic Zones, soil classifications, major crops, and APMC Mandis.'}
+                </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {/* 4 Administrative Divisions of Karnataka */}
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 {[
-                  { key: 'Karnataka', label: isKn ? '🌾 ಕರ್ನಾಟಕ (31 ಜಿಲ್ಲೆಗಳು)' : '🌾 Karnataka (31 Districts)', badge: '31' },
-                  { key: 'Maharashtra', label: isKn ? '🍇 ಮಹಾರಾಷ್ಟ್ರ (36 ಜಿಲ್ಲೆಗಳು)' : '🍇 Maharashtra (36 Districts)', badge: '36' },
-                  { key: 'Andhra Pradesh', label: isKn ? '🌶️ ಆಂಧ್ರ ಪ್ರದೇಶ (26 ಜಿಲ್ಲೆಗಳು)' : '🌶️ Andhra Pradesh (26 Districts)', badge: '26' },
-                  { key: 'Corridors', label: isKn ? '🚚 ವ್ಯಾಪಾರ ಕಾರಿಡಾರ್‌ಗಳು (5)' : '🚚 Trade Corridors (5)', badge: 'KA-MH-AP' }
-                ].map(s => (
+                  { key: 'All', label: isKn ? 'ಎಲ್ಲಾ (31)' : 'All (31)' },
+                  { key: 'Bengaluru Division', label: isKn ? 'ಬೆಂಗಳೂರು (9)' : 'Bengaluru (9)' },
+                  { key: 'Mysuru Division', label: isKn ? 'ಮೈಸೂರು (8)' : 'Mysuru (8)' },
+                  { key: 'Belagavi Division', label: isKn ? 'ಬೆಳಗಾವಿ (7)' : 'Belagavi (7)' },
+                  { key: 'Kalaburagi Division', label: isKn ? 'ಕಲಬುರಗಿ (7)' : 'Kalaburagi (7)' }
+                ].map(div => (
                   <button
-                    key={s.key}
-                    onClick={() => {
-                      setSelectedState(s.key);
-                      setSelectedDivision('All');
-                    }}
+                    key={div.key}
+                    onClick={() => setSelectedDivision(div.key)}
                     style={{
-                      padding: '8px 14px',
-                      borderRadius: '8px',
-                      fontSize: '0.82rem',
-                      fontWeight: 800,
+                      padding: '6px 14px',
+                      borderRadius: '20px',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
                       cursor: 'pointer',
-                      border: `1px solid ${selectedState === s.key ? '#10b981' : 'rgba(255,255,255,0.12)'}`,
-                      background: selectedState === s.key ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' : 'rgba(0,0,0,0.4)',
-                      color: selectedState === s.key ? '#fff' : '#cbd5e1',
-                      boxShadow: selectedState === s.key ? '0 4px 12px rgba(16, 185, 129, 0.35)' : 'none',
+                      border: `1px solid ${selectedDivision === div.key ? '#eab308' : 'rgba(255,255,255,0.12)'}`,
+                      background: selectedDivision === div.key ? 'rgba(234, 179, 8, 0.25)' : 'rgba(0,0,0,0.35)',
+                      color: selectedDivision === div.key ? '#fde047' : '#cbd5e1',
                       transition: 'all 0.2s'
                     }}
                   >
-                    {s.label}
+                    {div.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* 2. State Specific Sub-header & Filters */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '16px' }}>
-              <div>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 4px 0' }}>
-                  {selectedState === 'Karnataka' && (isKn ? 'ಕರ್ನಾಟಕ ರಾಜ್ಯದ 31 ಜಿಲ್ಲೆಗಳ ಕೃಷಿ & ಮಣ್ಣಿನ ವಿವರಗಳು' : 'Karnataka State 31 Districts Agricultural & Soil Directory')}
-                  {selectedState === 'Maharashtra' && (isKn ? 'ಮಹಾರಾಷ್ಟ್ರ ರಾಜ್ಯದ 36 ಜಿಲ್ಲೆಗಳ ಕೃಷಿ & ಎಪಿಎಂಸಿ ವಿವರಗಳು' : 'Maharashtra State 36 Districts Agricultural & APMC Directory')}
-                  {selectedState === 'Andhra Pradesh' && (isKn ? 'ಆಂಧ್ರ ಪ್ರದೇಶ ರಾಜ್ಯದ 26 ಜಿಲ್ಲೆಗಳ ಕೃಷಿ & ಬೆಳೆ ವಿವರಗಳು' : 'Andhra Pradesh 26 Reorganized Districts & Crop Hubs')}
-                  {selectedState === 'Corridors' && (isKn ? 'ಕರ್ನಾಟಕ, ಮಹಾರಾಷ್ಟ್ರ & ಆಂಧ್ರ ನಡುವಿನ 5 ಪ್ರಮುಖ ವ್ಯಾಪಾರ ಕಾರಿಡಾರ್‌ಗಳು' : 'Cross-Border Agricultural Trade Corridors (KA ⇄ MH ⇄ AP)')}
-                </h3>
-                <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: 0 }}>
-                  {selectedState === 'Karnataka' && (isKn ? '4 ಕಂದಾಯ ವಿಭಾಗಗಳು, 10 ಕೃಷಿ-ಹವಾಮಾನ ವಲಯಗಳು, ಮಣ್ಣಿನ ವರ್ಗೀಕರಣ ಮತ್ತು ಎಪಿಎಂಸಿ ಮಾರುಕಟ್ಟೆಗಳು.' : '4 Revenue Divisions, 10 Agro-Climatic Zones, soil classifications, major crops, and APMC Mandis.')}
-                  {selectedState === 'Maharashtra' && (isKn ? '6 ಕಂದಾಯ ವಿಭಾಗಗಳು (ಪಶ್ಚಿಮ ಮಹಾರಾಷ್ಟ್ರ, ಮರಾಠವಾಡ, ವಿದರ್ಭ, ಕೊಂಕಣ), ಸಕ್ಕರೆ, ಈರುಳ್ಳಿ ಮತ್ತು ಹತ್ತಿ ಬೆಳೆಗಳು.' : '6 Divisions (Western MH, Marathwada, Vidarbha, Konkan), Sugarcane, Lasalgaon Onion, Cotton, and Grapes.')}
-                  {selectedState === 'Andhra Pradesh' && (isKn ? 'ರಾಯಲಸೀಮೆ, ಕರಾವಳಿ ಆಂಧ್ರ, ಗುಂಟೂರು ಮೆಣಸಿನಕಾಯಿ, ಸಣ್ಣ ಅಕ್ಕಿ ಮತ್ತು ಮಾವು ತೋಟಗಾರಿಕೆ.' : 'Rayalaseema, Coastal Andhra, Guntur Asian Chilli Yard, Rice delta, and Mango pulp clusters.')}
-                  {selectedState === 'Corridors' && (isKn ? 'ಅಂತರ-ರಾಜ್ಯ ಕೃಷಿ ಸರಕು ಸಾಗಣೆ, ಹಂಚಿಕೆಯ ನದಿ ಜಲಾನಯನ ಪ್ರದೇಶಗಳು ಮತ್ತು ಮಾರುಕಟ್ಟೆ ಮಧ್ಯಸ್ಥಿಕೆ.' : 'Strategic inter-state commodity transit, shared river basins, and multi-state APMC mandi arbitrage.')}
-                </p>
-              </div>
-
-              {/* Division / Region Sub-filters */}
-              {selectedState !== 'Corridors' && (
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {(selectedState === 'Karnataka' 
-                    ? ['All', 'Bengaluru Division', 'Mysuru Division', 'Belagavi Division', 'Kalaburagi Division']
-                    : selectedState === 'Maharashtra'
-                    ? ['All', 'Pune Division', 'Nashik Division', 'Chhatrapati Sambhajinagar Division', 'Nagpur Division', 'Amravati Division', 'Konkan Division']
-                    : ['All', 'Rayalaseema', 'Coastal Andhra', 'North Coastal Andhra']
-                  ).map(div => (
-                    <button
-                      key={div}
-                      onClick={() => setSelectedDivision(div)}
-                      style={{
-                        padding: '5px 12px',
-                        borderRadius: '20px',
-                        fontSize: '0.76rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        border: `1px solid ${selectedDivision === div ? '#eab308' : 'rgba(255,255,255,0.1)'}`,
-                        background: selectedDivision === div ? 'rgba(234, 179, 8, 0.25)' : 'rgba(0,0,0,0.3)',
-                        color: selectedDivision === div ? '#fde047' : '#cbd5e1'
-                      }}
-                    >
-                      {div}
-                    </button>
-                  ))}
-                </div>
-              )}
+            {/* Search Input for Karnataka Districts */}
+            <div style={{ position: 'relative' }}>
+              <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="text"
+                placeholder={isKn 
+                  ? 'ಕರ್ನಾಟಕದ ಜಿಲ್ಲೆಯ ಹೆಸರು, ಬೆಳೆ, ಮಣ್ಣು ಅಥವಾ ಎಪಿಎಂಸಿ ಮಾರುಕಟ್ಟೆ ಹುಡುಕಿ (ಉದಾ: ಮಂಡ್ಯ, ಬೆಳಗಾವಿ, ಕಬ್ಬು, ಭತ್ತ)...' 
+                  : 'Search Karnataka districts by name, crop, soil, headquarters, or APMC mandi (e.g. Mandya, Belagavi, Sugarcane)...'}
+                value={districtSearch}
+                onChange={(e) => setDistrictSearch(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px 10px 38px',
+                  background: 'rgba(0,0,0,0.4)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: '#fff',
+                  fontSize: '0.9rem'
+                }}
+              />
             </div>
-
-            {/* Search Input */}
-            {selectedState !== 'Corridors' && (
-              <div style={{ position: 'relative' }}>
-                <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-                <input
-                  type="text"
-                  placeholder={isKn 
-                    ? `ಜಿಲ್ಲೆಯ ಹೆಸರು, ಬೆಳೆ, ಮಣ್ಣು ಅಥವಾ ಎಪಿಎಂಸಿ ಮಾರುಕಟ್ಟೆ ಹುಡುಕಿ (${selectedState})...` 
-                    : `Search ${selectedState} districts by name, crop, soil, headquarters, or APMC mandi...`}
-                  value={districtSearch}
-                  onChange={(e) => setDistrictSearch(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px 10px 38px',
-                    background: 'rgba(0,0,0,0.4)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: 'var(--radius-sm)',
-                    color: '#fff',
-                    fontSize: '0.9rem'
-                  }}
-                />
-              </div>
-            )}
           </div>
 
-          {/* Districts Grid or Trade Corridors */}
-          {selectedState === 'Corridors' ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '16px' }}>
-              {interstateCorridors.map(corr => (
-                <div
-                  key={corr.corridor_id}
-                  className="glass-card"
-                  style={{
-                    padding: '20px',
-                    border: '1px solid rgba(16, 185, 129, 0.4)',
-                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(6, 78, 59, 0.2))'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span className="badge badge-success" style={{ fontSize: '0.72rem' }}>
-                      {corr.corridor_id}
-                    </span>
-                    <span style={{ fontSize: '0.8rem', color: '#38bdf8', fontWeight: 700 }}>
-                      ⚡ {corr.annual_volume_mt}
-                    </span>
-                  </div>
-
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#f8fafc', marginBottom: '10px' }}>
-                    {corr.name}
-                  </h4>
-
-                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px', marginBottom: '12px' }}>
-                    <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                      {isKn ? 'ಪ್ರಮುಖ ವಹಿವಾಟು ಸರಕುಗಳು:' : 'Primary Traded Commodities:'}
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                      {corr.primary_commodities.map((c, i) => (
-                        <span key={i} style={{ fontSize: '0.75rem', padding: '2px 8px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.15)', color: '#7dd3fc', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                          {c}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginBottom: '10px' }}>
-                    <strong style={{ color: '#facc15' }}>APMC Mandis: </strong>
-                    {corr.key_mandis.join(' • ')}
-                  </div>
-
-                  <div style={{ fontSize: '0.78rem', color: '#cbd5e1', fontStyle: 'italic', borderTop: '1px dashed rgba(255,255,255,0.08)', paddingTop: '8px' }}>
-                    {corr.features}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (() => {
-            const rawList = selectedState === 'Karnataka' 
-              ? karnatakaDistricts 
-              : selectedState === 'Maharashtra' 
-              ? maharashtraDistricts 
-              : andhraDistricts;
+          {/* Districts Grid */}
+          {(() => {
+            const rawList = karnatakaDistricts;
 
             const filtered = rawList.filter(d => {
-              const divVal = d.division || d.region || '';
+              const divVal = d.division || '';
               const matchesDiv = selectedDivision === 'All' || divVal.toLowerCase().includes(selectedDivision.toLowerCase());
               const q = districtSearch.toLowerCase();
               const matchesSearch = !districtSearch || 
                 d.name.toLowerCase().includes(q) ||
                 (d.name_kn && d.name_kn.includes(districtSearch)) ||
-                (d.name_mr && d.name_mr.includes(districtSearch)) ||
-                (d.name_te && d.name_te.includes(districtSearch)) ||
                 (d.headquarters && d.headquarters.toLowerCase().includes(q)) ||
                 (d.soil_type && d.soil_type.toLowerCase().includes(q)) ||
                 (d.major_crops && d.major_crops.some(c => c.toLowerCase().includes(q))) ||
@@ -365,8 +267,8 @@ export default function SuadrExplorer({ lang = 'en' }) {
                 <div className="glass-card" style={{ padding: '40px', textAlign: 'center' }}>
                   <p style={{ color: 'var(--text-muted)' }}>
                     {isKn 
-                      ? `${selectedState} ನಲ್ಲಿ ಯಾವುದೇ ಜಿಲ್ಲೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ. ಹುಡುಕಾಟ ಪದವನ್ನು ಬದಲಾಯಿಸಿ.` 
-                      : `No districts found in ${selectedState} matching your search.`}
+                      ? 'ಯಾವುದೇ ಜಿಲ್ಲೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ. ಹುಡುಕಾಟ ಪದವನ್ನು ಬದಲಾಯಿಸಿ.' 
+                      : 'No Karnataka districts found matching your search criteria.'}
                   </p>
                 </div>
               );

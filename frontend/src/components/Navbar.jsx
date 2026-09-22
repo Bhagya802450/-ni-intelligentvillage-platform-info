@@ -268,7 +268,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
           className={`nav-pill ${activeTab === 'ai-pipeline' ? 'active' : ''}`}
           onClick={() => setActiveTab('ai-pipeline')}
         >
-          {lang === 'kn' ? '🧠 AI ಮತ್ತು ಉಪಗ್ರಹ ಪೈಪ್‌ಲೈನ್' : '🧠 AI & Satellite Pipeline'}
+          {lang === 'kn' ? '🛰️ ಉಪಗ್ರಹ & ಎಐ ಕೃಷಿ ಸೂಟ್ (ಮಾಡ್ಯೂಲ್ 5-10)' : '🛰️ Earth Observation & AI Suite (M5-10)'}
         </button>
 
         <button
