@@ -549,9 +549,17 @@ router.post('/market-data', (req, res) => {
 });
 
 // =========================================================================
-// KARNATAKA DISTRICTS & AGRO-CLIMATIC DIRECTORY (31 Districts, 10 Zones)
+// INTER-STATE AGRICULTURAL DIRECTORY (Karnataka, Maharashtra, Andhra Pradesh)
 // =========================================================================
-const { karnatakaDistricts, karnatakaAgroZones } = require('../../data/karnatakaDistricts');
+const { 
+  karnatakaDistricts, 
+  karnatakaAgroZones,
+  maharashtraDistricts,
+  maharashtraAgroZones,
+  andhraDistricts,
+  andhraAgroZones,
+  interstateTradeCorridors
+} = require('../../data/interstateDistricts');
 
 // GET /api/suadr/karnataka-districts - List all 31 districts of Karnataka
 router.get('/karnataka-districts', (req, res) => {
@@ -561,14 +569,14 @@ router.get('/karnataka-districts', (req, res) => {
   if (division && division !== 'All') {
     list = list.filter(d => 
       d.division.toLowerCase().includes(division.toLowerCase()) || 
-      d.division_kn.includes(division)
+      (d.division_kn && d.division_kn.includes(division))
     );
   }
 
   if (zone && zone !== 'All') {
     list = list.filter(d => 
       d.agro_climatic_zone.toLowerCase().includes(zone.toLowerCase()) ||
-      d.agro_climatic_zone_kn.includes(zone)
+      (d.agro_climatic_zone_kn && d.agro_climatic_zone_kn.includes(zone))
     );
   }
 
@@ -576,12 +584,12 @@ router.get('/karnataka-districts', (req, res) => {
     const q = search.toLowerCase();
     list = list.filter(d => 
       d.name.toLowerCase().includes(q) ||
-      d.name_kn.includes(q) ||
+      (d.name_kn && d.name_kn.includes(q)) ||
       d.headquarters.toLowerCase().includes(q) ||
-      d.headquarters_kn.includes(q) ||
+      (d.headquarters_kn && d.headquarters_kn.includes(q)) ||
       d.soil_type.toLowerCase().includes(q) ||
       d.major_crops.some(c => c.toLowerCase().includes(q)) ||
-      d.major_crops_kn.some(c => c.includes(q))
+      (d.major_crops_kn && d.major_crops_kn.some(c => c.includes(q)))
     );
   }
 
@@ -626,6 +634,126 @@ router.get('/karnataka-zones', (req, res) => {
     state_kn: "ಕರ್ನಾಟಕ",
     total_zones: karnatakaAgroZones.length,
     data: karnatakaAgroZones
+  });
+});
+
+// GET /api/suadr/maharashtra-districts - List 36 districts of Maharashtra
+router.get('/maharashtra-districts', (req, res) => {
+  const { division, search } = req.query;
+  let list = maharashtraDistricts;
+
+  if (division && division !== 'All') {
+    list = list.filter(d => d.division.toLowerCase().includes(division.toLowerCase()));
+  }
+
+  if (search) {
+    const q = search.toLowerCase();
+    list = list.filter(d => 
+      d.name.toLowerCase().includes(q) ||
+      (d.name_mr && d.name_mr.includes(q)) ||
+      d.major_crops.some(c => c.toLowerCase().includes(q)) ||
+      d.soil_type.toLowerCase().includes(q) ||
+      d.apmc_mandi.toLowerCase().includes(q)
+    );
+  }
+
+  res.json({
+    success: true,
+    state: "Maharashtra",
+    state_mr: "महाराष्ट्र",
+    total_districts: maharashtraDistricts.length,
+    count: list.length,
+    data: list
+  });
+});
+
+// GET /api/suadr/maharashtra-zones - 9 Agro-Climatic Zones of Maharashtra
+router.get('/maharashtra-zones', (req, res) => {
+  res.json({
+    success: true,
+    state: "Maharashtra",
+    total_zones: maharashtraAgroZones.length,
+    data: maharashtraAgroZones
+  });
+});
+
+// GET /api/suadr/andhra-districts - List 26 districts of Andhra Pradesh
+router.get('/andhra-districts', (req, res) => {
+  const { region, search } = req.query;
+  let list = andhraDistricts;
+
+  if (region && region !== 'All') {
+    list = list.filter(d => d.region.toLowerCase().includes(region.toLowerCase()));
+  }
+
+  if (search) {
+    const q = search.toLowerCase();
+    list = list.filter(d => 
+      d.name.toLowerCase().includes(q) ||
+      (d.name_te && d.name_te.includes(q)) ||
+      d.major_crops.some(c => c.toLowerCase().includes(q)) ||
+      d.soil_type.toLowerCase().includes(q) ||
+      d.apmc_mandi.toLowerCase().includes(q)
+    );
+  }
+
+  res.json({
+    success: true,
+    state: "Andhra Pradesh",
+    state_te: "ఆంధ్రప్రదేశ్",
+    total_districts: andhraDistricts.length,
+    count: list.length,
+    data: list
+  });
+});
+
+// GET /api/suadr/andhra-zones - 6 Agro-Climatic Zones of Andhra Pradesh
+router.get('/andhra-zones', (req, res) => {
+  res.json({
+    success: true,
+    state: "Andhra Pradesh",
+    total_zones: andhraAgroZones.length,
+    data: andhraAgroZones
+  });
+});
+
+// GET /api/suadr/interstate-districts - Multi-State Unified Query
+router.get('/interstate-districts', (req, res) => {
+  const { state, search } = req.query;
+  let allDistricts = [
+    ...karnatakaDistricts.map(d => ({ ...d, state: "Karnataka" })),
+    ...maharashtraDistricts.map(d => ({ ...d, state: "Maharashtra" })),
+    ...andhraDistricts.map(d => ({ ...d, state: "Andhra Pradesh" }))
+  ];
+
+  if (state && state !== 'All') {
+    allDistricts = allDistricts.filter(d => d.state.toLowerCase() === state.toLowerCase());
+  }
+
+  if (search) {
+    const q = search.toLowerCase();
+    allDistricts = allDistricts.filter(d => 
+      d.name.toLowerCase().includes(q) ||
+      d.state.toLowerCase().includes(q) ||
+      d.major_crops.some(c => c.toLowerCase().includes(q)) ||
+      d.soil_type.toLowerCase().includes(q)
+    );
+  }
+
+  res.json({
+    success: true,
+    states_covered: ["Karnataka (31)", "Maharashtra (36)", "Andhra Pradesh (26)"],
+    total_districts: allDistricts.length,
+    data: allDistricts
+  });
+});
+
+// GET /api/suadr/interstate-corridors - Cross-border trade corridors
+router.get('/interstate-corridors', (req, res) => {
+  res.json({
+    success: true,
+    corridors_count: interstateTradeCorridors.length,
+    data: interstateTradeCorridors
   });
 });
 

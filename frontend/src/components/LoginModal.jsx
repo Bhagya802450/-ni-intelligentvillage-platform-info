@@ -4,7 +4,7 @@ import { api } from '../services/api';
 
 export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'en' }) {
   const [role, setRole] = useState('FARMER'); // 'FARMER' | 'OFFICER' | 'ADMIN'
-  const [identifier, setIdentifier] = useState('98160 12345');
+  const [identifier, setIdentifier] = useState('98450 12345');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,11 +18,11 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'en
     setRole(newRole);
     setError(null);
     if (newRole === 'FARMER') {
-      setIdentifier('98160 12345');
+      setIdentifier('98450 12345');
     } else if (newRole === 'OFFICER') {
-      setIdentifier('OFF-HP-801');
+      setIdentifier('OFF-KA-801');
     } else if (newRole === 'ADMIN') {
-      setIdentifier('ADM-HP-001');
+      setIdentifier('ADM-KA-001');
     }
   };
 
@@ -124,10 +124,10 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'en
           </div>
           <div>
             <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: '#f8fafc' }}>
-              {isKn ? 'ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಲಾಗಿನ್' : 'Platform Sign In'}
+              {isKn ? 'ಕರ್ನಾಟಕ ಕೃಷಿ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಲಾಗಿನ್' : 'Karnataka Agri Platform Sign In'}
             </h2>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: 0 }}>
-              {isKn ? 'HP-ASN & SUADR ಏಕೀಕೃತ ಗುರುತು ಪ್ರವೇಶ' : 'HP-ASN & SUADR Unified Identity & Access Gate'}
+              {isKn ? 'KA-ASN & SUADR ಏಕೀಕೃತ ಗುರುತು ಮತ್ತು ಭೂಮಿ ಪ್ರವೇಶ' : 'KA-ASN & SUADR Unified Identity & Bhoomi Access Gate'}
             </p>
           </div>
         </div>
@@ -206,39 +206,54 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'en
               <>
                 <button
                   type="button"
+                  onClick={() => handleQuickDemoLogin('98450 12345', 'FARMER')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '16px',
+                    fontSize: '0.72rem',
+                    background: identifier === '98450 12345' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(16, 185, 129, 0.4)',
+                    color: '#34d399',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Basavaraj Patil (Mandya - 98450 12345)
+                </button>
+                <button
+                  type="button"
                   onClick={() => handleQuickDemoLogin('98160 12345', 'FARMER')}
                   style={{
                     padding: '4px 10px',
                     borderRadius: '16px',
                     fontSize: '0.72rem',
-                    background: identifier.includes('98160 12345') ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255,255,255,0.05)',
+                    background: identifier === '98160 12345' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255,255,255,0.05)',
                     border: '1px solid rgba(16, 185, 129, 0.4)',
                     color: '#34d399',
                     cursor: 'pointer'
                   }}
                 >
-                  Surender Thakur (Phone: 98160 12345)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('surender.thakur@hpfarmers.in', 'FARMER')}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: '16px',
-                    fontSize: '0.72rem',
-                    background: identifier.includes('surender.thakur') ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(16, 185, 129, 0.4)',
-                    color: '#34d399',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Email: surender.thakur@hpfarmers.in
+                  Surender Thakur (98160 12345)
                 </button>
               </>
             )}
 
             {role === 'OFFICER' && (
               <>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('OFF-KA-801', 'OFFICER')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '16px',
+                    fontSize: '0.72rem',
+                    background: identifier === 'OFF-KA-801' ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(59, 130, 246, 0.4)',
+                    color: '#60a5fa',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Dr. H. M. Mallikarjun (JDA - OFF-KA-801)
+                </button>
                 <button
                   type="button"
                   onClick={() => handleQuickDemoLogin('OFF-HP-801', 'OFFICER')}
@@ -252,22 +267,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'en
                     cursor: 'pointer'
                   }}
                 >
-                  Dr. Vikram Chauhan (DAO - OFF-HP-801)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickDemoLogin('PAT-HP-301', 'OFFICER')}
-                  style={{
-                    padding: '4px 10px',
-                    borderRadius: '16px',
-                    fontSize: '0.72rem',
-                    background: identifier === 'PAT-HP-301' ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(59, 130, 246, 0.4)',
-                    color: '#60a5fa',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Ramesh Chand (Patwari - PAT-HP-301)
+                  Dr. Vikram Chauhan (OFF-HP-801)
                 </button>
               </>
             )}
@@ -275,18 +275,18 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, lang = 'en
             {role === 'ADMIN' && (
               <button
                 type="button"
-                onClick={() => handleQuickDemoLogin('ADM-HP-001', 'ADMIN')}
+                onClick={() => handleQuickDemoLogin('ADM-KA-001', 'ADMIN')}
                 style={{
                   padding: '4px 10px',
                   borderRadius: '16px',
                   fontSize: '0.72rem',
-                  background: identifier === 'ADM-HP-001' ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255,255,255,0.05)',
+                  background: identifier === 'ADM-KA-001' ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(168, 85, 247, 0.4)',
                   color: '#c084fc',
                   cursor: 'pointer'
                 }}
               >
-                Rajiv Kumar Verma (State Admin - ADM-HP-001)
+                Smt. Rekha Rao (State Admin - ADM-KA-001)
               </button>
             )}
           </div>

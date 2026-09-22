@@ -68,21 +68,21 @@ export default function App() {
 
   const [farmers, setFarmers] = useState([]);
   const [officer, setOfficer] = useState({
-    id: "OFF-HP-801",
-    name: "Dr. Vikram Chauhan",
-    designation: "District Agriculture Officer (DAO)",
-    district: "Shimla",
-    jurisdiction: ["Kotkhai", "Jubbal", "Rohru", "Theog"],
-    email: "dao.shimla@hpagriculture.gov.in",
+    id: "OFF-KA-801",
+    name: "Dr. H. M. Mallikarjun",
+    designation: "Joint Director of Agriculture (JDA)",
+    district: "Mandya",
+    jurisdiction: ["Mandya", "Maddur", "Pandavapura", "Srirangapatna"],
+    email: "jda.mandya@kaagri.gov.in",
     role: "OFFICER"
   });
   const [adminUser, setAdminUser] = useState({
-    id: "ADM-HP-001",
-    name: "Rajiv Kumar Verma",
-    designation: "State System Administrator & HP-ASN Nodal Officer",
-    department: "Directorate of Agriculture / DIT Himachal Pradesh",
-    district: "State HQ (Shimla)",
-    email: "admin.hpasn@hp.gov.in",
+    id: "ADM-KA-001",
+    name: "Smt. Rekha Rao",
+    designation: "State System Administrator & KA-ASN Nodal Officer",
+    department: "Directorate of Agriculture / e-Governance Govt of Karnataka",
+    district: "State HQ (Bengaluru MS Building)",
+    email: "admin.kaasn@karnataka.gov.in",
     role: "ADMIN"
   });
   const [applications, setApplications] = useState([]);
@@ -235,12 +235,12 @@ export default function App() {
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            Himachal Pradesh Agriculture Service Network (HP-ASN) • State Unified Digital Agri Database (SUADR)
+            Karnataka Agriculture Service Network (KA-ASN) • State Unified Digital Agri Database (SUADR)
           </div>
           <div style={{ display: 'flex', gap: '16px' }}>
             <span>AgriStack Compatible</span>
-            <span>HimBhoomi Cadastral Sync</span>
-            <span>NPCI DBT Integrated</span>
+            <span>Bhoomi RTC Cadastral Sync</span>
+            <span>Parihara DBT Integrated</span>
           </div>
         </div>
       </footer>

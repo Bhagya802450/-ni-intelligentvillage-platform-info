@@ -13,9 +13,9 @@ export default function HpasnExchange({ farmers, lang = 'en' }) {
 
   // New exchange form
   const [systemType, setSystemType] = useState('GOVERNMENT');
-  const [whoRequested, setWhoRequested] = useState('Department of Revenue (HimBhoomi Land Records)');
-  const [whatData, setWhatData] = useState('Farmer Land Cadastral Registry & Khasra Survey #614/3');
-  const [why, setWhy] = useState('Subsidized Micro-Drip Irrigation Entitlement Check');
+  const [whoRequested, setWhoRequested] = useState('Revenue Department (Karnataka Bhoomi RTC Land Records)');
+  const [whatData, setWhatData] = useState('Farmer Land Bhoomi RTC Survey #42/1A (Dudda Hobli, Mandya)');
+  const [why, setWhy] = useState('Karnataka Raitha Siri & Micro-Drip Irrigation Entitlement Check');
   const [farmerId, setFarmerId] = useState(farmers[0]?.id || 'FARMER-HP-1001');
   const [wasConsentRequired, setWasConsentRequired] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -67,19 +67,19 @@ export default function HpasnExchange({ farmers, lang = 'en' }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <span className="badge badge-success">Step 4 — HP-ASN API Layer</span>
+              <span className="badge badge-success">Step 4 — KA-ASN API Layer</span>
               <span className="badge badge-info">Step 5 — Redis Cache & Queues</span>
               <span className="badge" style={{ background: 'rgba(234, 179, 8, 0.15)', color: '#facc15', border: '1px solid rgba(234, 179, 8, 0.3)' }}>
                 Frappe ➔ PostgreSQL
               </span>
             </div>
             <h2 style={{ fontSize: '1.6rem', fontWeight: 800, margin: '4px 0' }}>
-              {isKn ? 'ಹಿಮಾಚಲ ಪ್ರದೇಶ ಕೃಷಿ ಸೇವಾ ನೆಟ್‌ವರ್ಕ್ (HP-ASN)' : 'HP Agriculture Service Network (HP-ASN)'}
+              {isKn ? 'ಕರ್ನಾಟಕ ಕೃಷಿ ಸೇವಾ ನೆಟ್‌ವರ್ಕ್ (KA-ASN)' : 'Karnataka Agriculture Service Network (KA-ASN)'}
             </h2>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', maxWidth: '850px' }}>
               {isKn 
-                ? 'ಸರ್ಕಾರದ ವ್ಯವಸ್ಥೆಗಳು (ಕಂದಾಯ, ತೋಟಗಾರಿಕೆ) ಮತ್ತು ಪಾಲುದಾರ ವ್ಯವಸ್ಥೆಗಳ (ಬ್ಯಾಂಕಿಂಗ್, ವಿಮೆ) ನಡುವೆ ರೈತರ ಸಮ್ಮತಿ ಹಾಗೂ 6 ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಗಳೊಂದಿಗೆ ಸುರಕ್ಷಿತ ಡೇಟಾ ವಿನಿಮಯ.'
-                : 'Secure inter-system data flow connecting Government and Partner systems with Frappe, PostgreSQL, and Redis. Every exchange records the 6 mandatory questions: Who, What, When, Why, Was consent required, Was access allowed.'}
+                ? 'ಸರ್ಕಾರದ ವ್ಯವಸ್ಥೆಗಳು (ಕರ್ನಾಟಕ ಭೂಮಿ, ಕೃಷಿ, ತೋಟಗಾರಿಕೆ) ಮತ್ತು ಪಾಲುದಾರ ವ್ಯವಸ್ಥೆಗಳ (ಬ್ಯಾಂಕಿಂಗ್, ವಿಮೆ, ಅಂತರ-ರಾಜ್ಯ ಮಾರುಕಟ್ಟೆಗಳು) ನಡುವೆ ರೈತರ ಸಮ್ಮತಿ ಹಾಗೂ 6 ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಗಳೊಂದಿಗೆ ಸುರಕ್ಷಿತ ಡೇಟಾ ವಿನಿಮಯ.'
+                : 'Secure inter-system data flow connecting Government (Karnataka Bhoomi, Agriculture, Horticulture) and Partner systems (Banking, Crop Insurance, Inter-State APMC Mandis) with Frappe, PostgreSQL, and Redis. Every exchange records the 6 mandatory questions: Who, What, When, Why, Was consent required, Was access allowed.'}
             </p>
           </div>
 
@@ -107,11 +107,11 @@ export default function HpasnExchange({ farmers, lang = 'en' }) {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
               <div style={{ padding: '8px 12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px dashed #38bdf8', borderRadius: '6px', fontWeight: 600 }}>
-                1. Government System (Dept of Revenue / HimBhoomi / Horticulture)
+                1. Government System (Karnataka Bhoomi RTC / Dept of Agriculture / Horticulture)
               </div>
               <div style={{ textAlign: 'center', color: '#38bdf8', fontSize: '0.75rem', fontWeight: 800 }}>↓ Encrypted HTTPS / Mutual TLS</div>
               <div style={{ padding: '8px 12px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', borderRadius: '6px', fontWeight: 700, color: '#34d399' }}>
-                2. HP-ASN API Gateway (Consent Verification & HMAC Audit Logging)
+                2. KA-ASN API Gateway (Consent Verification & HMAC Audit Logging)
               </div>
               <div style={{ textAlign: 'center', color: '#10b981', fontSize: '0.75rem', fontWeight: 800 }}>↓ Frappe REST Protocol</div>
               <div style={{ padding: '8px 12px', background: 'rgba(99, 102, 241, 0.15)', border: '1px solid #6366f1', borderRadius: '6px', fontWeight: 600 }}>

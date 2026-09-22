@@ -91,7 +91,7 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
             
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <MapPin size={15} color="#10b981" /> 
-              Village {farmer.village}, Tehsil {farmer.tehsil}, District {farmer.district}, HP ({farmer.pincode})
+              Village {farmer.village}, Tehsil {farmer.tehsil}, District {farmer.district}, {farmer.state || 'Karnataka'} ({farmer.pincode})
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
                 STATUS: {farmer.status || 'ACTIVE'}
               </span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                State: {farmer.state || 'Himachal Pradesh'}
+                State: {farmer.state || 'Karnataka'}
               </span>
             </div>
           </div>
@@ -296,17 +296,17 @@ export default function FarmerPortal({ farmer, onApplySchemeSuccess, onNavigateT
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontWeight: 700, fontSize: '0.88rem', color: '#fff' }}>
-                HP-MKSY Income Support
+                Karnataka Raitha Siri & Krishi Bhagya
               </span>
               <span className="badge badge-success" style={{ fontSize: '0.72rem' }}>
                 DISBURSED
               </span>
             </div>
             <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Benefit: <strong style={{ color: '#34d399' }}>₹6,000 / Year</strong> (Tranche 1 Credited)
+              Benefit: <strong style={{ color: '#34d399' }}>₹10,000 / Hectare</strong> (Direct DBT Credited)
             </div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-              Bank Ref (UTR): <span className="mono-chip">HPSC202602019948210</span>
+              Bank Ref (UTR): <span className="mono-chip">PKGB202602019948210</span>
             </div>
             
             {/* Progress stepper */}

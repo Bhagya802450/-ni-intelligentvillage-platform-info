@@ -127,10 +127,16 @@ export const api = {
     body: JSON.stringify(query)
   }),
 
-  // Karnataka District & Agro-Climatic Directory
+  // Multi-State District & Agro-Climatic Directory (Karnataka, Maharashtra, Andhra Pradesh)
   getKarnatakaDistricts: (division = '', zone = '', search = '') => fetchJson(`/suadr/karnataka-districts?division=${division}&zone=${zone}&search=${search}`),
   getKarnatakaDistrict: (idOrName) => fetchJson(`/suadr/karnataka-districts/${encodeURIComponent(idOrName)}`),
   getKarnatakaZones: () => fetchJson('/suadr/karnataka-zones'),
+  getMaharashtraDistricts: (division = '', search = '') => fetchJson(`/suadr/maharashtra-districts?division=${division}&search=${search}`),
+  getMaharashtraZones: () => fetchJson('/suadr/maharashtra-zones'),
+  getAndhraDistricts: (region = '', search = '') => fetchJson(`/suadr/andhra-districts?region=${region}&search=${search}`),
+  getAndhraZones: () => fetchJson('/suadr/andhra-zones'),
+  getInterstateDistricts: (state = '', search = '') => fetchJson(`/suadr/interstate-districts?state=${state}&search=${search}`),
+  getInterstateCorridors: () => fetchJson('/suadr/interstate-corridors'),
 
   // =========================================================================
   // MODULE 1: HP Agriculture Service Network (HP-ASN)

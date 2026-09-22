@@ -35,19 +35,19 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
             boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)',
             fontSize: '1.4rem'
           }}>
-            🏔️
+            🌾
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontWeight: 800, fontSize: '1.25rem', letterSpacing: '-0.02em' }}>
-                HP-ASN <span style={{ color: 'var(--primary-light)' }}>SUADR</span>
+                KA-ASN <span style={{ color: 'var(--primary-light)' }}>SUADR</span>
               </span>
               <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
-                <span className="live-dot"></span> HP AGRI CORE
+                <span className="live-dot"></span> KA AGRI CORE
               </span>
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              {lang === 'kn' ? 'ಹಿಮಾಚಲ ಪ್ರದೇಶ ಕೃಷಿ ಸೇವಾ ನೆಟ್‌ವರ್ಕ್ ಮತ್ತು ರಾಜ್ಯ ಏಕೀಕೃತ ಡಿಜಿಟಲ್ ಡೇಟಾಬೇಸ್' : 'Himachal Pradesh Agriculture Service Network & State Unified Digital Database'}
+              {lang === 'kn' ? 'ಕರ್ನಾಟಕ ಕೃಷಿ ಸೇವಾ ನೆಟ್‌ವರ್ಕ್ ಮತ್ತು ರಾಜ್ಯ ಏಕೀಕೃತ ಡಿಜಿಟಲ್ ಡೇಟಾಬೇಸ್' : 'Karnataka Agriculture Service Network & State Unified Digital Database'}
             </p>
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function Navbar({ currentRole, setCurrentRole, activeTab, setActi
           className={`nav-pill ${activeTab === 'hpasn' ? 'active' : ''}`}
           onClick={() => setActiveTab('hpasn')}
         >
-          {lang === 'kn' ? '🌐 HP-ASN ಡೇಟಾ ವಿನಿಮಯ' : '🌐 HP-ASN Data Exchange'}
+          {lang === 'kn' ? '🌐 KA-ASN ಡೇಟಾ ವಿನಿಮಯ' : '🌐 KA-ASN Data Exchange'}
         </button>
 
         <button
